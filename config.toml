@@ -6,27 +6,15 @@ default_language = "en"
 theme = "even"
 title = "maguro.dev"
 description = "Blog by maguro_tuna"
-highlight_theme = "gruvbox-dark"
+highlight_theme = "monokai"
+taxonomies = [
+    { name = "categories", rss = true },
+    { name = "tags", rss = true },
+]
 
 [extra]
 even_title = "maguro.dev"
-author = "maguro_tuna"
-show_author = true
-show_categories = true
-show_tags = true
-theme_color = "orange"
-show_menu_items = 2
-full_width = false
-logo_text = "zerm"
-logo_home_link = "/"
-main_menu = [
-  { url = "/about", name = "about" },
-  { url = "/contact", name = "contact" },
-]
-menu_more = "show more"
-read_more = "read more"
-read_other_posts = "read other posts"
-texonomies = [
-  { name = "categories", rss = true },
-  { name = "tags", rss = true },
+even_menu = [
+  { url = "$BASE_URL", name = "Home" },
+  { url = "$BASE_URL/about", name = "About" },
 ]
