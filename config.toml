@@ -17,4 +17,5 @@ even_title = "maguro.dev"
 even_menu = [
   { url = "$BASE_URL", name = "Home" },
   { url = "$BASE_URL/about", name = "About" },
+  { url = "$BASE_URL/apps", name = "Apps" },
 ]
