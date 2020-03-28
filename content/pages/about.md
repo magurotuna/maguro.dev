@@ -6,6 +6,8 @@ template = "about.html"
 
 # About me
 
+<img src="/img/maguro.png">
+
 Web系企業にてソフトウェアエンジニアをやっています。
 
 2019年新卒入社で、現在は `Node.js`、 `TypeScript` を用いた Backend for Frontend (BFF) の開発を担当しています。
@@ -39,7 +41,7 @@ Web系企業にてソフトウェアエンジニアをやっています。
 
 # Career
 
-### Web系企業 ソフトウェアエンジニア (正社員) 2019/04 〜
+## Web系企業 ソフトウェアエンジニア (正社員) 2019/04 〜
 
 新卒研修ののち、日本最大級のC2Cマーケットを担当する部署に配属され、新規プロダクトの開発を担当。
 
@@ -47,23 +49,22 @@ Web系企業にてソフトウェアエンジニアをやっています。
 
 リリース後にも、競合他社に追いつくべくたくさんの機能開発を行わなければならない中、本番環境で発生していたメモリリークの原因を特定して修正をしたり、技術的負債がなるべく発生しないように気を配り、リファクタリングを率先して行う、リリースフローに含まれる面倒な手作業を削減するためのツールを作る、など、さまざまな方面でチームに貢献できるよう努めています。
 
-### 東京大学工学部 電子情報工学科 卒業 2019/03
+## 東京大学工学部 電子情報工学科 卒業 2019/03
 
 伊庭研究室にて、卒業論文「X線危険物認識システム構築のためのデータ合成とその評価」を執筆
 
-### 受託開発企業 ソフトウェアエンジニア (アルバイト) 2017/12 〜 2019/03
+## 受託開発企業 ソフトウェアエンジニア (アルバイト) 2017/12 〜 2019/03
 
-### Web系企業 ソフトウェアエンジニア (インターン) 2017/04 〜 2017/09
+`React` + `Electron` を用いたデスクトップアプリ開発、および `Laravel` + `Nuxt.js` を用いたWeb求人システム開発を担当。複雑な仕様を自分の中で咀嚼し、要件の実装をスケジュール通りに実装する力を養いました。
+
+## Web系企業 ソフトウェアエンジニア (インターン) 2017/04 〜 2017/09
+
+`Node.js` + `JavaScript` を用いたWebアプリ開発を行いました。
 
 # Links
 
-- [GitHub](https://github.com/magurotuna)
-- [LinkedIn](https://www.linkedin.com/in/yusuke-tanaka-3904a7167)
-- [Twitter](https://twitter.com/yusuktan)
+- <i class="fab fa-github"></i> [GitHub](https://github.com/magurotuna)
+- <i class="fab fa-linkedin"></i> [LinkedIn](https://www.linkedin.com/in/yusuke-tanaka-3904a7167)
+- <i class="fab fa-twitter"></i> [Twitter](https://twitter.com/yusuktan)
 - [Qiita](https://qiita.com/maguro_tuna)
 
-```rust
-fn main() {
-    let a = 1;
-}
-```

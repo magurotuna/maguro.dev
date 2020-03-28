@@ -11,6 +11,7 @@
 
       <title>{% block title %}{{ config.title }}{% endblock title %}</title>
       <link href="https://fonts.googleapis.com/css?family=Lalezar|Noto+Sans+JP&display=swap" rel="stylesheet">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" integrity="sha256-h20CPZ0QyXlBuAw7A+KluUYx/3pK+c7lYEpqLTlxjYQ=" crossorigin="anonymous" />
       {% if config.generate_rss %}
         <link rel="alternate" type="application/rss+xml" title="RSS" href="{{ get_url(path="rss.xml") }}">
       {% endif %}
