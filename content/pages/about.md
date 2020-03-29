@@ -68,3 +68,4 @@ Web系企業にてソフトウェアエンジニアをやっています。
 - <i class="fab fa-twitter"></i> [Twitter](https://twitter.com/yusuktan)
 - [Qiita](https://qiita.com/maguro_tuna)
 
+趣味で作って公開しているアプリに関しては [Apps](/apps) をご覧ください。

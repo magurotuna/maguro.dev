@@ -20,6 +20,12 @@ main {
     }
   }
 
+  .apps {
+    .apps__thumbnail {
+      border: solid 3px #f0f0f0;
+    }
+  }
+
   .about,
   .post {
     padding: 1.5rem 0;
