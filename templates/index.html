@@ -10,6 +10,15 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
 
       <title>{% block title %}{{ config.title }}{% endblock title %}</title>
+      <meta property="og:title" content="{% block og_title %}{{ config.title }}{% endblock og_title %}" />
+      <meta property="og:type" content="{% block og_type %}website{% endblock og_type %}" />
+      <meta property="og:url" content="{% block og_url %}{{ config.base_url }}{% endblock og_url %}" />
+      <meta property="og:image" content="{% block og_image %}{{ config.base_url }}/img/ogp.png{% endblock og_image %}" />
+      <meta property="og:site_name" content="{{ config.title }}" />
+      <meta property="og:locale" content="ja_JP" />
+      <meta property="og:description" content="{% block og_description %}maguro_tuna's website{% endblock og_description %}" />
+      <meta property="twitter:card" content="summary_large_image" />
+      <meta property="twitter:site" content="@yusuktan" />
       <link href="https://fonts.googleapis.com/css?family=Lalezar|Noto+Sans+JP&display=swap" rel="stylesheet">
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" integrity="sha256-h20CPZ0QyXlBuAw7A+KluUYx/3pK+c7lYEpqLTlxjYQ=" crossorigin="anonymous" />
       {% if config.generate_rss %}

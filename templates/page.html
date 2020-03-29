@@ -3,6 +3,11 @@
 
 {% block title %}{{config.title}} - {{page.title}}{% endblock title %}
 
+{% block og_title %}{{config.title}} - {{page.title}}{% endblock og_title %}
+{% block og_type %}article{% endblock og_type %}
+{% block og_url %}{{current_url}}{% endblock og_url %}
+{% block og_description %}{{ page.summary | striptags }}{% endblock og_description %}
+
 {% block content %}
 
 {% if page.toc %}
