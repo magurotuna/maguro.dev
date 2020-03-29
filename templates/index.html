@@ -17,6 +17,7 @@
       {% endif %}
 
       {% block js %}
+          <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
           <script src="https://cdnjs.cloudflare.com/ajax/libs/slideout/1.0.1/slideout.min.js"></script>
           {% if config.extra.katex_enable %}
           <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.css" integrity="sha384-9eLZqc9ds8eNjO3TmqPeYcDj8n+Qfa4nuSiGYa6DjLNcv9BtN69ZIulL9+8CqC9Y" crossorigin="anonymous">
@@ -100,10 +101,10 @@
                         </div>
                         <nav class="pagination">
                             {% if paginator.previous %}
-                                <a class="previous" href="{{ paginator.previous }}">‹ Previous</a>
+                                <a class="previous" href="{{ paginator.previous }}">‹ Newer</a>
                             {% endif %}
                             {% if paginator.next %}
-                                <a class="next" href="{{ paginator.next }}">Next ›</a>
+                                <a class="next" href="{{ paginator.next }}">Older ›</a>
                             {% endif %}
                         </nav>
                     {% endblock content %}
@@ -114,7 +115,7 @@
             {% endblock footer %}
             <footer id="footer">
               <div>
-                &copy; 2020 maguro.dev
+                &copy; 2020 <a href="/">maguro.dev</a>
               </div>
             </footer>
         </div>

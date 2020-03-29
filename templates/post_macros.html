@@ -5,9 +5,11 @@
         </h1>
         <div class="post__meta">
             <span class="post__time">{{ page.date | date(format="%F") }}</span>
-            {% if page.category %}
-                <div class="post__category">
-                    <a href="{{ get_taxonomy_url(kind="category", name=page.category) }}">{{ page.category }}</a>
+            {% if page.taxonomies.tags %}
+                <div class="post-tags">
+                    {% for tag in page.taxonomies.tags %}
+                        <a href="{{ get_taxonomy_url(kind="tags", name=tag) }}">#{{ tag }}</a>
+                    {% endfor %}
                 </div>
             {% endif %}
         </div>
