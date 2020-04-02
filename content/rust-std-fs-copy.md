@@ -1,6 +1,6 @@
 +++
 title = "Rust の std::fs::copy の macOS と Linux での挙動の違い"
-date = 2020-04-01
+date = 2020-04-02
 [taxonomies]
 tags = ["Rust", "std"]
 +++
