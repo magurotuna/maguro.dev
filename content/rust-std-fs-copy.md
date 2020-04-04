@@ -162,6 +162,11 @@ Rust の標準ライブラリ実装を読み解いていくのはとても楽し
 
 merge されるかな〜とそわそわしています。
 
+(2020/04/05 追記)
+
+merge されました 🎉🎉
+<img src="/img/zola-983-merged.png" alt="zola-983-merged" />
+
 # References
 
 - [Mac OS X Manual Page For copyfile(3)](https://developer.apple.com/library/archive/documentation/System/Conceptual/ManPages_iPhoneOS/man3/copyfile.3.html)
