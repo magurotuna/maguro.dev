@@ -47,7 +47,7 @@ let map = HashMap::new();
 
 <blockquote class="twitter-tweet"><p lang="ja" dir="ltr">Eはrustで let mut map = HashMap::new(); みたいに適当に型推論させてたらWAした</p>&mdash; じーた (@ziita1111) <a href="https://twitter.com/ziita1111/status/1256944172566671364?ref_src=twsrc%5Etfw">May 3, 2020</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 
-タイムラインをざっと眺めるだけでも、自分を含めて3人は同様の被害に遭っていたため、これは基本の整数型が 32bitであって、さらに型を推論に任せてしまいがちな Rust にはあるあるの事象なのかもしれません。
+タイムラインをざっと眺めるだけでも、自分を含めて3人は同様の被害に遭っていたため、これは基本の整数型が 32bit であって、さらに型を推論に任せてしまいがちな Rust にはあるあるの事象なのかもしれません。
 
 # どのようにすればコンテスト中に気づけたか
 
@@ -57,7 +57,7 @@ let map = HashMap::new();
 
 問題文に以下のような記述が丁寧に書かれています。
 
-> \\(N\\) 人の参加者のうちから 2 人を選んでペアにする方法は \\(N(N−1)2\\) 通りありますが、
+> \\(N\\) 人の参加者のうちから 2 人を選んでペアにする方法は \\(\frac{N(N−1)}{2}\\) 通りありますが、
 
 また、制約には \\(N\\) について以下のように書かれています。
 
