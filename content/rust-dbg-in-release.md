@@ -14,11 +14,14 @@ tags = ["Rust", "AtCoder", "競技プログラミング"]
 # 対象の問題
 
 > ## D - String Formation
+>
 > ### 概要
+>
 > 英小文字からなる文字列 \\(S\\) がある。
-> \\(S\\) に対して、与えられた \\(Q\\) 回の操作を順番に施す。操作は以下の3種類のうちいずれかである。
+> \\(S\\) に対して、与えられた \\(Q\\) 回の操作を順番に施す。操作は以下の 3 種類のうちいずれかである。
 >
 > #### ＜操作＞
+>
 > 1. 文字列 \\(S\\) の前後を反転する
 > 2. 文字列 \\(S\\) の先頭に文字 \\(C_i\\) を追加する
 > 3. 文字列 \\(S\\) の末尾に文字 \\(C_i\\) を追加する
@@ -45,7 +48,6 @@ tags = ["Rust", "AtCoder", "競技プログラミング"]
 
 コンテスト中の自分は上のような思考を辿り、以下のように実装をしました。
 
-
 ```rust
 fn main() {
     let S: String = read();
@@ -66,7 +68,7 @@ fn main() {
             let c = q[2];
             if (!reverse && f == '1') || (reverse && f == '2') {
                 // 反転フラグが立っていない状態で先頭に追加するのと、反転フラグが立っている状態で末尾に追加することが等価
-                S.push_front(c); 
+                S.push_front(c);
             } else if (!reverse && f == '2') || (reverse && f == '1') {
                 // ↑の反対、末尾に追加するパターン
                 S.push_back(c);
@@ -91,7 +93,7 @@ fn main() {
 
 <img width="1106" alt="スクリーンショット 2020-03-07 23.42.41.png" src="https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/151210/37f2216f-95a5-301a-e61d-0abe6294378d.png">
 
-.......なんで❗️❓❗️❓❗️❓❗️❓
+.......なんで ❗️❓❗️❓❗️❓❗️❓
 
 # コンテスト終了後
 
@@ -100,8 +102,7 @@ Rust の文字列操作は実はめちゃくちゃ重たいのか…？ `VecDequ
 
 Rust の標準ライブラリのドキュメントをチェックしていき、[std::dbg - Rust](https://doc.rust-lang.org/std/macro.dbg.html) にたどり着いた自分の前に、この文章が現れました。
 
-
->The dbg! macro works exactly the same in release builds. This is useful when debugging issues that nly occur in release builds or when debugging in release mode is significantly faster.
+> The dbg! macro works exactly the same in release builds. This is useful when debugging issues that nly occur in release builds or when debugging in release mode is significantly faster.
 
 ———— **dbg! マクロってリリースビルドでも動くのか！！！！！！！！！！！！**
 
@@ -115,10 +116,16 @@ dbg!(&query[i], &q);
 
 を書いていたのですが、これはリリースビルドでは無効化されるものだと勝手に思い込んでいました。
 `dbg!` を消して提出したところ、50ms で AC しました。
-（ `dbg!` 高々20万回実行するだけでめちゃくちゃ時間かかるんですね……）
+（ `dbg!` 高々 20 万回実行するだけでめちゃくちゃ時間かかるんですね……）
 
 コンテスト中の最初の提出で通っていればギリギリ水色パフォが出ていたものの、この `dbg!` による TLE のせいで茶色パフォになってしまいました。
 
 `dbg!` はリリースビルドでも動く、って常識なんでしょうか？
 僕と同じ被害に遭う方を少しでも減らせれば幸いです。
 
+# 2020/05/10 追記
+
+同じ悲劇を二度と起こさないため、リリースビルドでは無効化されるオレオレデバッグマクロを自作しました。
+下のエントリで紹介しているので、ぜひご覧ください。
+
+- [競技プログラミングでの使い勝手を考えたオレオレデバッグマクロを作りました](@/debug-macro.md)
