@@ -5,7 +5,7 @@ date = 2020-05-10
 tags = ["Rust", "マクロ", "競技プログラミング", "競プロ用のライブラリを Rust で作ってみたシリーズ"]
 +++
 
-[Qiita に投稿したこちらの記事](https://qiita.com/TODO) の Appendix として、
+[競プロ用のライブラリを Rust で作ってみたシリーズ 〜 chmin! / chmax! マクロ編〜 - Qiita](https://qiita.com/maguro_tuna/items/fab200fdc1efde1612e7) の Appendix として、
 
 - なぜマクロを使うのか
 - ユニットテストの実施内容
