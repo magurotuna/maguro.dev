@@ -1,6 +1,6 @@
 +++
 title = "Rust の BTreeSet / BTreeMap で最大値を素早く取得する方法"
-date = 2020-06-18
+date = 2020-06-20
 [taxonomies]
 tags = ["Rust", "BTreeMap", "BTreeSet"]
 +++
