@@ -25,7 +25,7 @@ Web 系企業にてソフトウェアエンジニアをやっています。
 # Skill set
 
 - Rust
-  - 業務での使用経験はないですが、趣味のコードを書くときのファーストチョイスとなっており、競技プログラミングや OSS へのコミットなども行っていることから、一番手に馴染んでいる言語です。
+  - 業務での使用経験はないですが、趣味のコードを書くときのファーストチョイスとなっており、競技プログラミングや OSS へのコミットなども行っていることから、一番手に馴染んでいる言語です。コントリビュートした OSS は [denoland/deno_lint](https://github.com/denoland/deno_lint) / [getzola/zola](https://github.com/getzola/zola) / [hatoo/cargo-snippet](https://github.com/hatoo/cargo-snippet) など。
 - Node.js
   - 今現在、業務で使用しています。(BFF として)
 - TypeScript
