@@ -268,7 +268,7 @@ criterion_main!(benches);
 
 2020/06/21 現在の最新バージョンである 1.44.1 と、2019/08/15 リリースの 1.37.0、2019/09/26 リリースの 1.38.0 でベンチマークをとりました。結果は以下です。
 
-（なお、ctiterion によるベンチマークは `btree_last time: [10.518 ns 10.583 ns 10.659 ns]` のように結果が出力されます。このうち真ん中の数値を採用しています。数値の意味について気になる方は [こちらの記述](https://bheisler.github.io/criterion.rs/book/user_guide/command_line_output.html#time) をご覧ください）
+（なお、criterion によるベンチマークは `btree_last time: [10.518 ns 10.583 ns 10.659 ns]` のように結果が出力されます。このうち真ん中の数値を採用しています。数値の意味について気になる方は [こちらの記述](https://bheisler.github.io/criterion.rs/book/user_guide/command_line_output.html#time) をご覧ください）
 
 | version | btree_last | btree_next_back | hash_last |
 | :-----: | ---------: | --------------: | --------: |
