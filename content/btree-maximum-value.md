@@ -3,6 +3,8 @@ title = "Rust の BTreeSet / BTreeMap で最大値を素早く取得する方法
 date = 2020-06-20
 [taxonomies]
 tags = ["Rust", "BTreeMap", "BTreeSet"]
+[extra]
+updated = 2020-06-21
 +++
 
 Rust で map を使いたいとき、選択肢として
@@ -211,3 +213,77 @@ impl<'a, K, V> Iterator for Keys<'a, K, V> {
 # 結論 {#conclusion}
 
 `BTreeMap` / `BTreeSet` で最大値を取りたいときには、イテレータに対して `last` か `next_back` を呼び出せば OK。どっちでも効率は変わらない！！ただし Rust のバージョンが古い場合には `next_back` を使っておいたほうが良さそう
+
+# 2020/06/21 追記
+
+具体的にどのバージョンから `last` = `next_back` となったのか調べてみました。
+
+nightly ではなく stable で `cargo bench` をするために [Criterion.rs](https://bheisler.github.io/criterion.rs/book/index.html) を使用します。ベンチマークのコードは以下のようにしました。ベンチマークをとる対象となっている `get_maximum_by_last` などの関数は上で使ったものと同じです。
+
+```rust
+use criterion::{criterion_group, criterion_main, Criterion};
+use std::collections::{BTreeSet, HashSet};
+
+use lazy_static::lazy_static;
+
+lazy_static! {
+    static ref BTREE_SET: BTreeSet<i32> = {
+        let mut s = BTreeSet::new();
+        for i in 0..10_000_000 {
+            s.insert(i);
+        }
+        s
+    };
+    static ref HASHSET: HashSet<i32> = {
+        let mut s = HashSet::new();
+        for i in 0..10_000_000 {
+            s.insert(i);
+        }
+        s
+    };
+}
+
+pub fn btree_last(c: &mut Criterion) {
+    let s = &*BTREE_SET;
+    c.bench_function("btree_last", |b| b.iter(|| get_maximum_by_last(s)));
+}
+
+pub fn btree_next_back(c: &mut Criterion) {
+    let s = &*BTREE_SET;
+    c.bench_function("btree_next_back", |b| {
+        b.iter(|| get_maximum_by_next_back(s))
+    });
+}
+
+pub fn hash_last(c: &mut Criterion) {
+    let s = &*HASHSET;
+    c.bench_function("hash_last", |b| {
+        b.iter(|| get_maximum_of_hashset_by_last(s))
+    });
+}
+
+criterion_group!(benches, btree_last, btree_next_back, hash_last);
+criterion_main!(benches);
+```
+
+2020/06/21 現在の最新バージョンである 1.44.1 と、2019/08/15 リリースの 1.37.0、2019/09/26 リリースの 1.38.0 でベンチマークをとりました。結果は以下です。
+
+（なお、ctiterion によるベンチマークは `btree_last time: [10.518 ns 10.583 ns 10.659 ns]` のように結果が出力されます。このうち真ん中の数値を採用しています。数値の意味について気になる方は [こちらの記述](https://bheisler.github.io/criterion.rs/book/user_guide/command_line_output.html#time) をご覧ください）
+
+| version | btree_last | btree_next_back | hash_last |
+| :-----: | ---------: | --------------: | --------: |
+| 1.44.1  |  13.343 ns |       13.398 ns | 14.302 ms |
+| 1.38.0  |  10.583 ns |       10.741 ns | 15.188 ms |
+| 1.37.0  |  35.317 ms |       10.353 ns | 18.264 ms |
+
+ns と ms が混じっていて分かりにくいですが、**1.37.0 の`btree_last`だけ、文字通り桁違いに遅いことが読み取れます。**
+
+この結果から、上で述べた結論をもう少し正確にしてみます。
+
+## 正確な結論
+
+`BTreeMap` / `BTreeSet` で最大値を取りたいときには、イテレータに対して `last` か `next_back` を呼び出せば OK。どっちでも効率は変わらない！！
+
+**ただし Rust のバージョンが 1.38.0 より前の場合には `next_back` を使わないとめちゃくちゃ遅くなる。**
+
+追記おわり

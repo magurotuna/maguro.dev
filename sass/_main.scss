@@ -38,7 +38,11 @@ main {
       }
     }
 
-    h2, h3, h4, h5, h6 {
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
       font-weight: 400;
     }
 
@@ -75,13 +79,14 @@ main {
       max-width: 100%;
       margin: 10px 0;
       border-spacing: 0;
-      box-shadow: 2px 2px 3px rgba(0, 0, 0, .125);
+      box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.125);
 
       thead {
         background: $secondary-colour;
       }
 
-      th, td {
+      th,
+      td {
         padding: 5px 15px;
         border: 1px double darken($secondary-colour, 3%);
       }
@@ -107,7 +112,7 @@ main {
           top: unset;
 
           &::after {
-            content: '.';
+            content: ".";
           }
         }
       }
@@ -145,6 +150,11 @@ main {
     &__meta {
       font-size: 14px;
       color: #8a8a8a;
+
+      .updated-time {
+        font-size: 12px;
+        color: #9e9e9e;
+      }
     }
 
     &__summary {
@@ -157,11 +167,11 @@ main {
     border-top: 1px solid #e6e6e6;
 
     &:after {
-        clear: both;
-        height: 0;
-        width: 100%;
-        content: '';
-        display: block;
+      clear: both;
+      height: 0;
+      width: 100%;
+      content: "";
+      display: block;
     }
   }
 
@@ -194,7 +204,8 @@ main {
   }
 }
 
-.next, .previous {
+.next,
+.previous {
   font-weight: 600;
   font-size: 1rem;
   transition: transform 0.3s ease-out;
