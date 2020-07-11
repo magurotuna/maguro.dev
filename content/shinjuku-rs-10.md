@@ -5,7 +5,7 @@ date = 2020-07-11
 tags = ["Rust", "Shinjuku.rs", "proptest", "quickcheck"]
 +++
 
-フォルシア株式会社さんが主催の Rust の LT イベント [Shinjuku.rs #10 @オンライン](https://forcia.connpass.com/event/178415/) に参加しました。connpass 上での参加登録社は 60 名以上！Rust の勢いを感じます。
+フォルシア株式会社さんが主催の Rust の LT イベント [Shinjuku.rs #10 @オンライン](https://forcia.connpass.com/event/178415/) に参加しました。connpass 上での参加登録者は 60 名以上！Rust の勢いを感じます。
 
 ブログ枠で参加させていただいたので、参加レポートをまとめます。
 
@@ -86,7 +86,7 @@ fn test_reverse(xs: Vec<i32>) -> bool {
 
 `reverse` 関数が `&[f32]` を引数にとるように修正された場合は、`xs: Vec<f32>` というように修正するだけで OK ということになります。Property-Based Testing の強みがよく分かるかと思います。
 
-自分で作った型について、その生成方法を `quickcheck` に教えてあげるためには、[quickcheck::Arbitrary](https://docs.rs/quickcheck/0.9.2/quickcheck/trait.Arbitrary.html) トレイトを実装すれば良いです。
+`Vec<i32>` や `Vec<f32>` などの型については、特別なことはせずとも勝手に値を生成してくれるようになっていますが、自分で定義した構造体をテストのために使いたい、という場合もよくあります。このような場合には、自分で作った型に [quickcheck::Arbitrary](https://docs.rs/quickcheck/0.9.2/quickcheck/trait.Arbitrary.html) トレイトを実装することで、`quickcheck` に生成方法を教えてあげることができます。
 
 ### proptest
 
