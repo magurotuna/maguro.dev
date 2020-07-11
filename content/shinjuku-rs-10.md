@@ -13,9 +13,9 @@ tags = ["Rust", "Shinjuku.rs", "proptest", "quickcheck"]
 
 # LT1 Rust で Property-Based Testing by matsu7874 さん
 
-<div><script async class="speakerdeck-embed" data-id="bb998802344249b89a95e60bf4e5cb2a" data-ratio="1.33333333333333" src="//speakerdeck.com/assets/embed.js"></script></div>
-
 Rust でインメモリデータベースを開発していらっしゃる matsu7874 さんの発表です。
+
+スライドはこちら: [https://speakerdeck.com/matsu7874/property-based-testing-in-rust](https://speakerdeck.com/matsu7874/property-based-testing-in-rust)
 
 ## Property-Based Testing とは
 
