@@ -193,7 +193,7 @@ async fn get_category_by_id(conn: &mut PoolConnection<MySql>, category_id: u32) 
 
 ちなみに、簡略版に関してマクロの展開後の様子を見てみると、このようになりました。自力で書いたのと似たようなものになっていますね！
 
-（実は自力で書く前にこの展開後のものを見てカンニングしたのはここだけの秘密です。）
+~~自力で書く前に展開後のものを見てカンニングしたのはここだけの秘密です。~~
 
 ```rust
 fn recursion_macro<'life0, 'async_recursion>(
