@@ -23,6 +23,8 @@ Rust で async な関数を再帰的に呼び出したい……という気持�
 
 ちょうど「Rust でWebアプリを書く知見を貯めたいな〜」と考えているところだったので、すぐに応募しました。さすがに ISUCON に一度も参加したことがなく、さらに Rust で Web アプリを作った経験もほとんどなかったので、練習のために去年開催された [ISUCON9](http://isucon.net/archives/53570241.html) の予選問題の参考実装 (Go) を Rust に移植しようと思い立ち、毎日ちょこちょこと作業をしています。
 
+[![magurotuna/isucon9-rust - GitHub](https://gh-card.dev/repos/magurotuna/isucon9-rust.svg)](https://github.com/magurotuna/isucon9-rust)
+
 ## 移植元に再帰関数があった
 
 移植元の実装で、このようなコードがありました:
