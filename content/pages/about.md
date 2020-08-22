@@ -25,11 +25,17 @@ Web 系企業にてソフトウェアエンジニアをやっています。
 # Skill set
 
 - Rust
-  - 業務での使用経験はないですが、趣味のコードを書くときのファーストチョイスとなっており、競技プログラミングや OSS へのコミットなども行っていることから、一番手に馴染んでいる言語です。コントリビュートした OSS は [denoland/deno_lint](https://github.com/denoland/deno_lint) / [getzola/zola](https://github.com/getzola/zola) / [hatoo/cargo-snippet](https://github.com/hatoo/cargo-snippet) など。
+  - 業務での使用経験はないですが、趣味のコードを書くときのファーストチョイスとなっており、競技プログラミングや OSS へのコミットなども行っていることから、一番手に馴染んでいる言語です。コントリビュートした OSS をいくつか挙げると:
+    - [denoland/deno_lint](https://github.com/denoland/deno_lint)
+    - [getzola/zola](https://github.com/getzola/zola)
+    - [hatoo/cargo-snippet](https://github.com/hatoo/cargo-snippet)
+    - [kenkoooo/AtCoderProblems](https://github.com/kenkoooo/AtCoderProblems)
+    - [rust-analyzer/rust-analyzer](https://github.com/rust-analyzer/rust-analyzer)
+    - [typescript-eslint/typescript-eslint](https://github.com/typescript-eslint/typescript-eslint)
 - Node.js
-  - 今現在、業務で使用しています。(BFF として)
+  - 今現在、業務で使用しています。(BFF 開発)
 - TypeScript
-  - 今現在、業務で使用しています。(BFF として)
+  - 今現在、業務で使用しています。(BFF 開発)
 - JavaScript
   - インターンおよびアルバイトで、下の `React` と `Vue.js` を扱うために使用しました。
 - React
@@ -69,6 +75,7 @@ Web 系企業にてソフトウェアエンジニアをやっています。
 - [Qiita](https://qiita.com/maguro_tuna)
 - [AtCoder](https://atcoder.jp/users/maguro_tuna)
 - [Codeforces](https://codeforces.com/profile/maguro_tuna)
+- [connpass](https://connpass.com/user/magurotuna/)
 
 趣味で作って公開しているアプリに関しては [Apps](/apps) をご覧ください。
 
