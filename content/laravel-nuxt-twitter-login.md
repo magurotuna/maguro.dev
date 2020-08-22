@@ -87,7 +87,7 @@ export default firebase
 そして、Firebaseの本領発揮、めちゃくちゃ簡単なTwitterログイン処理です。
 この短いコードでTwitterのOAuth認証が完了し、アクセストークンやTwitterのアカウント情報等の取得ができます。このコードの中だと `result.credential`の中にアクセストークンとかが、`result.user`の中にアカウント情報とかが入っています。
 
-```vue
+```typescript
 <template>
   <button @click="handleLogin">
     Twitterでログイン

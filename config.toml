@@ -6,7 +6,7 @@ default_language = "en"
 theme = "even"
 title = "maguro.dev"
 description = "Blog by maguro_tuna"
-highlight_theme = "one-dark"
+highlight_theme = "monokai"
 taxonomies = [
     { name = "tags", rss = true },
 ]
