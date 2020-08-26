@@ -36,7 +36,7 @@ trait LowerBound<T> {
 
 impl LowerBound<i32> for Vec<i32> {
     fn lower_bound(&self, x: &i32) -> usize {
-        todo!()
+        // 実装は省略
     }
 }
 ```
@@ -56,7 +56,7 @@ trait LowerBound<T: Ord> {
 // T: Ord を追加
 impl<T: Ord> LowerBound<T> for Vec<T> {
     fn lower_bound(&self, x: &T) -> usize {
-        todo!()
+        // 実装は省略
     }
 }
 ```
@@ -85,7 +85,7 @@ trait LowerBound {
 impl<T: Ord> LowerBound for Vec<T> {
     type Item = T;
     fn lower_bound(&self, x: &Self::Item) -> usize {
-        todo!()
+        // 実装は省略
     }
 }
 ```
@@ -242,7 +242,7 @@ trait LowerBound {
 impl<T: Ord> LowerBound for Vec<T> {
     type Item = T;
     fn lower_bound(&self, x: &Self::Item) -> usize {
-        todo!()
+        // 実装は省略
     }
 }
 ```
