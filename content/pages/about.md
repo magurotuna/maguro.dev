@@ -25,17 +25,11 @@ Web 系企業にてソフトウェアエンジニアをやっています。
 # Skill set
 
 - Rust
-  - 業務での使用経験はないですが、趣味のコードを書くときのファーストチョイスとなっており、競技プログラミングや OSS へのコミットなども行っていることから、一番手に馴染んでいる言語です。コントリビュートした OSS をいくつか挙げると:
-    - [denoland/deno_lint](https://github.com/denoland/deno_lint)
-    - [getzola/zola](https://github.com/getzola/zola)
-    - [hatoo/cargo-snippet](https://github.com/hatoo/cargo-snippet)
-    - [kenkoooo/AtCoderProblems](https://github.com/kenkoooo/AtCoderProblems)
-    - [rust-analyzer/rust-analyzer](https://github.com/rust-analyzer/rust-analyzer)
-    - [typescript-eslint/typescript-eslint](https://github.com/typescript-eslint/typescript-eslint)
+  - 業務での使用経験はないですが、趣味のコードを書くときのファーストチョイスとなっており、競技プログラミングや OSS へのコントリビュートなども行っていることから、一番手に馴染んでいる言語です。
 - Node.js
   - 今現在、業務で使用しています。(BFF 開発)
 - TypeScript
-  - 今現在、業務で使用しています。(BFF 開発)
+  - 今現在、業務で使用しています。(BFF 開発) 以下のOSSにコントリビュートしました。
 - JavaScript
   - インターンおよびアルバイトで、下の `React` と `Vue.js` を扱うために使用しました。
 - React
@@ -44,6 +38,24 @@ Web 系企業にてソフトウェアエンジニアをやっています。
   - 研究で使用。 `Keras` を使った画像認識を研究していました。
 - PHP (Laravel)
   - アルバイトで使用。 `Laravel` を使用して求人システムの構築を行いました。
+
+# OSS Contributions
+
+余暇の時間を使って OSS へのコントリビュートを行っています。コントリビュート先をいくつか挙げると:
+
+[![denoland/deno - GitHub](https://gh-card.dev/repos/denoland/deno.svg)](https://github.com/denoland/deno)
+
+[![denoland/deno_lint - GitHub](https://gh-card.dev/repos/denoland/deno_lint.svg)](https://github.com/denoland/deno_lint)
+
+[![getzola/zola - GitHub](https://gh-card.dev/repos/getzola/zola.svg)](https://github.com/getzola/zola)
+
+[![hatoo/cargo-snippet - GitHub](https://gh-card.dev/repos/hatoo/cargo-snippet.svg)](https://github.com/hatoo/cargo-snippet)
+
+[![kenkoooo/AtCoderProblems - GitHub](https://gh-card.dev/repos/kenkoooo/AtCoderProblems.svg)](https://github.com/kenkoooo/AtCoderProblems)
+
+[![rust-analyzer/rust-analyzer - GitHub](https://gh-card.dev/repos/rust-analyzer/rust-analyzer.svg)](https://github.com/rust-analyzer/rust-analyzer)
+
+[![typescript-eslint/typescript-eslint - GitHub](https://gh-card.dev/repos/typescript-eslint/typescript-eslint.svg)](https://github.com/typescript-eslint/typescript-eslint)
 
 # Career
 
