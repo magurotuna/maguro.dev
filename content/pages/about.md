@@ -47,13 +47,13 @@ Web 系企業にてソフトウェアエンジニアをやっています。
 
 [![denoland/deno_lint - GitHub](https://gh-card.dev/repos/denoland/deno_lint.svg)](https://github.com/denoland/deno_lint)
 
+[![rust-analyzer/rust-analyzer - GitHub](https://gh-card.dev/repos/rust-analyzer/rust-analyzer.svg)](https://github.com/rust-analyzer/rust-analyzer)
+
 [![getzola/zola - GitHub](https://gh-card.dev/repos/getzola/zola.svg)](https://github.com/getzola/zola)
 
 [![hatoo/cargo-snippet - GitHub](https://gh-card.dev/repos/hatoo/cargo-snippet.svg)](https://github.com/hatoo/cargo-snippet)
 
 [![kenkoooo/AtCoderProblems - GitHub](https://gh-card.dev/repos/kenkoooo/AtCoderProblems.svg)](https://github.com/kenkoooo/AtCoderProblems)
-
-[![rust-analyzer/rust-analyzer - GitHub](https://gh-card.dev/repos/rust-analyzer/rust-analyzer.svg)](https://github.com/rust-analyzer/rust-analyzer)
 
 [![typescript-eslint/typescript-eslint - GitHub](https://gh-card.dev/repos/typescript-eslint/typescript-eslint.svg)](https://github.com/typescript-eslint/typescript-eslint)
 
