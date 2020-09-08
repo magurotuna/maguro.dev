@@ -4,7 +4,7 @@ date = 2020-06-20
 [taxonomies]
 tags = ["Rust", "BTreeMap", "BTreeSet"]
 [extra]
-updated = 2020-06-21
+updated = 2020-09-08
 +++
 
 Rust で map を使いたいとき、選択肢として
@@ -18,9 +18,13 @@ Rust で map を使いたいとき、選択肢として
 
 <!-- more -->
 
-# はじめに
+# TL;DR (2020/09/08 更新)
 
-結論に達するまでかなり回り道をしているので、結論だけ知りたい方は [結論](@/btree-maximum-value.md#conclusion) に飛んでください。
+`BTreeMap` / `BTreeSet` で最大値を取りたいときには、イテレータに対して `max` か `last` か `next_back` を呼び出せば OK。どれを使っても効率は変わらない！！
+
+**ただし Rust のバージョンが 1.46.0 より前の場合には `max` は遅い。さらに、1.38.0 より前の場合は、`next_back` 以外は遅い。**
+
+AtCoder のジャッジ環境は 1.42.0 となっているため、`last` か `next_back` を使いましょう。
 
 # BTreeMap / BTreeSet で最大値を取る方法
 
@@ -214,7 +218,7 @@ impl<'a, K, V> Iterator for Keys<'a, K, V> {
 
 `BTreeMap` / `BTreeSet` で最大値を取りたいときには、イテレータに対して `last` か `next_back` を呼び出せば OK。どっちでも効率は変わらない！！ただし Rust のバージョンが古い場合には `next_back` を使っておいたほうが良さそう
 
-# 2020/06/21 追記
+# 2020/06/21 追記1
 
 具体的にどのバージョンから `last` = `next_back` となったのか調べてみました。
 
@@ -278,12 +282,30 @@ criterion_main!(benches);
 
 ns と ms が混じっていて分かりにくいですが、**1.37.0 の`btree_last`だけ、文字通り桁違いに遅いことが読み取れます。**
 
-この結果から、上で述べた結論をもう少し正確にしてみます。
+追記1 おわり
 
-## 正確な結論
+# 2020/09/08 追記2
 
-`BTreeMap` / `BTreeSet` で最大値を取りたいときには、イテレータに対して `last` か `next_back` を呼び出せば OK。どっちでも効率は変わらない！！
+Twitter にて、`max` も 内部実装的には `next_back` と同じだった、という情報を入手しました。
 
-**ただし Rust のバージョンが 1.38.0 より前の場合には `next_back` を使わないとめちゃくちゃ遅くなる。**
+<blockquote class="twitter-tweet"><p lang="ja" dir="ltr">これ実際に見に行ったら min, max も next, next_back になっているっぽい、すご<a href="https://t.co/c4OpuWei3M">https://t.co/c4OpuWei3M</a></p>&mdash; cunitac (@CUteNeuron) <a href="https://twitter.com/CUteNeuron/status/1302818878133661696?ref_src=twsrc%5Etfw">September 7, 2020</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script> 
 
-追記おわり
+これを確認しました。上記と同じく criterion を使い、 `iter().max()` によって最大値を取得するというベンチマークを追加して検証しました。
+
+複数のバージョンでベンチマークを回した結果が以下の通りです。
+
+| version | btree_last | btree_next_back | btree_max |
+| :-----: | ---------: | --------------: | --------: |
+| 1.46.0  |  10.480 ns |       10.257 ns | 10.017 ns |
+| 1.45.1  |  10.201 ns |       10.380 ns | 55.821 ms |
+| 1.45.0  |  10.170 ns |       10.413 ns | 56.541 ms |
+| 1.44.0  |  15.072 ns |       14.826 ns | 55.423 ms |
+| 1.42.0  |  10.045 ns |       9.6864 ns | 31.503 ms |
+
+**1.46.0** から `max` で最大値をとるのが爆速になっていることが分かります。
+
+## 2020/09/08 現在の正確な結論
+
+`BTreeMap` / `BTreeSet` で最大値を取りたいときには、イテレータに対して `max` か `last` か `next_back` を呼び出せば OK。どれを使っても効率は変わらない！！
+
+**ただし Rust のバージョンが 1.46.0 より前の場合には `max` は遅い。さらに、1.38.0 より前の場合は、`next_back` 以外は遅い。**
