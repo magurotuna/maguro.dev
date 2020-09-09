@@ -88,6 +88,7 @@ Web 系企業にてソフトウェアエンジニアをやっています。
 - [AtCoder](https://atcoder.jp/users/maguro_tuna)
 - [Codeforces](https://codeforces.com/profile/maguro_tuna)
 - [connpass](https://connpass.com/user/magurotuna/)
+- [LAPRAS](https://lapras.com/public/4LPJBTY)
 
 趣味で作って公開しているアプリに関しては [Apps](/apps) をご覧ください。
 
