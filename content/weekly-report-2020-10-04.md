@@ -48,4 +48,4 @@ tags = ["OSS", "Weekly Report"]
 ## Pull Request
 
 - [docs(eslint-plugin): add info about `allowDirectConstAssertionInArrowFunctions` option](https://github.com/typescript-eslint/typescript-eslint/pull/2586)
-  - 先週「まだmergeされていません」となっていたPRです。無事にmergeされました。
+  - 先週「まだ merge されていません」となっていた PR です。無事に merge されました。
