@@ -84,6 +84,7 @@ Web 系企業にてソフトウェアエンジニアをやっています。
 - <i class="fab fa-github"></i> [GitHub](https://github.com/magurotuna)
 - <i class="fab fa-linkedin"></i> [LinkedIn](https://www.linkedin.com/in/yusuke-tanaka-3904a7167)
 - <i class="fab fa-twitter"></i> [Twitter](https://twitter.com/yusuktan)
+- [Zenn](https://zenn.dev/magurotuna)
 - [Qiita](https://qiita.com/maguro_tuna)
 - [AtCoder](https://atcoder.jp/users/maguro_tuna)
 - [Codeforces](https://codeforces.com/profile/maguro_tuna)
