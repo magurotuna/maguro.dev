@@ -86,6 +86,7 @@ Web 系企業にてソフトウェアエンジニアをやっています。
 - <i class="fab fa-twitter"></i> [Twitter](https://twitter.com/yusuktan)
 - [Zenn](https://zenn.dev/magurotuna)
 - [Qiita](https://qiita.com/maguro_tuna)
+- [note](https://note.com/maguro_tuna)
 - [AtCoder](https://atcoder.jp/users/maguro_tuna)
 - [Codeforces](https://codeforces.com/profile/maguro_tuna)
 - [connpass](https://connpass.com/user/magurotuna/)
