@@ -11,6 +11,7 @@ I'm a software engineer working at a company in Japan.
 I want to become a software engineer who develops something used throughout the world and has great influence on the community.
 
 I'm an enthusiast for the Rust programming language. I write Rust for competitive programming and for contributing to OSS. Currently, I'm very interested in developing software from low-level (e.g., OS) to high-level (e.g., Web server).
+Besides, I have recently got interested in functional programming languages such as Haskell or OCaml.
 
 # Skillset
 
