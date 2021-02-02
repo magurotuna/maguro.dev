@@ -8,6 +8,12 @@ template = "about.html"
 
 <img src="/img/maguro.png">
 
+## For international visitors
+
+**[English version is here!](/about-en)** Please go see it.
+
+## はじめに
+
 Web 系企業にてソフトウェアエンジニアをやっています。
 
 2019 年新卒入社で、現在は `Node.js`、 `TypeScript` を用いた Backend for Frontend (BFF) の開発を担当しています。
@@ -22,7 +28,7 @@ Web 系企業にてソフトウェアエンジニアをやっています。
 
 好きな言語は `Rust` で、`Rust` を使って競技プログラミングをしたり、OSS にコントリビュートすることが趣味の 1 つになっています。 `Rust` を用いた様々なレイヤーの開発に興味があります。
 
-# Skill set
+## Skill set
 
 - Rust
   - 業務での使用経験はないですが、趣味のコードを書くときのファーストチョイスとなっており、競技プログラミングや OSS へのコントリビュートなども行っていることから、一番手に馴染んでいる言語です。
@@ -39,7 +45,7 @@ Web 系企業にてソフトウェアエンジニアをやっています。
 - PHP (Laravel)
   - アルバイトで使用。 `Laravel` を使用して求人システムの構築を行いました。
 
-# OSS Contributions
+## OSS Contributions
 
 余暇の時間を使って OSS へのコントリビュートを行っています。コントリビュート先をいくつか挙げると:
 
@@ -57,9 +63,13 @@ Web 系企業にてソフトウェアエンジニアをやっています。
 
 [![typescript-eslint/typescript-eslint - GitHub](https://gh-card.dev/repos/typescript-eslint/typescript-eslint.svg)](https://github.com/typescript-eslint/typescript-eslint)
 
-# Career
+## Career
 
-## Web 系企業 ソフトウェアエンジニア (正社員) 2019/04 〜
+### ソフトウェアエンジニア (正社員) 2020/11 〜
+
+Web面接アプリを提供する会社で、プロダクト開発を行っています。
+
+### ソフトウェアエンジニア (正社員) 2019/04 〜 2020/10
 
 新卒研修ののち、日本最大級の C2C マーケットを担当する部署に配属され、新規プロダクトの開発を担当。
 
@@ -67,19 +77,19 @@ Web 系企業にてソフトウェアエンジニアをやっています。
 
 リリース後にも、競合他社に追いつくべくたくさんの機能開発を行わなければならない中、本番環境で発生していたメモリリークの原因を特定して修正をしたり、技術的負債がなるべく発生しないように気を配り、リファクタリングを率先して行う、リリースフローに含まれる面倒な手作業を削減するためのツールを作る、など、さまざまな方面でチームに貢献できるよう努めています。普段の開発はペアプログラミングで行っています。
 
-## 東京大学工学部 電子情報工学科 卒業 2019/03
+### 東京大学工学部 電子情報工学科 卒業 2019/03
 
 伊庭研究室にて、卒業論文「X 線危険物認識システム構築のためのデータ合成とその評価」を執筆
 
-## 受託開発企業 ソフトウェアエンジニア (アルバイト) 2017/12 〜 2019/03
+### 受託開発企業 ソフトウェアエンジニア (アルバイト) 2017/12 〜 2019/03
 
 `React` + `Electron` を用いたデスクトップアプリ開発、および `Laravel` + `Nuxt.js` を用いた Web 求人システム開発を担当。複雑な仕様を自分の中で咀嚼し、要件の実装をスケジュール通りに実装する力を養いました。
 
-## Web 系企業 ソフトウェアエンジニア (インターン) 2017/04 〜 2017/09
+### Web 系企業 ソフトウェアエンジニア (インターン) 2017/04 〜 2017/09
 
 `Node.js` + `JavaScript` を用いた Web アプリ開発を行いました。
 
-# Links
+## Links
 
 - <i class="fab fa-github"></i> [GitHub](https://github.com/magurotuna)
 - <i class="fab fa-linkedin"></i> [LinkedIn](https://www.linkedin.com/in/yusuke-tanaka-3904a7167)
@@ -94,6 +104,6 @@ Web 系企業にてソフトウェアエンジニアをやっています。
 
 趣味で作って公開しているアプリに関しては [Apps](/apps) をご覧ください。
 
-# Contact
+## Contact
 
 yusuktan<!-- ODAYAKA --> (at) <!-- JANAI -->maguro.dev
