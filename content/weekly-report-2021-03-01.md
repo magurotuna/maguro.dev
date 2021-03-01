@@ -34,8 +34,8 @@ This is my 23rd weekly report.
 
 # Diary
 
-My new house has been determined! I'm going to move there at the end of this month. I'm enjoying planning to buy lots of furniture that I'll need there. In particular, I have a plan to make the environment around my computer really comfortable to work with. I won't put any limitation to how much I'll pay for a new chair. When I find a excellent one, I won't hesitate to get it no matter how much it is.
+My new house has been determined! I'm going to move there at the end of this month. I'm enjoying planning to buy lots of furniture that I'll need there. In particular, I plan to make the environment around my computer really comfortable to work with. I won't put any limitation on how much I'll pay for a new chair. When I find an excellent one, I won't hesitate to get it no matter how much it is.
 
-I'm pretty worried about the quality of Internet connection in the new house. It's provided for free, so I suspect that all the residents fight over narrow network bandwidth. I'm asking the management company if I'm allowed to pick a different network than the existing one.
+I'm pretty worried about the quality of the Internet connection in the new house. It's provided for free, so I suspect that all the residents fight over narrow network bandwidth. I'm asking the management company if I'm allowed to pick a different network than the existing one.
 
 After moving, I'll start to take an online English conversation lesson. I really want to be able to communicate with people around the world verbally. I'll do my best to achieve it.
