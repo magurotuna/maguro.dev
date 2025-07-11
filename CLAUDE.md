@@ -38,7 +38,7 @@ tags = ["tag1", "tag2"]
 
 ### Key Configuration
 - **config.toml**: Main Zola configuration (base URL, theme settings, features)
-- **netlify.toml**: Deployment configuration (Zola version: 0.11.0)
+- **netlify.toml**: Deployment configuration (Zola version: 0.20.0)
 - **templates/**: Custom HTML templates overriding theme defaults
 - **sass/**: Custom SCSS styles extending the Even theme
 
@@ -48,9 +48,15 @@ The site uses the Even theme located in `themes/even/`. Custom overrides:
 - Custom styles in root `sass/` directory extend theme styles
 - Navigation menu configured in `config.toml` under `[extra.even_menu]`
 
+### Custom Components
+- **Event Banner**: Prominent banner on homepage linking to event.maguro.dev
+  - Template: Modified `templates/index.html` with event banner between header and main content
+  - Styles: `sass/_event-banner.scss` - image-focused design with minimal text overlay
+  - Screenshot: `static/img/event-maguro-dev-capture.png`
+
 ## Important Notes
 
-1. **Zola Version**: The site is pinned to Zola 0.11.0 in netlify.toml. Ensure compatibility when making changes.
+1. **Zola Version**: The site is pinned to Zola 0.20.0 in netlify.toml. Ensure compatibility when making changes.
 
 2. **Content Features**: 
    - KaTeX enabled for mathematical expressions
