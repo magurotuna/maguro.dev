@@ -1,7 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import PostCard from '../../components/PostCard.astro';
 import { slugifyTag } from '../../utils/slugify';
 
 export async function getStaticPaths() {
@@ -28,6 +27,10 @@ export async function getStaticPaths() {
 }
 
 const { tag, posts } = Astro.props;
+
+function formatDate(date: Date): string {
+  return date.toISOString().split('T')[0];
+}
 ---
 
 <BaseLayout title={`${tag} | maguro.dev`} description={`Posts tagged with ${tag}`}>
@@ -40,8 +43,13 @@ const { tag, posts } = Astro.props;
 
     <ul class="post-list">
       {posts.map((post) => (
-        <li>
-          <PostCard post={post} />
+        <li class="post-item">
+          <a href={`/blog/${post.id.replace(/\.mdx?$/, '')}/`} class="post-link">
+            <span class="post-title">{post.data.title}</span>
+            <time datetime={post.data.date.toISOString()} class="post-date">
+              {formatDate(post.data.date)}
+            </time>
+          </a>
         </li>
       ))}
     </ul>
@@ -82,8 +90,44 @@ const { tag, posts } = Astro.props;
     list-style: none;
     padding: 0;
     margin: 0;
+  }
+
+  .post-item {
+    margin: 0;
+    padding: calc(var(--spacing-unit) * 0.5) 0;
+  }
+
+  .post-link {
     display: flex;
-    flex-direction: column;
-    gap: calc(var(--spacing-unit) * 2);
+    justify-content: space-between;
+    align-items: baseline;
+    gap: var(--spacing-unit);
+    text-decoration: none;
+  }
+
+  .post-link:hover {
+    text-decoration: none;
+  }
+
+  .post-link:hover .post-title {
+    color: var(--color-accent);
+  }
+
+  .post-title {
+    color: var(--color-text);
+  }
+
+  .post-date {
+    color: var(--color-text-secondary);
+    font-size: 0.85rem;
+    font-family: var(--font-mono);
+    flex-shrink: 0;
+  }
+
+  @media (max-width: 480px) {
+    .post-link {
+      flex-direction: column;
+      gap: calc(var(--spacing-unit) * 0.25);
+    }
   }
 </style>
