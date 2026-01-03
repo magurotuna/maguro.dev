@@ -4,8 +4,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
 <BaseLayout title="About | maguro.dev" description="About maguro.dev">
   <article class="about">
-    <p class="name">Yusuke Tanaka <span class="alias">(a.k.a. maguro🍣)</span></p>
-    <p class="email">yusuktan (at) maguro.dev</span></p>
+    <div class="profile-header">
+      <img src="/img/avatar.png" alt="maguro avatar" class="avatar" />
+      <div class="profile-info">
+        <p class="name">Yusuke Tanaka <span class="alias">(a.k.a. maguro🍣)</span></p>
+        <p class="email">yusuktan (at) maguro.dev</p>
+      </div>
+    </div>
 
     <section class="history">
       <h2>Work</h2>
@@ -92,18 +97,37 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     padding-top: calc(var(--spacing-unit) * 2);
   }
 
+  .profile-header {
+    display: flex;
+    align-items: center;
+    gap: calc(var(--spacing-unit) * 1.5);
+    margin-bottom: calc(var(--spacing-unit) * 1.5);
+  }
+
+  .avatar {
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  .profile-info {
+    display: flex;
+    flex-direction: column;
+  }
+
   .name {
     margin: 0 0 calc(var(--spacing-unit) * 0.5) 0;
+  }
+
+  .email {
+    margin: 0;
   }
 
   .alias,
   .no-spam {
     color: var(--color-text-secondary);
     font-size: 0.9em;
-  }
-
-  .email {
-    margin-bottom: calc(var(--spacing-unit) * 1.5);
   }
 
   .history {
