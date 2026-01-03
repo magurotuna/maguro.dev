@@ -7,6 +7,7 @@ import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import rehypeSlug from 'rehype-slug';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
+import rehypeExternalLinks from 'rehype-external-links';
 
 export default defineConfig({
   site: 'https://maguro.dev',
@@ -37,6 +38,13 @@ export default defineConfig({
             const level = Number(heading.tagName.charAt(1));
             return { className: ['heading-anchor'], 'data-level': level };
           },
+        },
+      ],
+      [
+        rehypeExternalLinks,
+        {
+          target: '_blank',
+          rel: ['noopener', 'noreferrer'],
         },
       ],
     ],
