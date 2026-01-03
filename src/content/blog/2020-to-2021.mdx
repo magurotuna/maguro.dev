@@ -1,0 +1,389 @@
+---
+title: "2020年の振り返りと2021年の抱負"
+date: 2020-12-31
+tags: ["Deno", "OSS", "Rust", "recap"]
+---
+
+![GitHub contributions of last year](/img/github-contributions-2020.png)
+
+2020年も終わるということで、今年の振り返りをしていこうと思います。
+
+# 2020年の振り返り
+
+## 月ごとの振り返り
+
+### 1月
+
+何をしていたかあまり覚えていませんが、年末年始の休みは「Go言語でつくるインタプリタ」をやっていた気がします。Rust の楽しさに目覚めた頃で、Rust を使ってやっていました。
+
+[Go言語でつくるインタプリタ](https://www.amazon.co.jp/dp/4873118220)
+
+結局、最後まで実装しきれていないのですが、それまで自分にとって完全にブラックボックスだったインタプリタの動作原理を学ぶことができ、とても有意義な学習だったと思います。
+この後、6月頃からコントリビュートし始めた `deno_lint` というリンター開発を行う際にも、間接的にこのあたりの知識が役立っています。
+
+### 2月
+
+またしても何をしていたか覚えていませんが、ぼちぼち在宅勤務が始まった頃のような気がします。
+常にペアプログラミングをする（Zoomをつなぎながら）という環境だったので、MacBook に搭載されているマイクだと心もとないかなと思い、指向性のあるUSBマイクを購入したりしました。ただ、これ以外には特にリモートワークのための設備投資を行っていないので、来年はもう少し投資をしたいと思っています。とりあえず本棚を買わないとやばい。
+
+このくらいから、あらゆるコンサートやライブが中止になりはじめました。僕自身も、とあるライブの全国ツアーに行っていたのですが、愛知、宮城、福岡が終わった後に、[残る大阪と東京公演だけ中止になる](https://www.lantis.jp/news.php?id=1582707600)という事態でした。つらい。
+
+### 3月
+
+リモートワークになり通勤時間がなくなったことで、多少の時間的な余裕が生まれました。OSS にコントリビュートし始めたり、競プロの精進をがんばったりしていた気がします。
+あと、大学院に行くことに思いを馳せていたのも3月だった気がします。英文の成績証明書の発行を郵送で申請したり（成績が悪くて絶望）、TOEFLの公式問題集を買ったりしていました。この頃の気持ちの動きは退職エントリでも少し触れました。
+
+[ヤフー株式会社を退職したのでついでに自分の半生を振り返ってみる](https://note.com/maguro_tuna/n/n5e5b56479abe#grcrW)
+
+### 4月
+
+特に何もなかった気がします。社会人2年目になって、「新卒」という肩書が使えなくなりました。
+
+### 5月
+
+ゴールデンウィークは競プロのライブラリ整備や精進をがんばっていたっぽいです。ライブラリのように、汎用的に使えるデータ構造やそのインタフェースを抽象的に考えることは、Rust のスキルを向上させる上ではある程度の効果があったように思います。
+
+出来心で転職サイトに登録しはじめたのが確かこの頃だったと思います。
+
+### 6月
+
+自分の中での今年の大きな転機その1、[`deno_lint`](https://github.com/denoland/deno_lint) へのコントリビュートを開始しはじめました。初めての PR が6月11日だった模様。
+
+[Add no-this-before-super rule #147](https://github.com/denoland/deno_lint/pull/147)
+
+最初は ESLint や typescript-eslint のルールを移植していくということをやっていましたが、移植が一段落した頃からは、ルールのリファクタリングとか、false positive（つまり、本来はまったく問題ないはずなのに、誤ってリンターがエラーとして報告してしまうこと）が起きるルールの修正、テストケースを充実させる、などの方向でコントリビュートを続けています。
+
+<figure>
+  <img src="/img/deno-lint-commits-2020.png" alt="contribution to deno_lint repo this year" />
+  <figcaption>deno_lint への commit 量</figcaption>
+</figure>
+
+### 7月
+
+なんやかんやあって転職をすることに決めたのが7月だったと思います。
+最初は出来心で転職サイトに登録しただけだったのに、カジュアル面談からぬるりと選考に進んで、気づけばいくつか内定をいただくことができました。
+
+8年ぶりくらいに自作PCを組みました。Rust での開発をしていると MacBookPro のファンがうるさかったため、マシンパワーのあるPCが欲しくなりました。
+CPU は Ryzen9 3900X で、他のパーツはお買い得そうなものを適当に選び、OS は Manjaro にしました。
+目論見通り、開発がめちゃくちゃ快適になって生産性アップに（多分）繋がりました。良い買い物でした。
+
+引き続き OSS は `deno_lint` をメインにコントリビュートし続けていました。
+
+### 8月
+
+友人たちと北海道をキャンピングカーで走り回りました。学生時代に戻ったみたいで楽しかった。人生最後の青春。
+
+`deno_lint` をやっているうちに、`deno` 本体にも変更を加える必要が出てきて、本体側に初めてコントリビュートをしました。
+
+[fix(std/wasi): make parameter & return value of `syscall` typed](https://github.com/denoland/deno/pull/7197)
+
+その後もちょこちょこと本体側にコントリビュートすることができました。来年はもっと貢献できたらいいな。
+
+<figure>
+  <img src="/img/deno-commits-2020.png" alt="contribution to deno repo this year" />
+  <figcaption>deno への commit 量</figcaption>
+</figure>
+
+### 9月
+
+3年くらい使ってきた iPhone X の画面が浮きはじめてきた（バッテリーの膨張？）ので、iPhone 12発売までの繋ぎのつもりで iPhone SE2 を購入しました。（結局今も SE2 を使い続けている……）
+
+毎週日曜日に、1週間の活動報告をブログに投稿するという試みを9月27日から始めました。だんだん手抜きになっていますが、今のところ継続できています。
+
+[Weekly Report 2020/09/27](/weekly-report-2020-09-27/)
+
+
+誕生日でした。26歳になり人生に焦りを覚えはじめる。
+
+### 10月
+
+前職の最終出社でした。
+有休消化期間に、2泊3日で伊豆にぼっち開発合宿をしにいきました。OSS開発がとてもはかどりました。もうちょっと長く滞在しても良かった。
+
+<figure>
+  <img src="/img/shimoda-view.png" alt="shimoda view from mountain" />
+  <figcaption>下田の寝姿山からの景色</figcaption>
+</figure>
+
+<figure>
+  <img src="/img/hotel-room-view.png" alt="view from hotel's room" />
+  <figcaption>宿の部屋からの眺め</figcaption>
+</figure>
+
+### 11月
+
+転職先に入社しました。前職が超大企業だったのでいろいろとカルチャーのギャップを感じつつも、一番懸念していた「人間関係がうまくいくか」という心配は完全なる杞憂となり、安心しました。技術的にもエキサイティングな経験を積むことができています。
+
+OSSコントリビュートも引き続き行っていましたが、複雑な機能を実装する際や、機能について議論するときなどに、自分の知識不足を感じる場面が増えてきました。表面的な理解だけでもコントリビュートをすることはできますが、「ただコントリビュートするだけ」ではなく、もっと上のレベルに到達したいという思いが強くなっていきました。
+そのためには盤石な基礎を身につけること、これが一番の近道と考え、コンピュータサイエンスとその周辺分野について体系的な学習を開始しました。
+
+### 12月
+
+投資信託を始めました。
+
+アドベントカレンダーに参加し、以下の5本の記事を書きました。もともとあまり外部発信が得意ではなかったのですが、アドベントカレンダーというある種の強制力によって多少は記事を書くのに慣れることができたような気がします。
+
+- [OSSコントリビュータになろう ― Deno編](https://zenn.dev/magurotuna/articles/25436752b7c32c)
+- [Deno の組み込み機能、ソースコードの変更を検知してオートリロードする "File Watcher" の紹介](https://zenn.dev/magurotuna/articles/8f0ed7da6e9ab1)
+- [Rust の procedural macro を操って黒魔術師になろう〜proc-macro-workshop の紹介](https://zenn.dev/magurotuna/articles/bab4db5999ebfa)
+- [Deno の組み込みリンター "deno_lint" の紹介 〜 ESLintの代替としても](https://zenn.dev/magurotuna/articles/66618f26475702)
+- [YouTubeにあるライブコーディング動画を見て Rust を学ぼう](https://zenn.dev/magurotuna/articles/d5621291b8da87)
+
+今年のアドベントカレンダーは終わりましたが、外部発信は続けていけたらいいなと思います。
+
+## OSS活動のまとめ
+
+今年1年、OSSに出した Pull Request をまとめてみました。（[my-weekly-contributions](https://github.com/magurotuna/my-weekly-contributions) という自作スクリプトをちょっと書き換えて出力しました）
+長いので折りたたみにしておきます。
+
+<details>
+<summary>2020年 OSSに出した Pull Request 一覧 （計161個）</summary>
+
+### [denoland/deno_lint](https://github.com/denoland/deno_lint)
+
+- [refactor(no-regex-spaces): switch to `asset_lint_err!` macro](https://github.com/denoland/deno_lint/pull/579)
+- [refactor(no-new-symbol): switch to `asset_lint_err!` macro](https://github.com/denoland/deno_lint/pull/578)
+- [chore: delegate FsModuleLoader to deno_core](https://github.com/denoland/deno_lint/pull/577)
+- [refactor(no-namespace): switch to `assert_lint_err!` macro](https://github.com/denoland/deno_lint/pull/575)
+- [feat(website): add meta tags for open graph](https://github.com/denoland/deno_lint/pull/574)
+- [refactor(no-mixed-spaces-and-tabs): switch to `asset_lint_err!` macro](https://github.com/denoland/deno_lint/pull/573)
+- [fix(valid-typeof): allow comparison with variables other than undefined, null, Object](https://github.com/denoland/deno_lint/pull/570)
+- [fix(prefer-as-const): handle `var_decl` that has no `decl`](https://github.com/denoland/deno_lint/pull/568)
+- [refactor(no-misused-new): switch to `asset_lint_err!` macro](https://github.com/denoland/deno_lint/pull/565)
+- [feat(plugin): expose ControlFlow to JS](https://github.com/denoland/deno_lint/pull/563)
+- [refactor(getter-return): replace std::mem::take with Option::take](https://github.com/denoland/deno_lint/pull/562)
+- [fix(getter-return): proper handling for function in getter](https://github.com/denoland/deno_lint/pull/560)
+- [fix(no-inferrable-types): handle private class fields](https://github.com/denoland/deno_lint/pull/559)
+- [refactor(no-irregular-whitespace): switch to `asset_lint_err!` macro](https://github.com/denoland/deno_lint/pull/551)
+- [chore(readme): update readme](https://github.com/denoland/deno_lint/pull/550)
+- [fix(no-ex-assign): handle nested assignments correctly](https://github.com/denoland/deno_lint/pull/545)
+- [refactor(no-inner-declarations): switch to `asset_lint_err!` macro](https://github.com/denoland/deno_lint/pull/544)
+- [fix(no-inferrable-types): handle nested things properly](https://github.com/denoland/deno_lint/pull/543)
+- [refactor(no-global-assign): switch to `asset_lint_err!` macro](https://github.com/denoland/deno_lint/pull/542)
+- [fix(no-dupe-keys): deal with BigInt keys](https://github.com/denoland/deno_lint/pull/541)
+- [fix(no-func-assign): handle FnExpr and nested assignments](https://github.com/denoland/deno_lint/pull/540)
+- [refactor(no-fallthrough): switch to `asset_lint_err!` macro](https://github.com/denoland/deno_lint/pull/539)
+- [refactor(no-extra-semi): switch to `asset_lint_err!` macro](https://github.com/denoland/deno_lint/pull/535)
+- [fix(prefer-const): ease handling for destructuring assignment](https://github.com/denoland/deno_lint/pull/532)
+- [refactor(no-extra-non-null-assertion): switch to `asset_lint_err!` macro](https://github.com/denoland/deno_lint/pull/531)
+- [refactor(no-extra-boolean-cast): switch to `asset_lint_err!` macro](https://github.com/denoland/deno_lint/pull/530)
+- [refactor(prefer-const): switch to `asset_lint_err!` macro](https://github.com/denoland/deno_lint/pull/527)
+- [ refactor(no-empty-interface): switch to `asset_lint_err!` macro](https://github.com/denoland/deno_lint/pull/526)
+- [refactor: delegate DropSpan to swc_ecmascript::utils](https://github.com/denoland/deno_lint/pull/524)
+- [refactor(no-dupe-keys): switch to `asset_lint_err!` macro](https://github.com/denoland/deno_lint/pull/520)
+- [refactor(no-dupe-keys): switch to `asset_lint_err!` macro](https://github.com/denoland/deno_lint/pull/519)
+- [refactor(no-dupe-else-if): switch to `asset_lint_err!` macro](https://github.com/denoland/deno_lint/pull/518)
+- [refactor(no-dupe-class-members): switch to `asset_lint_err!` macro](https://github.com/denoland/deno_lint/pull/517)
+- [refactor(no-dupe-args): switch to `asset_lint_err!` macro](https://github.com/denoland/deno_lint/pull/516)
+- [refactor(no-debugger): switch to `asset_lint_err!` macro](https://github.com/denoland/deno_lint/pull/515)
+- [feat: add require-await rule](https://github.com/denoland/deno_lint/pull/514)
+- [refactor(no-control-regex): switch to `asset_lint_err!` macro](https://github.com/denoland/deno_lint/pull/512)
+- [refactor(no-constant-condition): switch to `asset_lint_err!` macro](https://github.com/denoland/deno_lint/pull/511)
+- [refactor(no-cond-assign): switch to `asset_lint_err!` macro](https://github.com/denoland/deno_lint/pull/508)
+- [refactor(no-compare-neg-zero): switch to `asset_lint_err!` macro](https://github.com/denoland/deno_lint/pull/507)
+- [refactor: use HashMap for GLOBALS instead of array](https://github.com/denoland/deno_lint/pull/506)
+- [fix ban-unused-ignore and ban-unknown-rule-code](https://github.com/denoland/deno_lint/pull/505)
+- [feat(example): add `--rule` option to dlint](https://github.com/denoland/deno_lint/pull/499)
+- [fix(ControlFlow): handle block execution status correctly](https://github.com/denoland/deno_lint/pull/498)
+- [fix(no-undef): handle hoisted class declarations](https://github.com/denoland/deno_lint/pull/497)
+- [fix(camelcase): provide better hint message when object pattern has default value](https://github.com/denoland/deno_lint/pull/496)
+- [fix(no-undef): handle class declarations hoisting](https://github.com/denoland/deno_lint/pull/486)
+- [fix control flow analysis on for statements](https://github.com/denoland/deno_lint/pull/481)
+- [fix(camelcase): fix hint for object keys](https://github.com/denoland/deno_lint/pull/480)
+- [fix(no-empty): fix contains_comments logic](https://github.com/denoland/deno_lint/pull/474)
+- [refactor: introduce typed message & hint](https://github.com/denoland/deno_lint/pull/472)
+- [refactor(no-class-assign): switch to `assert_lint_err!` macro](https://github.com/denoland/deno_lint/pull/448)
+- [refactor(no-case-declarations): switch to `assert_lint_err!` macro](https://github.com/denoland/deno_lint/pull/447)
+- [refactor(getter-return): switch to `assert_lint_err!` macro](https://github.com/denoland/deno_lint/pull/446)
+- [feat(example): add all-rules subcommand](https://github.com/denoland/deno_lint/pull/444)
+- [refactor(for-direction): switch to `assert_lint_err!` macro](https://github.com/denoland/deno_lint/pull/437)
+- [refactor(ban-untagged-ignore): switch to `assert_lint_err!` macro](https://github.com/denoland/deno_lint/pull/436)
+- [refactor(ban-types): switch to `assert_lint_err!` macro](https://github.com/denoland/deno_lint/pull/435)
+- [refactor(constructor-super): switch to `assert_lint_err!` macro](https://github.com/denoland/deno_lint/pull/434)
+- [refactor: use `once_cell` instead of `lazy_static`](https://github.com/denoland/deno_lint/pull/433)
+- [test(no-constant-condition): add tests to make sure else-if is handled](https://github.com/denoland/deno_lint/pull/418)
+- [refactor(tests): use macro to have messages & hints be asserted](https://github.com/denoland/deno_lint/pull/410)
+- [fix typo](https://github.com/denoland/deno_lint/pull/407)
+- [fix(no-dupe-keys): handle nested objects & getter and setter with the same name](https://github.com/denoland/deno_lint/pull/406)
+- [fix(no-constant-condition): handle nested stuff](https://github.com/denoland/deno_lint/pull/404)
+- [test: add `assert_lint_err` macro to assert messages and hints ](https://github.com/denoland/deno_lint/pull/400)
+- [fix(no-empty): handle nested empty blocks in switch](https://github.com/denoland/deno_lint/pull/394)
+- [refactor: switch to `impl Into<String>` to avoid unnecessary allocation](https://github.com/denoland/deno_lint/pull/392)
+- [fix(no-dupe-args): handle nested function's arguments and remove unnecesarry allocation](https://github.com/denoland/deno_lint/pull/390)
+- [ fix(no-cond-assign): handle nested stuff](https://github.com/denoland/deno_lint/pull/389)
+- [refactor: use matches!](https://github.com/denoland/deno_lint/pull/384)
+- [refactor: remove Arc/Rc](https://github.com/denoland/deno_lint/pull/383)
+- [fix(getter-return): use ControlFlow to check if getters return something](https://github.com/denoland/deno_lint/pull/382)
+- [chore: enable prefer-const again](https://github.com/denoland/deno_lint/pull/369)
+- [fix(prefer-const): refactor & handle hoisting](https://github.com/denoland/deno_lint/pull/362)
+- [fix(prefer-const): handle nested assignments correctly](https://github.com/denoland/deno_lint/pull/361)
+- [fix(no-case-declarations): handle nested switch statements](https://github.com/denoland/deno_lint/pull/356)
+- [fix(control_flow): handle class constructors](https://github.com/denoland/deno_lint/pull/355)
+- [fix(no-compare-neg-zero): handle nested stuff](https://github.com/denoland/deno_lint/pull/354)
+- [fix(no-class-assign): increase tests and fix to pass them](https://github.com/denoland/deno_lint/pull/352)
+- [fix(prefer-const): treat param of catch clause like thet of function](https://github.com/denoland/deno_lint/pull/347)
+- [fix(prefer-const): handle `+=` and `-=` correctly](https://github.com/denoland/deno_lint/pull/345)
+- [add prefer-const rule](https://github.com/denoland/deno_lint/pull/342)
+- [fix(no-async-promise-executor): handle nested or parenthesized stuff](https://github.com/denoland/deno_lint/pull/338)
+- [fix(no-array-constructor): handle nested stuff](https://github.com/denoland/deno_lint/pull/335)
+- [fix(getter-return): handle nested stuff](https://github.com/denoland/deno_lint/pull/334)
+- [fix(for-direction): handle nested for loops](https://github.com/denoland/deno_lint/pull/333)
+- [[WIP] Refine explicit-function-return-type](https://github.com/denoland/deno_lint/pull/332)
+- [test: print source code when assertion fails](https://github.com/denoland/deno_lint/pull/331)
+- [fix(defualt-param-last): handle nested violations](https://github.com/denoland/deno_lint/pull/329)
+- [fix(no-unsafe-finally): catch violations in nested finally blocks](https://github.com/denoland/deno_lint/pull/328)
+- [add Camelcase rule](https://github.com/denoland/deno_lint/pull/302)
+- [Chore: fix and unify visibility](https://github.com/denoland/deno_lint/pull/292)
+- [Chore: sort rules alphabetically](https://github.com/denoland/deno_lint/pull/289)
+- [chore: remove unnecessary allocation](https://github.com/denoland/deno_lint/pull/276)
+- [[POC] Lint parallelly](https://github.com/denoland/deno_lint/pull/274)
+- [fix(constructor-super): handle nested classes](https://github.com/denoland/deno_lint/pull/235)
+- [adjacent-overload-signatures](https://github.com/denoland/deno_lint/pull/228)
+- [no-control-regex](https://github.com/denoland/deno_lint/pull/219)
+- [chore(no-extra-non-null-assertion): add to readme](https://github.com/denoland/deno_lint/pull/218)
+
+### [denoland/deno](https://github.com/denoland/deno)
+
+- [refactor(cli/flags): change allow_read/write/net types from bool to Option&lt;Vec&lt;T&gt;&gt;](https://github.com/denoland/deno/pull/8896)
+- [refactor(runtime): return iterator from resolve_addr](https://github.com/denoland/deno/pull/8891)
+- [chore(runtime): fix typo](https://github.com/denoland/deno/pull/8791)
+- [feat(unstable): add Deno.resolveDns API](https://github.com/denoland/deno/pull/8790)
+- [refactor(cli): add async version of resolve_addr function](https://github.com/denoland/deno/pull/8743)
+- [chore(test): increase timeout duration on macOS](https://github.com/denoland/deno/pull/8733)
+- [docs(lint): Update available rules & add link to doc site](https://github.com/denoland/deno/pull/8590)
+- [feat(core): Add FsModuleLoader that supports loading from filesystem](https://github.com/denoland/deno/pull/8523)
+- [fix(watcher): watcher doesn't exit when module resolution fails](https://github.com/denoland/deno/pull/8521)
+- [refactor(cli): Remove unnecessary conversion into BTreeMap](https://github.com/denoland/deno/pull/8498)
+- [fix(fmt, lint): Make sure that target paths are not directory](https://github.com/denoland/deno/pull/8375)
+- [build: update dlint to v0.2.10](https://github.com/denoland/deno/pull/8284)
+- [feat(unstable): Support --watch flag for bundle and fmt subcommands](https://github.com/denoland/deno/pull/8276)
+- [refactor(watch): create single watcher for whole process](https://github.com/denoland/deno/pull/8083)
+- [fix(logger): change log level to which prefix is added](https://github.com/denoland/deno/pull/7582)
+- [fix(fmt,lint): do not print number of checked files when quiet option is enabled](https://github.com/denoland/deno/pull/7579)
+- [fix(fmt, lint): not print the number of checked files when quiet option is specified](https://github.com/denoland/deno/pull/7501)
+- [WIP feat(test): add timeout feature [HELP WANTED]](https://github.com/denoland/deno/pull/7372)
+- [feat(fmt, lint): show number of checked files](https://github.com/denoland/deno/pull/7312)
+- [chore: replace nested function declarations with arrow functions](https://github.com/denoland/deno/pull/7287)
+- [chore: remove unreachable code to pass linter](https://github.com/denoland/deno/pull/7270)
+- [feat(cli/lint): Add support for reading input from stdin](https://github.com/denoland/deno/pull/7263)
+- [fix(cli/lint): use `deno_lint::rules::get_recommended_rules`to get rules](https://github.com/denoland/deno/pull/7222)
+- [chore(std/encoding): disable `no-control-regex`](https://github.com/denoland/deno/pull/7219)
+- [test(url_test): disable `no-self-assign` rule](https://github.com/denoland/deno/pull/7204)
+- [fix(std/wasi): make parameter & return value of `syscall` typed](https://github.com/denoland/deno/pull/7197)
+
+
+### [kenkoooo/AtCoderProblems](https://github.com/kenkoooo/AtCoderProblems)
+
+- [[replacement with sqlx] StreakUpdater](https://github.com/kenkoooo/AtCoderProblems/pull/798)
+- [[replacement with sqlx] RatedPointSumClient](https://github.com/kenkoooo/AtCoderProblems/pull/796)
+- [[replacement with sqlx] ProblemsSubmissionUpdater](https://github.com/kenkoooo/AtCoderProblems/pull/792)
+- [[replacement with sqlx] ProblemInfoUpdater](https://github.com/kenkoooo/AtCoderProblems/pull/789)
+- [[replacement with sqlx] SubmissionClient](https://github.com/kenkoooo/AtCoderProblems/pull/784)
+- [[replacement with sqlx] SimpleClient](https://github.com/kenkoooo/AtCoderProblems/pull/777)
+- [[replacement with sqlx] LanguageCountClient ](https://github.com/kenkoooo/AtCoderProblems/pull/770)
+- [[replacement with sqlx] ContestProblemClient](https://github.com/kenkoooo/AtCoderProblems/pull/747)
+- [ [replacement with sqlx] AcceptedCountClient](https://github.com/kenkoooo/AtCoderProblems/pull/744)
+- [ [replacement with sqlx]  VirtualContestManager](https://github.com/kenkoooo/AtCoderProblems/pull/732)
+- [[replacement with sqlx] UserManager](https://github.com/kenkoooo/AtCoderProblems/pull/725)
+- [refactor(backend): fix module style](https://github.com/kenkoooo/AtCoderProblems/pull/714)
+- [[replacement with sqlx] ProgressResetManager ](https://github.com/kenkoooo/AtCoderProblems/pull/712)
+- [[replacement with sqlx] ProblemListManager](https://github.com/kenkoooo/AtCoderProblems/pull/707)
+- [[WIP] replace diesel with sqlx](https://github.com/kenkoooo/AtCoderProblems/pull/703)
+
+### [rslint/rslint](https://github.com/rslint/rslint)
+
+- [Feat: add shebang handling to lexer and parser](https://github.com/rslint/rslint/pull/43)
+- [Refactor: make getter-return be consistent with others](https://github.com/rslint/rslint/pull/11)
+- [Feat: add no-setter-return](https://github.com/rslint/rslint/pull/9)
+- [Fix: allow `cons` method to work if there is no `else` block](https://github.com/rslint/rslint/pull/6)
+- [Chore: allow macros to deal with trailing commas](https://github.com/rslint/rslint/pull/5)
+- [Docs: Add `no-await-in-loop` doc](https://github.com/rslint/rslint/pull/3)
+
+
+### [hatoo/cargo-snippet](https://github.com/hatoo/cargo-snippet)
+
+- [doc(README): update](https://github.com/hatoo/cargo-snippet/pull/31)
+- [Add meta word `doc_hidden` to snippet attribute](https://github.com/hatoo/cargo-snippet/pull/30)
+- [Fix the parsing way of doc comments (#23)](https://github.com/hatoo/cargo-snippet/pull/29)
+- [Make backslash, tab, newline, etc. be processed properly](https://github.com/hatoo/cargo-snippet/pull/22)
+- [Display non-ascii space characters as they are](https://github.com/hatoo/cargo-snippet/pull/16)
+- [Output doc comments in 3-slash-style](https://github.com/hatoo/cargo-snippet/pull/14)
+
+### [typescript-eslint/typescript-eslint](https://github.com/typescript-eslint/typescript-eslint)
+
+- [docs(eslint-plugin): add info about `allowDirectConstAssertionInArrowFunctions` option](https://github.com/typescript-eslint/typescript-eslint/pull/2586)
+- [fix(eslint-plugin): [adjacent-overload-signatures] fix false positive on call signatures and a method named `call`](https://github.com/typescript-eslint/typescript-eslint/pull/2313)
+
+
+### [rust-analyzer/rust-analyzer](https://github.com/rust-analyzer/rust-analyzer)
+
+- [Fix typo in syntax.md](https://github.com/rust-analyzer/rust-analyzer/pull/6041)
+- [Fix document symbols order](https://github.com/rust-analyzer/rust-analyzer/pull/5687)
+
+### [launchbadge/sqlx](https://github.com/launchbadge/sqlx)
+
+- [doc: fix typo](https://github.com/launchbadge/sqlx/pull/638)
+- [doc: fix wrong links](https://github.com/launchbadge/sqlx/pull/553)
+
+### [tanakh/cargo-atcoder](https://github.com/tanakh/cargo-atcoder)
+
+- [Add `strip_path` to config](https://github.com/tanakh/cargo-atcoder/pull/10)
+- [Fix typo](https://github.com/tanakh/cargo-atcoder/pull/5)
+
+</details>
+
+# 2021年の抱負
+
+## コンピュータサイエンスの勉強を続ける
+
+まず、今年の最後のほうから徐々に開始したコンピュータサイエンスの勉強は、来年も引き続きやっていきたいです。いきなり型理論の本（TaPL）を読もうとして挫折したので、大学の教養レベルからじっくりと勉強を進めていきたいと思います。一方で、コンパイラの教科書は今の知識でも読み進められそうな感じがしたので、手を動かしながら読み進めていきたいと思います。
+
+以下、現在読み進めている本および来年読み進めていきたい本です。
+
+- 数理論理学
+  - [嘉田勝「論理と集合から始める数学の基礎」日本評論社, 2008](https://www.amazon.co.jp/dp/4535784728)
+  - [小野寛晰「情報科学における論理」日本評論社, 1994](https://www.amazon.co.jp/dp/4535608148)
+  - [萩谷昌己、西崎真也「論理と計算のしくみ」岩波書店, 2007](https://www.amazon.co.jp/dp/4007305803)
+- 型理論、意味論
+  - [五十嵐淳「プログラミング言語の基礎概念」サイエンス社, 2011](https://www.amazon.co.jp/dp/4781912850)
+  - [Benjamin C. Pierce 著, 住井英二郎 監訳「型システム入門 プログラミング言語と型の理論」オーム社, 2013](https://www.amazon.co.jp/dp/4274069117)
+- オートマトン、計算可能性
+  - [Michael Sipser 著, 太田和夫・田中圭介 監訳「計算理論の基礎 1.オートマトンと言語 原著第2版」共立出版, 2008](https://www.amazon.co.jp/dp/4320122070)
+  - [Michael Sipser 著, 太田和夫・田中圭介 監訳「計算理論の基礎 2.計算可能性の理論 原著第2版」共立出版, 2008](https://www.amazon.co.jp/dp/4320122089)
+  - [Michael Sipser 著, 太田和夫・田中圭介 監訳「計算理論の基礎 3.複雑さの理論 原著第2版」共立出版, 2008](https://www.amazon.co.jp/dp/4320122097)
+- コンパイラ理論
+  - [Andrew W. Appel 著, 神林靖・滝本宗宏 訳「最新コンパイラ構成技法」翔泳社, 2009](https://www.amazon.co.jp/dp/4798114685)
+  - [中田育男「コンパイラの構成と最適化 第2版」朝倉書店, 2009](https://www.amazon.co.jp/dp/4254121776)
+  - [A.V.エイホ, M.S.ラム, R.セシィ, J.D.ウルマン 共著, 原田賢一 訳「コンパイラ 原理・技法・ツール 第2版」サイエンス社, 2009](https://www.amazon.co.jp/dp/478191229X)
+- OS
+  - [武内覚「Linuxのしくみ ~実験と図解で学ぶOSとハードウェアの基礎知識」技術評論社, 2018](https://www.amazon.co.jp/dp/477419607X)
+  - [青柳隆宏「はじめてのOSコードリーディング UNIX V6で学ぶカーネルのしくみ」技術評論社, 2013](https://www.amazon.co.jp/dp/4774154644)
+
+<figure>
+  <img src="/img/compiler-textbooks.png" alt="compiler textbooks" />
+  <figcaption>コンパイラ3種の神器</figcaption>
+</figure>
+
+
+## 英語を使えるようになる
+
+ソフトウェアエンジニアとして生きていく中での英語の重要性というのはもはや語るまでもないと思いますが、自分の場合は OSS に積極的に関わるようになってからさらにその重要性を実感することになりました。
+具体的には、英語のドキュメントを読むなどの受動的なスキルのほかにも、話す、書く、など能動的なスキルの必要性が、自分の中で増してきた形です。
+日本の伝統的英語教育のおかげ（？）でリーディングに関してはできなくもない、しかしリスニング、スピーキング、ライティングはかなり怪しい、というのが現状なので、本腰を入れてこれらを磨くための勉強を始めました。
+とりあえず以下の教材をやり始めています。
+
+- [瞬間英作文](https://www.amazon.co.jp/dp/4860641345)（簡単な文章を素早くアウトプットするため）
+- [英語耳](https://www.amazon.co.jp/dp/4048688634)（リスニングが壊滅的なため）
+- [速読速聴・英単語 Daily1500](https://www.amazon.co.jp/dp/4862901867)（シャドーイング用）
+
+オンラインの英会話レッスンを受講したり、あと数値的な目標があったほうがモチベーションが続きやすい気がするので、TOEICなどの受験も検討していきたいところ。（現時点での自分の英語力がよく分からないので、数値化したいというのもある）
+
+## OSSコントリビュートを続ける
+
+もはや生活の一部がOSSコントリビュートになりつつあるので、いまさら「抱負」として掲げなくても継続していくとは思うのですが、やはりOSSコントリビュートは続けていきたいです。OSSコントリビュートをする自分の中での一番のモチベーションは「楽しいから」という単純なものなので、楽しむ気持ちをもちながらやっていけたらいいなと。
+
+（そういえば、Linusの自伝のタイトルも **Just for Fun（邦題: それがぼくには楽しかったから）** ですね！）
+
+# おわり
+
+みなさんよいお年を！

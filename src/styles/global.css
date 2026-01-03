@@ -179,6 +179,22 @@ img {
   height: auto;
 }
 
+/* Figure with caption */
+figure {
+  margin: calc(var(--spacing-unit) * 1.5) 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+figcaption {
+  margin-top: calc(var(--spacing-unit) * 0.5);
+  font-size: 0.875em;
+  color: var(--color-text-secondary);
+  text-align: center;
+  font-style: italic;
+}
+
 /* Tables */
 table {
   width: 100%;
@@ -250,4 +266,59 @@ hr {
 
 .heading-anchor[data-level="6"]::before {
   content: "###### ";
+}
+
+/* Screen reader only utility */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Footnotes */
+[data-footnotes] {
+  margin-top: calc(var(--spacing-unit) * 2);
+  padding-top: calc(var(--spacing-unit) * 1.5);
+  border-top: 1px solid var(--color-border);
+  font-size: 0.9em;
+  color: var(--color-text-secondary);
+}
+
+.footnotes-title {
+  display: block;
+  font-weight: bold;
+  margin-bottom: calc(var(--spacing-unit) * 0.75);
+}
+
+[data-footnotes] ol {
+  padding-left: calc(var(--spacing-unit) * 1.2);
+}
+
+/* Footnote reference in content - scroll margin for fixed header */
+[data-footnote-ref] {
+  scroll-margin-top: calc(var(--spacing-unit) * 5);
+}
+
+@media (max-width: 600px) {
+  [data-footnote-ref] {
+    scroll-margin-top: calc(var(--spacing-unit) * 8);
+  }
+}
+
+.data-footnote-backref {
+  display: inline-block;
+  width: 0.9em;
+  height: 0.9em;
+  vertical-align: middle;
+  background-color: currentColor;
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='9 14 4 9 9 4'/%3E%3Cpath d='M20 20v-7a4 4 0 0 0-4-4H4'/%3E%3C/svg%3E");
+  mask-size: contain;
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='9 14 4 9 9 4'/%3E%3Cpath d='M20 20v-7a4 4 0 0 0-4-4H4'/%3E%3C/svg%3E");
+  -webkit-mask-size: contain;
 }

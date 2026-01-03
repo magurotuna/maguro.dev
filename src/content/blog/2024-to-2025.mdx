@@ -1,0 +1,203 @@
+---
+title: "2024年の振り返りと2025年の抱負"
+date: 2024-12-30
+tags: ["Deno", "Rust", "career", "school", "recap"]
+---
+
+import Tweet from "../../components/Tweet.astro";
+
+今年の振り返りと来年に向けた目標の整理をしていく。
+
+# 2024年の振り返り
+
+2024年の目標として設定していたのは、以下の4つだった:
+
+- 大学院で良い成績をとりつづける
+- 仕事でより良い成果を出す
+- 外部発信をしていく
+- 人生をがんばる
+
+それぞれ達成度合いを振り返っていく。
+
+## 大学院で良い成績をとりつづける
+
+2022年9月からオンラインで通い始めたGeorgia Tech、早いもので2年とちょっとが経過した。2024年の秋学期終了時点での取得単位数は24（修了単位は30）。
+
+2024年にとったクラスは以下のとおり:
+
+1. [CS6211: System Design for Cloud Computing](https://omscs.gatech.edu/cs-6211-system-design-cloud-computing)
+2. [CS6290: High Performance Computer Architecture](https://omscs.gatech.edu/cs-6290-high-performance-computer-architecture)
+3. [CS7210: Distributed Computing](https://omscs.gatech.edu/cs-7210-distributed-computing)
+
+### CS6211: System Design for Cloud Computing
+
+CS6211はハンズオン形式でSDN (Software Defined Networks)、実際のクラウド(Azure)を利用した[MapReduce](https://en.wikipedia.org/wiki/MapReduce)システムの実装、Azure上のマネージドサービスを活用したWebアプリケーション開発など、低いレイヤーから高いレイヤーまでを実践的に学ぶことのできるクラスだった。
+
+毎週課題の進捗をTeams上のビデオ通話でTAに報告することになっており、時差に苦しみながらも一緒にチームを組んだ[Toshiさん](https://x.com/toshi0607)のおかげもあり無事にやり遂げられた。
+
+### CS6290: High Performance Computer Architecture
+
+CS6290はコンピュータアーキテクチャに関するクラスで、多くはCPUに関するトピックだった。
+今までブラックボックスとして扱っていたCPUに対する解像度がかなり上がったと同時に、現代のCPUに注ぎ込まれている工夫の数々に感嘆した。
+パイプライン、分岐予測、[Tomasuloアルゴリズム](https://en.wikipedia.org/wiki/Tomasulo%27s_algorithm)とリオーダバッファ、物理アドレス・仮想アドレス、コヒーレンス、メモリモデルなどに加え、ハードドライブの物理的構造とRAIDに関する話題、メモリ(DRAM)の回路的な構造などもカバーされていて、以前とったOS関連のクラスで曖昧なまま理解していた部分(例えばN-way set associativeとか)についての理解度を格段に上げることができた。
+
+このクラスは授業の構成が素晴らしく、講義ビデオに頻繁に挿入されている小テストによって段階的に自分の理解を確認することができるし、中間テストと期末テストの過去問も解答付きで提供される上、Head TAによるサポートの手厚さが半端ではなかった。内容自体のおもしろさに加え、学習体験の良さという点も相まって、これまでとったクラスの中でも総合的な満足度はトップクラスに高い。
+
+### CS7210: Distributed Computing
+
+最後のCS7210は、クラスのレビューサイトである[OMS Central](https://www.omscentral.com/)において最も難しく、課題をこなすのにかかる時間も最長であるということで悪名高いクラスだった。
+
+<figure>
+  <img src="/img/oms-central-workload.png" alt="Course lists in OMS Central sorted by workload" />
+  <figcaption>Workloadで降順ソートした結果。Distributed Computingが2位に大差をつけて圧倒的作業量を要していることが分かる。ちなみに数値は週あたりの作業時間数を表している</figcaption>
+</figure>
+
+講義では分散システムの基本的な概念(例: [Logical clock](https://en.wikipedia.org/wiki/Logical_clock))を学んだのち、リアルワールドで使われている分散システムの数々、例えばGoogle SpannerやAmazon DynamoDB、Facebook Memcachedなどについて議論していき、エッジコンピューティングやIoT、ブロックチェーンなど最新の話題についても触れられた。
+
+そして何よりこのクラスを最凶たらしめているのが、4つの課題である。
+4つの課題を完了させると最終的にトランザクションおよびシャーディングに対応した分散キーバリューストアができあがるという内容で、この課題自体はGitHub上で公開されており世界中の大学で広く利用されているらしい。
+
+[dslabs](https://github.com/emichael/dslabs)
+
+課題のハイライトとしてはやはり、3つ目の課題で実装する分散合意アルゴリズム[Paxos](https://paxos.systems/)と、このPaxosを利用して4つ目の課題で実装するシャーディング・トランザクションに対応した分散キーバリューストアである。
+最初はPaxosがラスボスで、その後の分散キーバリューストアはウイニングランだと思っていたが、実際は分散キーバリューストアもシャードをまたいだトランザクションを正しく処理するのに必要な2フェーズコミットの実装や、2フェーズコミットとシャードの移動が同時に起こる場合の処理など、裏ボスとして君臨していた。
+
+<Tweet id="1863497708801327537" />
+
+苦しんだだけあり、学びとしては非常に大きく、分散システムに関する論文などを読み解いていく基礎体力は身についたと思う。
+実際、この年末年始の休みで、ナウでイケてる分散合意アルゴリズムである[Raft](https://raft.github.io/)の論文を読んだり各種解説を読んだりしながら、実装をしている。Paxosに比べてあまりにも分かりやすくて感動している(実際、Raftは「理解容易性」を最重要視されて設計されたアルゴリズムである)。
+
+<Tweet id="1872307187978301872" />
+
+### 成績
+
+2024年にとった3つのクラスで、すべてA(最高成績)をとることができた。
+
+![grades of courses taken in 2024](/img/grades-2024.png)
+
+2023年秋学期に気が緩んでBをとってしまったこともあり、今年は反省して全力で取り組むことができたように思う。何より、昨年までとっていたクラスに比べて格段に難しいとされているクラスを意欲的に履修し、それらでAをとることができたのは自信につながる結果。
+
+### 今後の履修
+
+いよいよ取得単位も増えてきて、修了までにあと2コマしか取ることができないところまで来た。
+2コマのうち1つは [CS6515: Algorithms](https://omscs.gatech.edu/cs-6515-intro-graduate-algorithms) をとらなければならない(必修)ため、自由に選べるのはあと1つだけということになる。まだまだ学びたいことがたくさんあるのに……
+
+- [CS8803 O08: Compilers—Theory and Practice](https://omscs.gatech.edu/cs-8803-o08-compilers-theory-and-practice)
+- [CS6422: Database System Implementation](https://omscs.gatech.edu/cs-6422-database-system-implementation)
+- [CS8803 O21: GPU Hardware and Software](https://omscs.gatech.edu/cs-8803-o21-gpu-hardware-and-software)
+- [CS6262: Network Security](https://omscs.gatech.edu/cs-6262-network-security)
+
+今のところ2025年春学期は Compiler を取る予定。これもDistributed Computingと同点で最も難しいクラスとされているが……
+
+<figure>
+  <img src="/img/oms-central-workload.png" alt="Course lists in OMS Central sorted by workload" />
+  <figcaption>先ほどと同じ画像。圧倒的1位のDistributed Computingに次ぐ2位がCompilers</figcaption>
+</figure>
+
+## 仕事でより良い成果を出す
+
+[Deno Land Inc.](https://deno.com/)に入社して2年とちょっとが経過した(たまたま大学院の入学と時期がほぼ被っている)。
+チームの人の入れ替わりもあり、この部分についてチーム内で一番詳しいのは自分、といった箇所もほどほどに出てきた。よりオーナーシップや責任感を持ってDenoの発展に貢献していかなければと思っている。
+
+個人的に2024年で一番の大きな成果は、Denoの[`fetch`](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)によるHTTP/2通信が特定の条件下で不安定になり、REFUSED_STREAMエラーとなってしまう問題の原因を特定し、ライブラリにパッチを送ることで解決させられたというところ。
+あまり詳細には立ち入らないが、「よくわからないがたまにREFUSED_STREAMが出ているっぽい」というところから、最小再現構成を探し、HTTP/2の仕様の確認、リアルワールドのHTTP/2サーバー側の設定値の調査、他のHTTP/2クライアントライブラリの実装との比較などをして、ライブラリの関係者への合意形成とパッチの提案まで一貫して行い、問題解決へと導けたことが自分にとっては良い成功体験となった。
+
+[Proposal: change the default value of `initial_max_send_streams` to 100](https://github.com/hyperium/h2/issues/731)
+
+もう1つの成果としては、同じく`fetch`に関連して、特定の条件下でスループットが許容できないレベルで悪化するという問題を特定し、修正までこぎつけたことだ。
+簡単に背景を説明すると、Denoの`fetch`の実装はv1.45前後あたりで内部的に大きなリファクタリングが入り、もともとはRustのHTTPクライアントライブラリ[`reqwest`](https://docs.rs/reqwest/latest/reqwest/)をベースに使用していたところ、新しく[`hyper`](https://docs.rs/hyper/latest/hyper/)をベースとする書き換えが行われた。
+この変更を[Deno Deploy](https://deno.com/deploy)に取り入れたところ、一部のデプロイメントでメモリ使用量が著しく(~100MB)増加していることが観測され、Deno Deployでは最大メモリ使用量として512MBが設定されているため、あるデプロイメントではメモリ不足によるエラーが頻発するようになってしまった。この問題について、上記と同じく最小再現構成を探し、プロファイルをとったりflamegraphとにらめっこしたりして、以下の事実をつきとめた。
+
+- メモリ使用量の増加はパフォーマンスの悪化に起因していること (特定のケースでは、スループットは10倍ほど悪化していた)
+- サーバーから受信した圧縮データを復元する際に利用している[`tower_http`](https://docs.rs/tower-http/latest/tower_http/)クレートで、一度確保したメモリ領域を使い回すことをせず、毎回小さいメモリをアロケーションするような実装になっていたこと
+
+これを修正したのが以下のパッチである。
+
+[(de)compression: reduce memory allocation to improve performance #521](https://github.com/tower-rs/tower-http/pull/521)
+
+逆に反省点としては、2024年内に完了させたかったタスクを完了できなかったというのがある。
+具体的には、Deno Deployの内部で動いているDenoランタイムをv2ベースにアップデートしたかったのだが、必要なコード修正量が想定より多かったことや、互換性を保ったままアップデートするための細かい対応等で時間がかかってしまい、来年に持ち越すことになった。
+
+## 外部発信をしていく
+
+いろいろな機会に恵まれ、イベントでの登壇を数多く(自分比)経験することができた。
+
+- [Denoハンズオン＆もくもく会：Fresh + KV](https://deno-ja.connpass.com/event/311182/)
+- [JSR Meetup](https://deno-ja.connpass.com/event/316018/)
+- [Denoで変わるランタイムの景色 実践事例 Lunch LT](https://findy.connpass.com/event/320860/)
+- [RustのWebアプリ開発 LT道場 〜テスト編〜](https://findy.connpass.com/event/327824/)
+- [Funabashi.dev supported by KIKKAKE CREATION](https://funabashidev.connpass.com/event/324776/)
+
+また、計5本のYouTube動画にも出演させていただいた。
+
+[YouTube出演動画プレイリスト](https://www.youtube.com/playlist?list=PLoY7eQaqfInPB_L2LGXqMABgQ33-ZYsxI)
+
+ふと思い立ってクリスマス会を開催したら16人も集まり、楽しくクリスマスを過ごすことができた。
+
+<Tweet id="1865682524497908000" />
+
+<Tweet id="1871186510231585141" />
+
+## 人生をがんばる
+
+### 健康
+
+健康診断に行った。偉い。
+
+歯医者に行った。偉い。神経を抜かない方法を取ろうとすると47万円かかるらしい。どうしよう。
+
+### 婚活
+
+Xで婚活ポストをした。
+
+いろいろな人に相談をした。
+
+合コンをした。
+
+### 酒
+
+世界各地のおいしいビールにハマってしまってしまった。
+
+<Tweet id="1851241234180067657" />
+
+<Tweet id="1847560888678764966" />
+
+一人で鳥貴族に行って大学院の勉強をすることの楽しみを知ってしまった。
+
+<Tweet id="1854885526127755310" />
+
+### ラーメン
+
+ぼちぼち食べてしまった。
+
+# 2025年の抱負
+
+## 大学院、修了する
+
+あと2コマで修了。最後まで気を抜かず最大限の学びを吸収していきたい。
+
+## 仕事でより良い成果を出す
+
+毎年同じようなことを言ってるけど、やっぱり仕事で成果を出していきたいという気持ちは常にある。大学院が修了したらより仕事に集中できるようになるので、さらに頑張っていきたい。
+
+## 文章を書く
+
+2024年は登壇元年だったが、2025年は文章を書くことにも力を入れていきたい。具体的にはまず「作って学ぶ分散合意アルゴリズムRaft」みたいな記事(本？)を作りたいと考えている。時間に余裕があれば……
+
+## 本・論文を読む
+
+積読が溜まっているので、消化していきたい。
+
+## 人生をがんばる
+
+健康に気をつかう。婚活で進捗を生む。酒を飲みすぎない。痩せる。
+
+# Appendix: 過去の振り返り
+
+[2023年の振り返りと2024年の抱負](/blog/2023-to-2024/)
+
+[2022年の振り返りと2023年の抱負](/blog/2022-to-2023/)
+
+[2021年の振り返りと2022年の抱負](/blog/2021-to-2022/)
+
+[2020年の振り返りと2021年の抱負](/blog/2020-to-2021/)
