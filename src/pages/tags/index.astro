@@ -3,7 +3,7 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { slugifyTag } from '../../utils/slugify';
 
-const posts = await getCollection('blog', ({ data }) => !data.draft);
+const posts = await getCollection('blog', ({ data }) => !data.draft || import.meta.env.DEV);
 
 // Collect all unique tags with their post counts
 const tagCounts = new Map<string, number>();
