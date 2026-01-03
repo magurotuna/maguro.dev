@@ -1,0 +1,107 @@
+---
+interface Props {
+  url: string;
+  title?: string;
+  description?: string;
+  image?: string;
+}
+
+const { url, title, description, image } = Astro.props;
+
+// Extract domain from URL
+const domain = new URL(url).hostname.replace('www.', '');
+---
+
+<a href={url} class="link-card" target="_blank" rel="noopener noreferrer">
+  {image && (
+    <div class="link-card-image">
+      <img src={image} alt="" loading="lazy" />
+    </div>
+  )}
+  <div class="link-card-content">
+    <div class="link-card-title">{title || url}</div>
+    {description && <div class="link-card-description">{description}</div>}
+    <div class="link-card-domain">{domain}</div>
+  </div>
+</a>
+
+<style>
+  .link-card {
+    display: flex;
+    flex-direction: row;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    margin: var(--spacing-unit) 0;
+    transition: border-color 0.2s ease;
+  }
+
+  .link-card:hover {
+    border-color: var(--color-accent);
+    text-decoration: none;
+  }
+
+  .link-card-image {
+    flex-shrink: 0;
+    width: 120px;
+    background-color: var(--color-bg-secondary);
+  }
+
+  .link-card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .link-card-content {
+    flex: 1;
+    padding: var(--spacing-unit);
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .link-card-title {
+    font-weight: 600;
+    font-size: 0.95rem;
+    line-height: 1.3;
+    margin-bottom: calc(var(--spacing-unit) * 0.25);
+    color: var(--color-text);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+
+  .link-card-description {
+    font-size: 0.85rem;
+    color: var(--color-text-secondary);
+    line-height: 1.4;
+    margin-bottom: calc(var(--spacing-unit) * 0.25);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+
+  .link-card-domain {
+    font-size: 0.8rem;
+    color: var(--color-text-secondary);
+  }
+
+  @media (max-width: 480px) {
+    .link-card {
+      flex-direction: column;
+    }
+
+    .link-card-image {
+      width: 100%;
+      height: 160px;
+    }
+  }
+</style>

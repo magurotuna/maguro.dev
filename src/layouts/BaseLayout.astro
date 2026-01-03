@@ -1,0 +1,147 @@
+---
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/global.css';
+import 'katex/dist/katex.min.css';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description = 'maguro.dev - Personal blog' } = Astro.props;
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+---
+
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="canonical" href={canonicalURL} />
+    <meta name="generator" content={Astro.generator} />
+
+    <!-- SEO -->
+    <title>{title}</title>
+    <meta name="description" content={description} />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={new URL('/img/ogp.png', Astro.site)} />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={new URL('/img/ogp.png', Astro.site)} />
+
+    <!-- Theme: Prevent flash by setting theme before render -->
+    <script is:inline>
+      (function() {
+        const stored = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const theme = stored || (prefersDark ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', theme);
+      })();
+    </script>
+
+    <!-- Twitter widgets.js for embeds -->
+    <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+  </head>
+  <body>
+    <Header />
+    <main>
+      <slot />
+    </main>
+    <Footer />
+
+    <!-- Theme toggle helper -->
+    <script>
+      function getCurrentTheme(): string {
+        return document.documentElement.getAttribute('data-theme') || 'light';
+      }
+
+      function setTheme(theme: string): void {
+        document.documentElement.setAttribute('data-theme', theme);
+        localStorage.setItem('theme', theme);
+        document.dispatchEvent(new CustomEvent('theme-changed', { detail: { theme } }));
+      }
+
+      function toggleTheme(): void {
+        const current = getCurrentTheme();
+        setTheme(current === 'dark' ? 'light' : 'dark');
+      }
+
+      // Expose to window for components
+      (window as any).getCurrentTheme = getCurrentTheme;
+      (window as any).setTheme = setTheme;
+      (window as any).toggleTheme = toggleTheme;
+    </script>
+
+    <!-- Tweet embed rendering -->
+    <script>
+      function renderTweets(theme: string): void {
+        document.querySelectorAll('.tweet-container').forEach((container) => {
+          const template = container.querySelector('.tweet-template') as HTMLTemplateElement;
+          const embedTarget = container.querySelector('.tweet-embed');
+          if (template && embedTarget) {
+            const clone = template.content.cloneNode(true) as DocumentFragment;
+            const blockquote = clone.querySelector('blockquote');
+            if (blockquote) blockquote.dataset.theme = theme;
+            embedTarget.innerHTML = '';
+            embedTarget.appendChild(clone);
+          }
+        });
+        // Guard: Only call if widgets.js is loaded
+        if ((window as any).twttr?.widgets) {
+          (window as any).twttr.widgets.load();
+        }
+      }
+
+      function getCurrentThemeForTweets(): string {
+        return document.documentElement.getAttribute('data-theme') || 'light';
+      }
+
+      // Initial render on page load
+      if ((window as any).twttr?.widgets) {
+        renderTweets(getCurrentThemeForTweets());
+      } else {
+        // widgets.js not yet loaded; wait for it
+        (window as any).twttr = (window as any).twttr || {};
+        (window as any).twttr.ready = (window as any).twttr.ready || function(fn: () => void) {
+          (window as any).twttr._e = (window as any).twttr._e || [];
+          (window as any).twttr._e.push(fn);
+        };
+        (window as any).twttr.ready(function() {
+          renderTweets(getCurrentThemeForTweets());
+        });
+      }
+
+      // On theme toggle: re-render with new theme (debounced)
+      let debounceTimer: ReturnType<typeof setTimeout>;
+      document.addEventListener('theme-changed', function(e: Event) {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => {
+          renderTweets((e as CustomEvent).detail.theme);
+        }, 300);
+      });
+
+      // Fallback for widgets.js failure
+      setTimeout(() => {
+        if (!(window as any).twttr?.widgets) {
+          document.querySelectorAll('.tweet-embed:empty').forEach((el) => {
+            const container = el.closest('.tweet-container');
+            const id = container?.getAttribute('data-tweet-id');
+            if (id) {
+              el.innerHTML = `<p><a href="https://twitter.com/i/web/status/${id}">View tweet</a></p>`;
+            }
+          });
+        }
+      }, 5000);
+    </script>
+  </body>
+</html>

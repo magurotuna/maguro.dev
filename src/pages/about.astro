@@ -1,0 +1,196 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="About | maguro.dev" description="About maguro.dev">
+  <article class="about">
+    <div class="profile-header">
+      <img src="/img/avatar.png" alt="maguro avatar" class="avatar" />
+      <div class="profile-info">
+        <p class="name">Yusuke Tanaka <span class="alias">(a.k.a. maguro🍣)</span></p>
+        <p class="email">yusuktan (at) maguro.dev</p>
+      </div>
+    </div>
+
+    <section class="history">
+      <h2>Work</h2>
+      <ul>
+        <li>
+          <span class="period">2022 - Present</span>
+          <span class="org">Deno Land Inc.</span>
+          <span class="role">Software Engineer</span>
+        </li>
+        <li>
+          <span class="period">2020-2022</span>
+          <span class="org">Stadium</span>
+          <span class="role">Software Engineer</span>
+        </li>
+        <li>
+          <span class="period">2019-2020</span>
+          <span class="org">Yahoo Japan</span>
+          <span class="role">Software Engineer</span>
+        </li>
+      </ul>
+    </section>
+
+    <section class="history">
+      <h2>Education</h2>
+      <ul>
+        <li>
+          <span class="period">2022 - 2025</span>
+          <span class="org">Georgia Institute of Technology</span>
+          <span class="role">Master of Science in Computer Science</span>
+        </li>
+        <li>
+          <span class="period">2014 - 2019</span>
+          <span class="org">The University of Tokyo</span>
+          <span class="role">Bachelor of Engineering</span>
+        </li>
+      </ul>
+    </section>
+
+    <section class="history">
+      <h2>Publications</h2>
+      <ul>
+        <li>
+          <span class="period">2025</span>
+          <a href="https://findy-code.io/media/series/modoku" target="_blank" rel="noopener">あの人も読んでる (も読)</a>
+        </li>
+        <li>
+          <span class="period">2021</span>
+          <a href="https://gihyo.jp/magazine/wdpress/archive/2021/vol124" target="_blank" rel="noopener">速習Deno</a>
+        </li>
+        <li>
+          <span class="period">2021</span>
+          <a href="https://www.packtpub.com/en-us/product/deno-web-development-9781800201149" target="_blank" rel="noopener">Deno Web Development</a>
+          <span class="role">(Technical Reviewer)</span>
+        </li>
+      </ul>
+    </section>
+
+    <section class="history">
+      <h2>Media</h2>
+      <ul>
+        <li>
+          <a href="https://www.youtube.com/playlist?list=PLoY7eQaqfInPB_L2LGXqMABgQ33-ZYsxI" target="_blank" rel="noopener">YouTube playlist</a>
+        </li>
+      </ul>
+    </section>
+
+    <section class="history links">
+      <h2>Links</h2>
+      <ul>
+        <li><a href="https://github.com/magurotuna" target="_blank" rel="noopener">GitHub</a></li>
+        <li><a href="https://x.com/yusuktan" target="_blank" rel="noopener">X (formerly Twitter)</a></li>
+        <li><a href="https://www.linkedin.com/in/yusuktan/" target="_blank" rel="noopener">LinkedIn</a></li>
+        <li><a href="https://zenn.dev/magurotuna" target="_blank" rel="noopener">Zenn.dev</a></li>
+        <li><a href="https://www.docswell.com/user/magurotuna" target="_blank" rel="noopener">Docswell (slides)</a></li>
+      </ul>
+    </section>
+  </article>
+</BaseLayout>
+
+<style>
+  .about {
+    padding-top: calc(var(--spacing-unit) * 2);
+  }
+
+  .profile-header {
+    display: flex;
+    align-items: center;
+    gap: calc(var(--spacing-unit) * 1.5);
+    margin-bottom: calc(var(--spacing-unit) * 1.5);
+  }
+
+  .avatar {
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  .profile-info {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .name {
+    margin: 0 0 calc(var(--spacing-unit) * 0.5) 0;
+  }
+
+  .email {
+    margin: 0;
+  }
+
+  .alias,
+  .no-spam {
+    color: var(--color-text-secondary);
+    font-size: 0.9em;
+  }
+
+  .history {
+    margin-top: calc(var(--spacing-unit) * 2);
+  }
+
+  .history h2 {
+    font-size: 1rem;
+    margin-bottom: var(--spacing-unit);
+    color: var(--color-text-secondary);
+  }
+
+  .history ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .history li {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
+    margin-bottom: calc(var(--spacing-unit) * 0.75);
+  }
+
+  .history .period {
+    color: var(--color-text-secondary);
+    font-size: 0.9em;
+    min-width: 120px;
+  }
+
+  .history .org {
+    font-weight: 600;
+  }
+
+  .history .role {
+    color: var(--color-text-secondary);
+  }
+
+  .links ul {
+    list-style: disc;
+    padding-left: 1.5rem;
+  }
+
+  .links li {
+    display: list-item;
+  }
+
+  /* Mobile responsive */
+  @media (max-width: 600px) {
+    .profile-header {
+      flex-direction: column;
+      text-align: center;
+    }
+
+    .profile-info {
+      align-items: center;
+    }
+
+    .history li {
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .history .period {
+      min-width: unset;
+    }
+  }
+</style>

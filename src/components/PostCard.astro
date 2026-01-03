@@ -1,0 +1,96 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { slugifyTag } from '../utils/slugify';
+
+interface Props {
+  post: CollectionEntry<'blog'>;
+}
+
+const { post } = Astro.props;
+const { title, date, tags, description } = post.data;
+
+const formattedDate = date.toLocaleDateString('ja-JP', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+---
+
+<article class="post-card">
+  <a href={`/blog/${post.id}/`} class="post-link">
+    <h2 class="post-title">{title}</h2>
+  </a>
+  <div class="post-meta">
+    <time datetime={date.toISOString()}>{formattedDate}</time>
+    {tags.length > 0 && (
+      <ul class="post-tags">
+        {tags.map((tag) => (
+          <li>
+            <a href={`/tags/${slugifyTag(tag)}/`} class="tag">{tag}</a>
+          </li>
+        ))}
+      </ul>
+    )}
+  </div>
+  {description && <p class="post-description">{description}</p>}
+</article>
+
+<style>
+  .post-card {
+    padding-bottom: calc(var(--spacing-unit) * 1.5);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .post-link {
+    text-decoration: none;
+  }
+
+  .post-title {
+    font-size: 1.25rem;
+    margin: 0 0 calc(var(--spacing-unit) * 0.5) 0;
+    color: var(--color-text);
+    transition: color 0.2s ease;
+  }
+
+  .post-link:hover .post-title {
+    color: var(--color-accent);
+  }
+
+  .post-meta {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-unit);
+    flex-wrap: wrap;
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
+    margin-bottom: calc(var(--spacing-unit) * 0.5);
+  }
+
+  .post-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: calc(var(--spacing-unit) * 0.5);
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .tag {
+    font-size: 0.85rem;
+    color: var(--color-accent);
+    background-color: var(--color-bg-secondary);
+    padding: 0.1em 0.5em;
+    border-radius: 4px;
+  }
+
+  .tag:hover {
+    text-decoration: none;
+    background-color: var(--color-border);
+  }
+
+  .post-description {
+    margin: calc(var(--spacing-unit) * 0.5) 0 0 0;
+    color: var(--color-text-secondary);
+    font-size: 0.95rem;
+  }
+</style>

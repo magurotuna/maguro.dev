@@ -1,0 +1,90 @@
+---
+import ThemeToggle from './ThemeToggle.astro';
+---
+
+<header class="header">
+  <div class="header-inner">
+    <a href="/" class="site-title">maguro.dev</a>
+    <nav class="nav">
+      <a href="/">Home</a>
+      <a href="/about/">About</a>
+      <a href="https://event.maguro.dev" target="_blank" rel="noopener">Event</a>
+    </nav>
+    <div class="header-actions">
+      <ThemeToggle />
+    </div>
+  </div>
+</header>
+
+<style>
+  .header {
+    width: 100%;
+    border-bottom: 1px solid var(--color-border);
+    background-color: var(--color-bg);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .header-inner {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: var(--spacing-unit) calc(var(--spacing-unit) * 2);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-unit);
+    flex-wrap: wrap;
+  }
+
+  .site-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--color-text);
+  }
+
+  .site-title:hover {
+    color: var(--color-accent);
+    text-decoration: none;
+  }
+
+  .nav {
+    display: flex;
+    gap: calc(var(--spacing-unit) * 1.5);
+  }
+
+  .nav a {
+    color: var(--color-text-secondary);
+    font-size: 0.95rem;
+  }
+
+  .nav a:hover {
+    color: var(--color-accent);
+    text-decoration: none;
+  }
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-unit);
+  }
+
+  @media (max-width: 600px) {
+    .header-inner {
+      flex-wrap: wrap;
+    }
+
+    .site-title {
+      flex: 1;
+    }
+
+    .nav {
+      order: 2;
+      width: auto;
+    }
+
+    .header-actions {
+      order: 1;
+    }
+  }
+</style>

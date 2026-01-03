@@ -1,0 +1,63 @@
+---
+import { Icon } from 'astro-icon/components';
+
+const currentYear = new Date().getFullYear();
+---
+
+<footer class="footer" data-pagefind-ignore>
+  <div class="footer-inner">
+    <p class="copyright">&copy; {currentYear} maguro.dev</p>
+    <nav class="footer-links">
+      <a href="/rss.xml" title="RSS Feed" class="icon-link"><Icon name="lucide:rss" size={18} /></a>
+      <a href="https://github.com/magurotuna" target="_blank" rel="noopener" title="GitHub" class="icon-link"><Icon name="lucide:github" size={18} /></a>
+      <a href="https://x.com/yusuktan" target="_blank" rel="noopener" title="X" class="icon-link"><Icon name="simple-icons:x" size={18} /></a>
+      <a href="https://www.linkedin.com/in/yusuktan/" target="_blank" rel="noopener" title="LinkedIn" class="icon-link"><Icon name="lucide:linkedin" size={18} /></a>
+    </nav>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    width: 100%;
+    border-top: 1px solid var(--color-border);
+    margin-top: auto;
+  }
+
+  .footer-inner {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: calc(var(--spacing-unit) * 2);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--spacing-unit);
+  }
+
+  .copyright {
+    color: var(--color-text-secondary);
+    font-size: 0.9rem;
+    margin: 0;
+  }
+
+  .footer-links {
+    display: flex;
+    gap: calc(var(--spacing-unit) * 1.5);
+  }
+
+  .footer-links a {
+    color: var(--color-text-secondary);
+    font-size: 0.9rem;
+  }
+
+  .footer-links a:hover {
+    color: var(--color-accent);
+  }
+
+  @media (max-width: 480px) {
+    .footer-inner {
+      flex-direction: column;
+      text-align: center;
+    }
+  }
+</style>

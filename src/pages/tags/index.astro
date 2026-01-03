@@ -1,0 +1,85 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { slugifyTag } from '../../utils/slugify';
+
+const posts = await getCollection('blog', ({ data }) => !data.draft);
+
+// Collect all unique tags with their post counts
+const tagCounts = new Map<string, number>();
+for (const post of posts) {
+  for (const tag of post.data.tags) {
+    tagCounts.set(tag, (tagCounts.get(tag) || 0) + 1);
+  }
+}
+
+// Sort by count (descending), then alphabetically
+const sortedTags = Array.from(tagCounts.entries()).sort((a, b) => {
+  if (b[1] !== a[1]) return b[1] - a[1];
+  return a[0].localeCompare(b[0]);
+});
+---
+
+<BaseLayout title="Tags | maguro.dev" description="All tags">
+  <section class="tags-page">
+    <h1>Tags</h1>
+    {sortedTags.length === 0 ? (
+      <p class="no-tags">No tags yet.</p>
+    ) : (
+      <ul class="tag-list">
+        {sortedTags.map(([tag, count]) => (
+          <li>
+            <a href={`/tags/${slugifyTag(tag)}/`} class="tag-link">
+              <span class="tag-name">{tag}</span>
+              <span class="tag-count">({count})</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    )}
+  </section>
+</BaseLayout>
+
+<style>
+  .tags-page h1 {
+    margin-top: 0;
+    margin-bottom: calc(var(--spacing-unit) * 2);
+  }
+
+  .tag-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-unit);
+  }
+
+  .tag-link {
+    display: inline-flex;
+    align-items: center;
+    gap: calc(var(--spacing-unit) * 0.25);
+    background-color: var(--color-bg-secondary);
+    padding: calc(var(--spacing-unit) * 0.5) calc(var(--spacing-unit) * 0.75);
+    border-radius: 6px;
+    font-size: 0.95rem;
+  }
+
+  .tag-link:hover {
+    background-color: var(--color-border);
+    text-decoration: none;
+  }
+
+  .tag-name {
+    color: var(--color-text);
+  }
+
+  .tag-count {
+    color: var(--color-text-secondary);
+    font-size: 0.85rem;
+  }
+
+  .no-tags {
+    color: var(--color-text-secondary);
+  }
+</style>

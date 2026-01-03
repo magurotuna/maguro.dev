@@ -1,0 +1,31 @@
+---
+interface Props {
+  id: string;
+}
+
+const { id } = Astro.props;
+---
+
+<div class="tweet-container" data-tweet-id={id}>
+  <template class="tweet-template">
+    <blockquote class="twitter-tweet" data-theme="light">
+      <a href={`https://twitter.com/i/web/status/${id}`}></a>
+    </blockquote>
+  </template>
+  <div class="tweet-embed"></div>
+  <noscript>
+    <a href={`https://twitter.com/i/web/status/${id}`}>View tweet</a>
+  </noscript>
+</div>
+
+<style>
+  .tweet-container {
+    margin: var(--spacing-unit) 0;
+  }
+
+  .tweet-embed:empty::after {
+    content: 'Loading tweet...';
+    color: var(--color-text-secondary);
+    font-size: 0.9rem;
+  }
+</style>

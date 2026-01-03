@@ -1,0 +1,57 @@
+---
+import { Icon } from 'astro-icon/components';
+---
+
+<button
+  type="button"
+  class="theme-toggle"
+  aria-label="Toggle dark mode"
+  title="Toggle dark mode"
+>
+  <span class="icon-sun"><Icon name="lucide:sun" size={20} /></span>
+  <span class="icon-moon"><Icon name="lucide:moon" size={20} /></span>
+</button>
+
+<script>
+  const button = document.querySelector('.theme-toggle');
+  button?.addEventListener('click', () => {
+    (window as any).toggleTheme?.();
+  });
+</script>
+
+<style>
+  .theme-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    background: transparent;
+    color: var(--color-text);
+    cursor: pointer;
+    transition: border-color 0.2s ease;
+  }
+
+  .theme-toggle:hover {
+    border-color: var(--color-accent);
+  }
+
+  .icon-sun,
+  .icon-moon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Show sun in dark mode, moon in light mode */
+  :global([data-theme="light"]) .icon-sun {
+    display: none;
+  }
+
+  :global([data-theme="dark"]) .icon-moon {
+    display: none;
+  }
+</style>

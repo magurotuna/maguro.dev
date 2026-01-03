@@ -1,0 +1,120 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const posts = await getCollection('blog', ({ data }) => !data.draft);
+const sortedPosts = posts.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+// Group posts by year
+const postsByYear = sortedPosts.reduce((acc, post) => {
+  const year = post.data.date.getFullYear();
+  if (!acc[year]) acc[year] = [];
+  acc[year].push(post);
+  return acc;
+}, {} as Record<number, typeof sortedPosts>);
+
+const years = Object.keys(postsByYear).map(Number).sort((a, b) => b - a);
+
+function formatDate(date: Date): string {
+  return date.toISOString().split('T')[0];
+}
+---
+
+<BaseLayout title="maguro.dev" description="技術ブログ">
+  <section class="posts">
+    <h1 class="sr-only">Posts</h1>
+    {years.length === 0 ? (
+      <p class="no-posts">No posts yet.</p>
+    ) : (
+      years.map((year) => (
+        <div class="year-group">
+          <h2 class="year-heading">{year}</h2>
+          <ul class="post-list">
+            {postsByYear[year].map((post) => (
+              <li class="post-item">
+                <a href={`/blog/${post.id}/`} class="post-link">
+                  <span class="post-title">{post.data.title}</span>
+                  <time datetime={post.data.date.toISOString()} class="post-date">
+                    {formatDate(post.data.date)}
+                  </time>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))
+    )}
+  </section>
+</BaseLayout>
+
+<style>
+  .posts {
+    padding-top: var(--spacing-unit);
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .year-group {
+    margin-bottom: calc(var(--spacing-unit) * 2);
+  }
+
+  .year-heading {
+    font-size: 1.25rem;
+    margin: 0 0 var(--spacing-unit) 0;
+    color: var(--color-text-secondary);
+  }
+
+  .post-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .post-item {
+    margin: 0;
+    padding: calc(var(--spacing-unit) * 0.5) 0;
+  }
+
+  .post-link {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: var(--spacing-unit);
+    text-decoration: none;
+  }
+
+  .post-link:hover {
+    text-decoration: none;
+  }
+
+  .post-link:hover .post-title {
+    color: var(--color-accent);
+  }
+
+  .post-title {
+    color: var(--color-text);
+  }
+
+  .post-date {
+    color: var(--color-text-secondary);
+    font-size: 0.85rem;
+    font-family: var(--font-mono);
+    flex-shrink: 0;
+  }
+
+  .no-posts {
+    color: var(--color-text-secondary);
+    text-align: center;
+    padding: calc(var(--spacing-unit) * 4);
+  }
+</style>

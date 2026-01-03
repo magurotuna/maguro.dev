@@ -1,9 +1,9 @@
 [build]
-publish = "public"
-command = "zola build"
+publish = "dist"
+command = "npm run build"
 
 [build.environment]
-ZOLA_VERSION = "0.20.0"
+NODE_VERSION = "24"
 
 [context.deploy-preview]
-command = "zola build --base-url $DEPLOY_PRIME_URL"
+command = "npm run build"

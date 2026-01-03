@@ -4,66 +4,73 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-This is a personal blog/website built with [Zola](https://www.getzola.org/), a static site generator written in Rust. The site is deployed on Netlify and uses the Even theme for styling.
+This is a personal blog/website built with [Astro](https://astro.build/), a modern static site generator. The site is deployed on Netlify.
 
 ## Development Commands
 
 ### Build & Development
-- **Build the site**: `zola build`
-- **Local development server**: `zola serve` (auto-reloads on changes)
-- **Build for Netlify deploy preview**: `zola build --base-url $DEPLOY_PRIME_URL`
+- **Install dependencies**: `npm install`
+- **Build the site**: `npm run build` (generates redirects then builds)
+- **Local development server**: `npm run dev` (auto-reloads on changes)
 
 ### Common Tasks
-- **Create a new blog post**: Add a new `.md` file in the `content/` directory with appropriate frontmatter
-- **Add a new static page**: Create `.md` file in `content/pages/`
-- **Modify styles**: Edit SCSS files in `sass/` directory
+- **Create a new blog post**: Add a new `.mdx` file in `src/content/blog/` with YAML frontmatter
+- **Generate redirects**: `npm run build` (runs generate-redirects.ts before Astro build)
+- **Link card metadata**: `npm run link-cards:strict` (strict mode for link card generation)
 
 ## Architecture & Structure
 
 ### Content Organization
-- **Blog posts**: `content/*.md` - Weekly reports and technical articles
-- **Static pages**: `content/pages/` - About, Apps, and other standalone pages
-- **Images**: `content/img/` for content images, `static/` for site assets
+- **Blog posts**: `src/content/blog/*.mdx` - Technical articles in MDX format
+- **Pages**: `src/pages/` - Astro page components
+- **Layouts**: `src/layouts/` - Base layout with theme and SEO support
+- **Components**: `src/components/` - Reusable Astro/TSX components
+- **Static assets**: `public/` - Images, favicon, robots.txt, redirects
 
 ### Post Frontmatter Structure
-```toml
-+++
-title = "Post Title"
-date = 2021-09-27
-
-[taxonomies]
-tags = ["tag1", "tag2"]
-+++
+```yaml
+---
+title: "Post Title"
+date: 2021-09-27
+tags: ["tag1", "tag2"]
+description: "Optional description for SEO"
+draft: false
+---
 ```
 
 ### Key Configuration
-- **config.toml**: Main Zola configuration (base URL, theme settings, features)
-- **netlify.toml**: Deployment configuration (Zola version: 0.20.0)
-- **templates/**: Custom HTML templates overriding theme defaults
-- **sass/**: Custom SCSS styles extending the Even theme
+- **astro.config.mjs**: Main Astro configuration (integrations, markdown plugins)
+- **netlify.toml**: Deployment configuration (Node.js 22)
+- **tsconfig.json**: TypeScript configuration
+- **src/content/config.ts**: Content collection schema definition
 
-### Theme Customization
-The site uses the Even theme located in `themes/even/`. Custom overrides:
-- Templates in root `templates/` directory override theme templates
-- Custom styles in root `sass/` directory extend theme styles
-- Navigation menu configured in `config.toml` under `[extra.even_menu]`
+### Component Library
+- **Tweet.astro**: Twitter embed with theme-aware re-rendering
+- **YouTube.astro**: YouTube video embed component
+- **LinkCard.astro**: Rich link preview cards
+- **ThemeToggle.astro**: Dark/light theme switcher with localStorage
 
-### Custom Components
-- **Event Banner**: Prominent banner on homepage linking to event.maguro.dev
-  - Template: Modified `templates/index.html` with event banner between header and main content
-  - Styles: `sass/_event-banner.scss` - image-focused design with minimal text overlay
-  - Screenshot: `static/img/event-maguro-dev-capture.png`
+### Data Files
+- **data/preserved-posts.json**: List of 13 post slugs to keep on main site
+- **data/weekly-reports.json**: Weekly report slugs (redirected to archive)
+- **data/archived-tags.json**: Tags only appearing in archived content
+- **data/zola-tag-slugs.json**: Mapping of tag names to old Zola URL slugs
+
+### Scripts
+- **scripts/generate-redirects.ts**: Generates _redirects file from data JSONs
 
 ## Important Notes
 
-1. **Zola Version**: The site is pinned to Zola 0.20.0 in netlify.toml. Ensure compatibility when making changes.
+1. **Node.js Version**: The site uses Node.js 24 LTS (specified in netlify.toml).
 
-2. **Content Features**: 
-   - KaTeX enabled for mathematical expressions
-   - Syntax highlighting with Monokai theme
-   - Search index generation enabled
-   - RSS feeds for main content and tags
+2. **Content Features**:
+   - KaTeX for mathematical expressions
+   - Expressive Code for syntax highlighting
+   - Heading anchors with # prefix
+   - RSS feed at /rss.xml
 
-3. **Deployment**: All pushes to main branch auto-deploy via Netlify. Pull requests generate deploy previews.
+3. **URL Structure**: Posts are served at `/blog/[slug]/` with trailing slashes.
 
-4. **No Build Scripts**: This is a pure Zola project with no npm/yarn dependencies or custom build scripts.
+4. **Redirects**: Old Zola URLs redirect to new paths or archive.maguro.dev.
+
+5. **Deployment**: All pushes to main branch auto-deploy via Netlify.
