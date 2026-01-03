@@ -38,6 +38,11 @@ export default defineConfig({
   ],
   markdown: {
     remarkPlugins: [remarkGfm, remarkMath],
+    remarkRehype: {
+      footnoteLabelTagName: "span",
+      footnoteLabelProperties: { className: ["footnotes-title"] },
+      footnoteBackContent: " ",
+    },
     rehypePlugins: [
       rehypeKatex,
       rehypeSlug,
