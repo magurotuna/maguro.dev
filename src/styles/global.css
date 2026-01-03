@@ -92,7 +92,7 @@ a:hover {
 }
 
 /* External link indicator (Lucide external-link icon) */
-a[target="_blank"]::after {
+a[target="_blank"]:not(.icon-link)::after {
   content: "";
   display: inline-block;
   width: 0.75em;
