@@ -17,6 +17,7 @@
     "@astrojs/mdx": "^4.0.0",
     "@astrojs/rss": "^4.0.0",
     "@astrojs/sitemap": "^3.2.0",
+    "@expressive-code/plugin-line-numbers": "^0.41.5",
     "@iconify-json/lucide": "^1.2.82",
     "@iconify-json/simple-icons": "^1.2.64",
     "astro": "^5.0.0",

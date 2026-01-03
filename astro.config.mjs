@@ -2,6 +2,7 @@ import { defineConfig } from "astro/config";
 import mdx from "@astrojs/mdx";
 import sitemap from "@astrojs/sitemap";
 import expressiveCode from "astro-expressive-code";
+import { pluginLineNumbers } from "@expressive-code/plugin-line-numbers";
 import icon from "astro-icon";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
@@ -24,6 +25,7 @@ export default defineConfig({
           ? '[data-theme="dark"]'
           : '[data-theme="light"]';
       },
+      plugins: [pluginLineNumbers()],
     }),
     icon({
       include: {
