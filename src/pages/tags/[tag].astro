@@ -31,7 +31,7 @@ const { tag, posts } = Astro.props;
 ---
 
 <BaseLayout title={`${tag} | maguro.dev`} description={`Posts tagged with ${tag}`}>
-  <section class="tag-page">
+  <section class="tag-page" data-pagefind-ignore>
     <header class="tag-header">
       <a href="/tags/" class="back-link">&larr; All Tags</a>
       <h1>{tag}</h1>

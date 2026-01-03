@@ -8,7 +8,7 @@ const sortedPosts = posts.sort((a, b) => b.data.date.valueOf() - a.data.date.val
 ---
 
 <BaseLayout title="maguro.dev" description="技術ブログ">
-  <section class="posts">
+  <section class="posts" data-pagefind-ignore>
     <h1 class="sr-only">Posts</h1>
     {sortedPosts.length === 0 ? (
       <p class="no-posts">No posts yet.</p>

@@ -21,7 +21,7 @@ const sortedTags = Array.from(tagCounts.entries()).sort((a, b) => {
 ---
 
 <BaseLayout title="Tags | maguro.dev" description="All tags">
-  <section class="tags-page">
+  <section class="tags-page" data-pagefind-ignore>
     <h1>Tags</h1>
     {sortedTags.length === 0 ? (
       <p class="no-tags">No tags yet.</p>
