@@ -76,6 +76,7 @@ const tocHeadings = headings.filter((h) => h.depth >= 1 && h.depth <= 3);
 
   .post-tags {
     display: flex;
+    flex-wrap: wrap;
     gap: calc(var(--spacing-unit) * 0.5);
     list-style: none;
     padding: 0;
@@ -88,6 +89,7 @@ const tocHeadings = headings.filter((h) => h.depth >= 1 && h.depth <= 3);
     background-color: var(--color-bg-secondary);
     padding: 0.1em 0.5em;
     border-radius: 4px;
+    white-space: nowrap;
   }
 
   .tag:hover {
