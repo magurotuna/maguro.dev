@@ -55,7 +55,7 @@ CS6290はコンピュータアーキテクチャに関するクラスで、多�
 そして何よりこのクラスを最凶たらしめているのが、4つの課題である。
 4つの課題を完了させると最終的にトランザクションおよびシャーディングに対応した分散キーバリューストアができあがるという内容で、この課題自体はGitHub上で公開されており世界中の大学で広く利用されているらしい。
 
-https://github.com/emichael/dslabs
+[dslabs](https://github.com/emichael/dslabs)
 
 課題のハイライトとしてはやはり、3つ目の課題で実装する分散合意アルゴリズム[Paxos](https://paxos.systems/)と、このPaxosを利用して4つ目の課題で実装するシャーディング・トランザクションに対応した分散キーバリューストアである。
 最初はPaxosがラスボスで、その後の分散キーバリューストアはウイニングランだと思っていたが、実際は分散キーバリューストアもシャードをまたいだトランザクションを正しく処理するのに必要な2フェーズコミットの実装や、2フェーズコミットとシャードの移動が同時に起こる場合の処理など、裏ボスとして君臨していた。
@@ -98,7 +98,7 @@ https://github.com/emichael/dslabs
 個人的に2024年で一番の大きな成果は、Denoの[`fetch`](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)によるHTTP/2通信が特定の条件下で不安定になり、REFUSED_STREAMエラーとなってしまう問題の原因を特定し、ライブラリにパッチを送ることで解決させられたというところ。
 あまり詳細には立ち入らないが、「よくわからないがたまにREFUSED_STREAMが出ているっぽい」というところから、最小再現構成を探し、HTTP/2の仕様の確認、リアルワールドのHTTP/2サーバー側の設定値の調査、他のHTTP/2クライアントライブラリの実装との比較などをして、ライブラリの関係者への合意形成とパッチの提案まで一貫して行い、問題解決へと導けたことが自分にとっては良い成功体験となった。
 
-https://github.com/hyperium/h2/issues/731
+[Proposal: change the default value of `initial_max_send_streams` to 100](https://github.com/hyperium/h2/issues/731)
 
 もう1つの成果としては、同じく`fetch`に関連して、特定の条件下でスループットが許容できないレベルで悪化するという問題を特定し、修正までこぎつけたことだ。
 簡単に背景を説明すると、Denoの`fetch`の実装はv1.45前後あたりで内部的に大きなリファクタリングが入り、もともとはRustのHTTPクライアントライブラリ[`reqwest`](https://docs.rs/reqwest/latest/reqwest/)をベースに使用していたところ、新しく[`hyper`](https://docs.rs/hyper/latest/hyper/)をベースとする書き換えが行われた。
@@ -109,7 +109,7 @@ https://github.com/hyperium/h2/issues/731
 
 これを修正したのが以下のパッチである。
 
-https://github.com/tower-rs/tower-http/pull/521
+[(de)compression: reduce memory allocation to improve performance #521](https://github.com/tower-rs/tower-http/pull/521)
 
 逆に反省点としては、2024年内に完了させたかったタスクを完了できなかったというのがある。
 具体的には、Deno Deployの内部で動いているDenoランタイムをv2ベースにアップデートしたかったのだが、必要なコード修正量が想定より多かったことや、互換性を保ったままアップデートするための細かい対応等で時間がかかってしまい、来年に持ち越すことになった。
@@ -126,7 +126,7 @@ https://github.com/tower-rs/tower-http/pull/521
 
 また、計5本のYouTube動画にも出演させていただいた。
 
-https://www.youtube.com/playlist?list=PLoY7eQaqfInPB_L2LGXqMABgQ33-ZYsxI
+[YouTube出演動画プレイリスト](https://www.youtube.com/playlist?list=PLoY7eQaqfInPB_L2LGXqMABgQ33-ZYsxI)
 
 ふと思い立ってクリスマス会を開催したら16人も集まり、楽しくクリスマスを過ごすことができた。
 
