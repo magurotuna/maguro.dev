@@ -7,9 +7,12 @@ import 'katex/dist/katex.min.css';
 interface Props {
   title: string;
   description?: string;
+  ogImage?: string;
 }
 
-const { title, description = 'maguro.dev - Personal blog' } = Astro.props;
+const { title, description = 'maguro.dev - Personal blog', ogImage } = Astro.props;
+const baseUrl = import.meta.env.DEV ? Astro.url.origin : Astro.site;
+const ogImageUrl = ogImage ? new URL(ogImage, baseUrl) : new URL('/img/ogp.png', baseUrl);
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 ---
 
@@ -31,13 +34,13 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <meta property="og:url" content={canonicalURL} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:image" content={new URL('/img/ogp.png', Astro.site)} />
+    <meta property="og:image" content={ogImageUrl} />
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content={new URL('/img/ogp.png', Astro.site)} />
+    <meta name="twitter:image" content={ogImageUrl} />
 
     <!-- Theme: Prevent flash by setting theme before render -->
     <script is:inline>
