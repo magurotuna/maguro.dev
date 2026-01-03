@@ -112,6 +112,13 @@ function formatDate(date: Date): string {
     flex-shrink: 0;
   }
 
+  @media (max-width: 480px) {
+    .post-link {
+      flex-direction: column;
+      gap: calc(var(--spacing-unit) * 0.25);
+    }
+  }
+
   .no-posts {
     color: var(--color-text-secondary);
     text-align: center;
