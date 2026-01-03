@@ -34,7 +34,10 @@ export default defineConfig({
         {
           behavior: 'prepend',
           properties: { className: ['heading-anchor'], ariaHidden: true, tabIndex: -1 },
-          content: { type: 'text', value: '#' },
+          content: (heading) => {
+            const level = Number(heading.tagName.charAt(1));
+            return { type: 'text', value: '#'.repeat(level) + ' ' };
+          },
         },
       ],
     ],
