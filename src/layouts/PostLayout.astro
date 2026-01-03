@@ -18,8 +18,8 @@ const formattedDate = date.toLocaleDateString('ja-JP', {
   day: 'numeric',
 });
 
-// Filter headings for ToC (h2 and h3 only)
-const tocHeadings = headings.filter((h) => h.depth >= 2 && h.depth <= 3);
+// Filter headings for ToC (h1, h2, and h3)
+const tocHeadings = headings.filter((h) => h.depth >= 1 && h.depth <= 3);
 ---
 
 <BaseLayout title={`${title} | maguro.dev`} description={description}>

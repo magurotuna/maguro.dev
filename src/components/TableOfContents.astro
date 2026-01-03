@@ -58,8 +58,12 @@ const { headings } = Astro.props;
     text-decoration: none;
   }
 
-  .depth-3 {
+  .depth-2 {
     padding-left: var(--spacing-unit);
+  }
+
+  .depth-3 {
+    padding-left: calc(var(--spacing-unit) * 2);
   }
 
   @media (max-width: 768px) {
