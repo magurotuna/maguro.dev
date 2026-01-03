@@ -13,12 +13,14 @@ const { post, headings } = Astro.props;
 const { title, date, tags, description } = post.data;
 
 const formattedDate = date.toISOString().split('T')[0];
+const slug = post.id.replace(/\.mdx?$/, '');
+const ogImage = `/og/${slug}.png`;
 
 // Filter headings for ToC (h1, h2, and h3)
 const tocHeadings = headings.filter((h) => h.depth >= 1 && h.depth <= 3);
 ---
 
-<BaseLayout title={`${title} | maguro.dev`} description={description}>
+<BaseLayout title={`${title} | maguro.dev`} description={description} ogImage={ogImage}>
   <article class="post">
     <header class="post-header">
       <h1 class="post-title">{title}</h1>
