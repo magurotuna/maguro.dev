@@ -86,20 +86,24 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <script>
       function renderTweets(theme: string): void {
         document.querySelectorAll('.tweet-container').forEach((container) => {
-          const template = container.querySelector('.tweet-template') as HTMLTemplateElement;
-          const embedTarget = container.querySelector('.tweet-embed');
-          if (template && embedTarget) {
-            const clone = template.content.cloneNode(true) as DocumentFragment;
-            const blockquote = clone.querySelector('blockquote');
-            if (blockquote) blockquote.dataset.theme = theme;
-            embedTarget.innerHTML = '';
-            embedTarget.appendChild(clone);
-          }
+          const tweetId = container.getAttribute('data-tweet-id');
+          const embedTarget = container.querySelector('.tweet-embed') as HTMLElement;
+          if (!tweetId || !embedTarget) return;
+
+          // Clear and render using createTweet for better control
+          embedTarget.innerHTML = '';
+          (window as any).twttr.widgets.createTweet(tweetId, embedTarget, {
+            theme: theme,
+            dnt: true,
+          }).then((el: HTMLElement | undefined) => {
+            if (!el) {
+              // Tweet failed to load (deleted, private, or invalid ID)
+              embedTarget.innerHTML = `<p class="tweet-error"><a href="https://x.com/i/web/status/${tweetId}">View tweet on X</a> (embed unavailable)</p>`;
+            }
+          }).catch(() => {
+            embedTarget.innerHTML = `<p class="tweet-error"><a href="https://x.com/i/web/status/${tweetId}">View tweet on X</a> (embed unavailable)</p>`;
+          });
         });
-        // Guard: Only call if widgets.js is loaded
-        if ((window as any).twttr?.widgets) {
-          (window as any).twttr.widgets.load();
-        }
       }
 
       function getCurrentThemeForTweets(): string {
@@ -107,19 +111,14 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
       }
 
       // Initial render on page load
-      if ((window as any).twttr?.widgets) {
+      (window as any).twttr = (window as any).twttr || {};
+      (window as any).twttr.ready = (window as any).twttr.ready || function(fn: () => void) {
+        (window as any).twttr._e = (window as any).twttr._e || [];
+        (window as any).twttr._e.push(fn);
+      };
+      (window as any).twttr.ready(function() {
         renderTweets(getCurrentThemeForTweets());
-      } else {
-        // widgets.js not yet loaded; wait for it
-        (window as any).twttr = (window as any).twttr || {};
-        (window as any).twttr.ready = (window as any).twttr.ready || function(fn: () => void) {
-          (window as any).twttr._e = (window as any).twttr._e || [];
-          (window as any).twttr._e.push(fn);
-        };
-        (window as any).twttr.ready(function() {
-          renderTweets(getCurrentThemeForTweets());
-        });
-      }
+      });
 
       // On theme toggle: re-render with new theme (debounced)
       let debounceTimer: ReturnType<typeof setTimeout>;
@@ -129,19 +128,6 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
           renderTweets((e as CustomEvent).detail.theme);
         }, 300);
       });
-
-      // Fallback for widgets.js failure
-      setTimeout(() => {
-        if (!(window as any).twttr?.widgets) {
-          document.querySelectorAll('.tweet-embed:empty').forEach((el) => {
-            const container = el.closest('.tweet-container');
-            const id = container?.getAttribute('data-tweet-id');
-            if (id) {
-              el.innerHTML = `<p><a href="https://twitter.com/i/web/status/${id}">View tweet</a></p>`;
-            }
-          });
-        }
-      }, 5000);
     </script>
 
     <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "be8e841bfae443d2b4bb7edbdd5357bc"}'></script><!-- End Cloudflare Web Analytics -->
