@@ -1,5 +1,5 @@
 ---
-import { Sun, Moon } from 'lucide-astro';
+import { Icon } from 'astro-icon/components';
 ---
 
 <button
@@ -8,8 +8,8 @@ import { Sun, Moon } from 'lucide-astro';
   aria-label="Toggle dark mode"
   title="Toggle dark mode"
 >
-  <span class="icon-sun"><Sun size={20} /></span>
-  <span class="icon-moon"><Moon size={20} /></span>
+  <span class="icon-sun"><Icon name="lucide:sun" size={20} /></span>
+  <span class="icon-moon"><Icon name="lucide:moon" size={20} /></span>
 </button>
 
 <script>
