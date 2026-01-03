@@ -909,7 +909,6 @@ Note: Pagefind indexing is handled by `astro-pagefind` integration, not a separa
 │   │   ├── Footer.astro
 │   │   ├── ThemeToggle.astro
 │   │   ├── PostList.astro
-│   │   ├── PostCard.astro
 │   │   ├── TableOfContents.astro
 │   │   ├── Search.astro
 │   │   ├── Tweet.astro
