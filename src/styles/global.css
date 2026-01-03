@@ -179,6 +179,22 @@ img {
   height: auto;
 }
 
+/* Figure with caption */
+figure {
+  margin: calc(var(--spacing-unit) * 1.5) 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+figcaption {
+  margin-top: calc(var(--spacing-unit) * 0.5);
+  font-size: 0.875em;
+  color: var(--color-text-secondary);
+  text-align: center;
+  font-style: italic;
+}
+
 /* Tables */
 table {
   width: 100%;
