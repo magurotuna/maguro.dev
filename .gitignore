@@ -1,1 +1,26 @@
-public/
+# Build output
+dist/
+
+# Dependencies
+node_modules/
+
+# Generated files
+public/_redirects
+
+# Link card cache (committed separately)
+# .link-card-cache.json
+
+# Environment
+.env
+.env.*
+
+# Editor
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Astro
+.astro/

@@ -1,0 +1,23 @@
+# RSS feed aliases (cover all possible feed paths)
+/feed.xml  /rss.xml  301
+/feed.xml/  /rss.xml  301
+/atom.xml  /rss.xml  301
+/atom.xml/  /rss.xml  301
+
+# Archived posts: redirect to archive subdomain
+# Three rules per post: slug, slug/, and slug/* for assets
+/laravel-nuxt-twitter-login  https://archive.maguro.dev/laravel-nuxt-twitter-login/  301!
+/laravel-nuxt-twitter-login/  https://archive.maguro.dev/laravel-nuxt-twitter-login/  301!
+/laravel-nuxt-twitter-login/*  https://archive.maguro.dev/laravel-nuxt-twitter-login/:splat  301!
+/pokemon-lottery-rust  https://archive.maguro.dev/pokemon-lottery-rust/  301!
+/pokemon-lottery-rust/  https://archive.maguro.dev/pokemon-lottery-rust/  301!
+/pokemon-lottery-rust/*  https://archive.maguro.dev/pokemon-lottery-rust/:splat  301!
+/python-twitter-base64  https://archive.maguro.dev/python-twitter-base64/  301!
+/python-twitter-base64/  https://archive.maguro.dev/python-twitter-base64/  301!
+/python-twitter-base64/*  https://archive.maguro.dev/python-twitter-base64/:splat  301!
+/setup-magurodev  https://archive.maguro.dev/setup-magurodev/  301!
+/setup-magurodev/  https://archive.maguro.dev/setup-magurodev/  301!
+/setup-magurodev/*  https://archive.maguro.dev/setup-magurodev/:splat  301!
+/vim-polyglot-for-highlight  https://archive.maguro.dev/vim-polyglot-for-highlight/  301!
+/vim-polyglot-for-highlight/  https://archive.maguro.dev/vim-polyglot-for-highlight/  301!
+/vim-polyglot-for-highlight/*  https://archive.maguro.dev/vim-polyglot-for-highlight/:splat  301!

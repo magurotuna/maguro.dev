@@ -81,5 +81,67 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
       (window as any).setTheme = setTheme;
       (window as any).toggleTheme = toggleTheme;
     </script>
+
+    <!-- Tweet embed rendering -->
+    <script>
+      function renderTweets(theme: string): void {
+        document.querySelectorAll('.tweet-container').forEach((container) => {
+          const template = container.querySelector('.tweet-template') as HTMLTemplateElement;
+          const embedTarget = container.querySelector('.tweet-embed');
+          if (template && embedTarget) {
+            const clone = template.content.cloneNode(true) as DocumentFragment;
+            const blockquote = clone.querySelector('blockquote');
+            if (blockquote) blockquote.dataset.theme = theme;
+            embedTarget.innerHTML = '';
+            embedTarget.appendChild(clone);
+          }
+        });
+        // Guard: Only call if widgets.js is loaded
+        if ((window as any).twttr?.widgets) {
+          (window as any).twttr.widgets.load();
+        }
+      }
+
+      function getCurrentThemeForTweets(): string {
+        return document.documentElement.getAttribute('data-theme') || 'light';
+      }
+
+      // Initial render on page load
+      if ((window as any).twttr?.widgets) {
+        renderTweets(getCurrentThemeForTweets());
+      } else {
+        // widgets.js not yet loaded; wait for it
+        (window as any).twttr = (window as any).twttr || {};
+        (window as any).twttr.ready = (window as any).twttr.ready || function(fn: () => void) {
+          (window as any).twttr._e = (window as any).twttr._e || [];
+          (window as any).twttr._e.push(fn);
+        };
+        (window as any).twttr.ready(function() {
+          renderTweets(getCurrentThemeForTweets());
+        });
+      }
+
+      // On theme toggle: re-render with new theme (debounced)
+      let debounceTimer: ReturnType<typeof setTimeout>;
+      document.addEventListener('theme-changed', function(e: Event) {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => {
+          renderTweets((e as CustomEvent).detail.theme);
+        }, 300);
+      });
+
+      // Fallback for widgets.js failure
+      setTimeout(() => {
+        if (!(window as any).twttr?.widgets) {
+          document.querySelectorAll('.tweet-embed:empty').forEach((el) => {
+            const container = el.closest('.tweet-container');
+            const id = container?.getAttribute('data-tweet-id');
+            if (id) {
+              el.innerHTML = `<p><a href="https://twitter.com/i/web/status/${id}">View tweet</a></p>`;
+            }
+          });
+        }
+      }, 5000);
+    </script>
   </body>
 </html>
