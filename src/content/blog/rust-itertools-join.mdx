@@ -2,6 +2,7 @@
 title: "Rustで文字列イテレータを連結するときに便利な itertools::join は結構遅い"
 date: 2020-01-06
 tags: ["Rust", "itertools"]
+description: "itertools::joinは遅い、collectしてからjoinする方が3倍速い"
 ---
 
 Rust の便利クレート [`itertools`](https://crates.io/crates/itertools) の文字列連結メソッド `join` が遅いという噂を聞いたので、かんたんに検証をしてみました。
