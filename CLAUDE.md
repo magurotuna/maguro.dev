@@ -62,7 +62,7 @@ draft: false
 
 ## Important Notes
 
-1. **Node.js Version**: The site uses Node.js 22 (specified in netlify.toml).
+1. **Node.js Version**: The site uses Node.js 24 LTS (specified in netlify.toml).
 
 2. **Content Features**:
    - KaTeX for mathematical expressions
