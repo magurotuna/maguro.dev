@@ -53,24 +53,40 @@ export const GET: APIRoute = async ({ props }) => {
           width: '100%',
           display: 'flex',
           position: 'relative',
-          background: '#0f0f14',
+          background: '#000000',
         },
         children: [
-          // Gradient accent bar on left
+          // Gradient glow orb - top right
           {
             type: 'div',
             props: {
               style: {
                 position: 'absolute',
-                left: 0,
-                top: 0,
-                bottom: 0,
-                width: '8px',
-                background: 'linear-gradient(180deg, #f43f5e 0%, #ec4899 50%, #8b5cf6 100%)',
+                top: '-100px',
+                right: '-100px',
+                width: '400px',
+                height: '400px',
+                borderRadius: '50%',
+                background: 'radial-gradient(circle, rgba(139,92,246,0.3) 0%, rgba(139,92,246,0) 70%)',
               },
             },
           },
-          // Subtle grid pattern overlay
+          // Gradient glow orb - bottom left
+          {
+            type: 'div',
+            props: {
+              style: {
+                position: 'absolute',
+                bottom: '-150px',
+                left: '-100px',
+                width: '500px',
+                height: '500px',
+                borderRadius: '50%',
+                background: 'radial-gradient(circle, rgba(236,72,153,0.25) 0%, rgba(236,72,153,0) 70%)',
+              },
+            },
+          },
+          // Subtle grid pattern
           {
             type: 'div',
             props: {
@@ -80,8 +96,8 @@ export const GET: APIRoute = async ({ props }) => {
                 left: 0,
                 right: 0,
                 bottom: 0,
-                backgroundImage: 'radial-gradient(circle at 1px 1px, rgba(255,255,255,0.03) 1px, transparent 0)',
-                backgroundSize: '40px 40px',
+                backgroundImage: 'linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)',
+                backgroundSize: '60px 60px',
               },
             },
           },
@@ -95,10 +111,10 @@ export const GET: APIRoute = async ({ props }) => {
                 justifyContent: 'space-between',
                 width: '100%',
                 height: '100%',
-                padding: '56px 64px',
+                padding: '60px 70px',
               },
               children: [
-                // Title section (takes most of the space)
+                // Title section
                 {
                   type: 'div',
                   props: {
@@ -112,10 +128,10 @@ export const GET: APIRoute = async ({ props }) => {
                         type: 'div',
                         props: {
                           style: {
-                            fontSize: title.length > 35 ? '56px' : '64px',
+                            fontSize: title.length > 35 ? '54px' : '62px',
                             fontWeight: 'bold',
-                            color: '#fafafa',
-                            lineHeight: 1.4,
+                            color: '#ffffff',
+                            lineHeight: 1.35,
                             letterSpacing: '-0.02em',
                             display: 'flex',
                             flexWrap: 'wrap',
@@ -126,7 +142,7 @@ export const GET: APIRoute = async ({ props }) => {
                     ],
                   },
                 },
-                // Bottom section with avatar, site name, and date
+                // Bottom section
                 {
                   type: 'div',
                   props: {
@@ -136,36 +152,55 @@ export const GET: APIRoute = async ({ props }) => {
                       justifyContent: 'space-between',
                     },
                     children: [
-                      // Left: Avatar + site name
+                      // Left: Avatar with glow ring + site name
                       {
                         type: 'div',
                         props: {
                           style: {
                             display: 'flex',
                             alignItems: 'center',
-                            gap: '20px',
+                            gap: '24px',
                           },
                           children: [
-                            // Avatar
-                            {
-                              type: 'img',
-                              props: {
-                                src: avatarBase64,
-                                width: 72,
-                                height: 72,
-                                style: {
-                                  borderRadius: '50%',
-                                },
-                              },
-                            },
-                            // Site name
+                            // Avatar container with glow ring
                             {
                               type: 'div',
                               props: {
                                 style: {
-                                  fontSize: '32px',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                  width: '88px',
+                                  height: '88px',
+                                  borderRadius: '50%',
+                                  background: 'linear-gradient(135deg, #ec4899 0%, #8b5cf6 50%, #06b6d4 100%)',
+                                  padding: '3px',
+                                },
+                                children: [
+                                  {
+                                    type: 'img',
+                                    props: {
+                                      src: avatarBase64,
+                                      width: 82,
+                                      height: 82,
+                                      style: {
+                                        borderRadius: '50%',
+                                      },
+                                    },
+                                  },
+                                ],
+                              },
+                            },
+                            // Site name with gradient
+                            {
+                              type: 'div',
+                              props: {
+                                style: {
+                                  fontSize: '36px',
                                   fontWeight: 'bold',
-                                  color: '#fafafa',
+                                  background: 'linear-gradient(90deg, #ffffff 0%, #a78bfa 100%)',
+                                  backgroundClip: 'text',
+                                  color: 'transparent',
                                   letterSpacing: '-0.02em',
                                 },
                                 children: 'maguro.dev',
@@ -174,22 +209,59 @@ export const GET: APIRoute = async ({ props }) => {
                           ],
                         },
                       },
-                      // Right: Date
+                      // Right: Date with accent
                       {
                         type: 'div',
                         props: {
                           style: {
-                            fontSize: '28px',
-                            color: '#71717a',
-                            fontWeight: 'bold',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '12px',
                           },
-                          children: formattedDate,
+                          children: [
+                            {
+                              type: 'div',
+                              props: {
+                                style: {
+                                  width: '8px',
+                                  height: '8px',
+                                  borderRadius: '50%',
+                                  background: '#ec4899',
+                                },
+                              },
+                            },
+                            {
+                              type: 'div',
+                              props: {
+                                style: {
+                                  fontSize: '28px',
+                                  color: '#a1a1aa',
+                                  fontWeight: 'bold',
+                                },
+                                children: formattedDate,
+                              },
+                            },
+                          ],
                         },
                       },
                     ],
                   },
                 },
               ],
+            },
+          },
+          // Top accent line
+          {
+            type: 'div',
+            props: {
+              style: {
+                position: 'absolute',
+                top: 0,
+                left: '70px',
+                right: '70px',
+                height: '4px',
+                background: 'linear-gradient(90deg, #ec4899 0%, #8b5cf6 50%, #06b6d4 100%)',
+              },
             },
           },
         ],
