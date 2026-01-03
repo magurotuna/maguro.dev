@@ -1,0 +1,39 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="About | maguro.dev" description="About maguro.dev">
+  <article class="about">
+    <h1>About</h1>
+    <p>
+      まぐろ (maguro) と申します。ソフトウェアエンジニアをしています。
+    </p>
+    <p>
+      主に Rust や TypeScript を書いています。
+    </p>
+
+    <h2>Links</h2>
+    <ul>
+      <li><a href="https://github.com/magurotuna" target="_blank" rel="noopener">GitHub</a></li>
+      <li><a href="https://twitter.com/maboroshi_kyou" target="_blank" rel="noopener">X (Twitter)</a></li>
+    </ul>
+  </article>
+</BaseLayout>
+
+<style>
+  .about h1 {
+    margin-top: 0;
+  }
+
+  .about h2 {
+    margin-top: calc(var(--spacing-unit) * 2);
+  }
+
+  .about ul {
+    padding-left: calc(var(--spacing-unit) * 1.5);
+  }
+
+  .about li {
+    margin-bottom: calc(var(--spacing-unit) * 0.5);
+  }
+</style>

@@ -1,0 +1,43 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Page Not Found | maguro.dev" description="Page not found">
+  <section class="not-found" data-pagefind-ignore>
+    <h1>404</h1>
+    <p>Page not found.</p>
+    <a href="/" class="home-link">&larr; Back to Home</a>
+  </section>
+</BaseLayout>
+
+<style>
+  .not-found {
+    text-align: center;
+    padding: calc(var(--spacing-unit) * 4) 0;
+  }
+
+  .not-found h1 {
+    font-size: 4rem;
+    margin: 0 0 var(--spacing-unit) 0;
+    color: var(--color-text-secondary);
+  }
+
+  .not-found p {
+    font-size: 1.25rem;
+    color: var(--color-text-secondary);
+    margin-bottom: calc(var(--spacing-unit) * 2);
+  }
+
+  .home-link {
+    display: inline-block;
+    padding: calc(var(--spacing-unit) * 0.5) var(--spacing-unit);
+    background-color: var(--color-accent);
+    color: white;
+    border-radius: 6px;
+  }
+
+  .home-link:hover {
+    background-color: var(--color-accent-hover);
+    text-decoration: none;
+  }
+</style>

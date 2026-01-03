@@ -1,0 +1,89 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostCard from '../../components/PostCard.astro';
+import { slugifyTag } from '../../utils/slugify';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog', ({ data }) => !data.draft);
+
+  // Collect all unique tags
+  const tagSet = new Set<string>();
+  for (const post of posts) {
+    for (const tag of post.data.tags) {
+      tagSet.add(tag);
+    }
+  }
+
+  // Generate a path for each tag
+  return Array.from(tagSet).map((tag) => ({
+    params: { tag: slugifyTag(tag) },
+    props: {
+      tag,
+      posts: posts
+        .filter((post) => post.data.tags.includes(tag))
+        .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf()),
+    },
+  }));
+}
+
+const { tag, posts } = Astro.props;
+---
+
+<BaseLayout title={`${tag} | maguro.dev`} description={`Posts tagged with ${tag}`}>
+  <section class="tag-page">
+    <header class="tag-header">
+      <a href="/tags/" class="back-link">&larr; All Tags</a>
+      <h1>{tag}</h1>
+      <p class="post-count">{posts.length} post{posts.length !== 1 ? 's' : ''}</p>
+    </header>
+
+    <ul class="post-list">
+      {posts.map((post) => (
+        <li>
+          <PostCard post={post} />
+        </li>
+      ))}
+    </ul>
+  </section>
+</BaseLayout>
+
+<style>
+  .tag-page {
+    padding-top: var(--spacing-unit);
+  }
+
+  .tag-header {
+    margin-bottom: calc(var(--spacing-unit) * 2);
+  }
+
+  .back-link {
+    display: inline-block;
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
+    margin-bottom: var(--spacing-unit);
+  }
+
+  .back-link:hover {
+    color: var(--color-accent);
+    text-decoration: none;
+  }
+
+  .tag-header h1 {
+    margin: 0 0 calc(var(--spacing-unit) * 0.5) 0;
+  }
+
+  .post-count {
+    color: var(--color-text-secondary);
+    margin: 0;
+  }
+
+  .post-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--spacing-unit) * 2);
+  }
+</style>

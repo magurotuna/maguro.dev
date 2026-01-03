@@ -1,0 +1,70 @@
+---
+interface Props {
+  headings: { depth: number; slug: string; text: string }[];
+}
+
+const { headings } = Astro.props;
+---
+
+<nav class="toc">
+  <details open>
+    <summary class="toc-title">目次</summary>
+    <ul class="toc-list">
+      {headings.map((heading) => (
+        <li class={`toc-item depth-${heading.depth}`}>
+          <a href={`#${heading.slug}`}>{heading.text}</a>
+        </li>
+      ))}
+    </ul>
+  </details>
+</nav>
+
+<style>
+  .toc {
+    background-color: var(--color-bg-secondary);
+    border-radius: 6px;
+    padding: var(--spacing-unit);
+  }
+
+  .toc-title {
+    font-weight: 600;
+    cursor: pointer;
+    user-select: none;
+    padding: calc(var(--spacing-unit) * 0.25) 0;
+  }
+
+  .toc-title:hover {
+    color: var(--color-accent);
+  }
+
+  .toc-list {
+    list-style: none;
+    padding: 0;
+    margin: calc(var(--spacing-unit) * 0.75) 0 0 0;
+  }
+
+  .toc-item {
+    margin: calc(var(--spacing-unit) * 0.25) 0;
+    line-height: 1.4;
+  }
+
+  .toc-item a {
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
+  }
+
+  .toc-item a:hover {
+    color: var(--color-accent);
+    text-decoration: none;
+  }
+
+  .depth-3 {
+    padding-left: var(--spacing-unit);
+  }
+
+  @media (max-width: 768px) {
+    details:not([open]) .toc-list {
+      display: none;
+    }
+  }
+</style>

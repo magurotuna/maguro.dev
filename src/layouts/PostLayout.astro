@@ -1,0 +1,131 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import BaseLayout from './BaseLayout.astro';
+import TableOfContents from '../components/TableOfContents.astro';
+import { slugifyTag } from '../utils/slugify';
+
+interface Props {
+  post: CollectionEntry<'blog'>;
+  headings: { depth: number; slug: string; text: string }[];
+}
+
+const { post, headings } = Astro.props;
+const { title, date, tags, description } = post.data;
+
+const formattedDate = date.toLocaleDateString('ja-JP', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+
+// Filter headings for ToC (h2 and h3 only)
+const tocHeadings = headings.filter((h) => h.depth >= 2 && h.depth <= 3);
+---
+
+<BaseLayout title={`${title} | maguro.dev`} description={description}>
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">{title}</h1>
+      <div class="post-meta">
+        <time datetime={date.toISOString()}>{formattedDate}</time>
+        {tags.length > 0 && (
+          <ul class="post-tags">
+            {tags.map((tag) => (
+              <li>
+                <a href={`/tags/${slugifyTag(tag)}/`} class="tag">{tag}</a>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    </header>
+
+    {tocHeadings.length > 0 && (
+      <aside class="toc-container" data-pagefind-ignore>
+        <TableOfContents headings={tocHeadings} />
+      </aside>
+    )}
+
+    <div class="post-content">
+      <slot />
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .post {
+    padding-top: var(--spacing-unit);
+  }
+
+  .post-header {
+    margin-bottom: calc(var(--spacing-unit) * 2);
+    padding-bottom: calc(var(--spacing-unit) * 1.5);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .post-title {
+    font-size: 1.75rem;
+    margin: 0 0 var(--spacing-unit) 0;
+    line-height: 1.3;
+  }
+
+  .post-meta {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-unit);
+    flex-wrap: wrap;
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
+  }
+
+  .post-tags {
+    display: flex;
+    gap: calc(var(--spacing-unit) * 0.5);
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .tag {
+    font-size: 0.85rem;
+    color: var(--color-accent);
+    background-color: var(--color-bg-secondary);
+    padding: 0.1em 0.5em;
+    border-radius: 4px;
+  }
+
+  .tag:hover {
+    text-decoration: none;
+    background-color: var(--color-border);
+  }
+
+  .toc-container {
+    margin-bottom: calc(var(--spacing-unit) * 2);
+  }
+
+  .post-content {
+    line-height: var(--line-height);
+  }
+
+  .post-content :global(h2) {
+    font-size: 1.4rem;
+    margin-top: calc(var(--spacing-unit) * 3);
+    padding-bottom: calc(var(--spacing-unit) * 0.5);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .post-content :global(h3) {
+    font-size: 1.2rem;
+    margin-top: calc(var(--spacing-unit) * 2);
+  }
+
+  .post-content :global(img) {
+    border-radius: 4px;
+    margin: var(--spacing-unit) 0;
+  }
+
+  .post-content :global(a) {
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+</style>
