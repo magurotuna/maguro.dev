@@ -12,11 +12,7 @@ interface Props {
 const { post, headings } = Astro.props;
 const { title, date, tags, description } = post.data;
 
-const formattedDate = date.toLocaleDateString('ja-JP', {
-  year: 'numeric',
-  month: 'long',
-  day: 'numeric',
-});
+const formattedDate = date.toISOString().split('T')[0];
 
 // Filter headings for ToC (h1, h2, and h3)
 const tocHeadings = headings.filter((h) => h.depth >= 1 && h.depth <= 3);
