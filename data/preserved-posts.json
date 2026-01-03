@@ -1,0 +1,15 @@
+[
+  "async-recursion",
+  "associated-type-vs-generic-type-in-trait",
+  "btree-maximum-value",
+  "cargo-snippet-pr",
+  "chmin-chmax-macro",
+  "coc-pairs-cursor",
+  "debug-macro",
+  "hashmap-value-i32",
+  "rust-dbg-in-release",
+  "rust-itertools-join",
+  "rust-std-fs-copy",
+  "rustup-noninteractively",
+  "shinjuku-rs-10"
+]
