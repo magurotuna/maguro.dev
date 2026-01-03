@@ -35,14 +35,14 @@
 }
 
 [data-theme="dark"] {
-  --color-bg: #121212;
-  --color-bg-secondary: #1e1e1e;
-  --color-text: #e5e5e5;
-  --color-text-secondary: #a0a0a0;
+  --color-bg: #333333;
+  --color-bg-secondary: #444444;
+  --color-text: #f0f0f0;
+  --color-text-secondary: #bbbbbb;
   --color-accent: #e07a6c;
   --color-accent-hover: #f08a7c;
-  --color-border: #333333;
-  --color-code-bg: #1e1e1e;
+  --color-border: #555555;
+  --color-code-bg: #444444;
 }
 
 /* Reset */
