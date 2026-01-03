@@ -49,7 +49,6 @@ draft: false
 - **YouTube.astro**: YouTube video embed component
 - **LinkCard.astro**: Rich link preview cards
 - **ThemeToggle.astro**: Dark/light theme switcher with localStorage
-- **Search.astro**: Pagefind-powered site search
 
 ### Data Files
 - **data/preserved-posts.json**: List of 13 post slugs to keep on main site
@@ -67,7 +66,7 @@ draft: false
 2. **Content Features**:
    - KaTeX for mathematical expressions
    - Expressive Code for syntax highlighting
-   - Pagefind for client-side search
+   - Heading anchors with # prefix
    - RSS feed at /rss.xml
 
 3. **URL Structure**: Posts are served at `/blog/[slug]/` with trailing slashes.

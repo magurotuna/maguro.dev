@@ -167,3 +167,31 @@ hr {
   overflow-x: auto;
   overflow-y: hidden;
 }
+
+/* Heading anchors */
+h1, h2, h3, h4, h5, h6 {
+  position: relative;
+}
+
+.heading-anchor {
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  margin-right: 0.5em;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+h1:hover .heading-anchor,
+h2:hover .heading-anchor,
+h3:hover .heading-anchor,
+h4:hover .heading-anchor,
+h5:hover .heading-anchor,
+h6:hover .heading-anchor,
+.heading-anchor:focus {
+  opacity: 1;
+}
+
+.heading-anchor:hover {
+  color: var(--color-accent);
+  text-decoration: none;
+}
