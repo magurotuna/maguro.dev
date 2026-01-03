@@ -1,0 +1,43 @@
+---
+// Search component using Pagefind
+---
+
+<div id="search" class="search-container"></div>
+
+<script>
+  // Only initialize Pagefind in production (index doesn't exist during dev)
+  if (!import.meta.env.DEV) {
+    import('@pagefind/default-ui').then(({ PagefindUI }) => {
+      new PagefindUI({
+        element: '#search',
+        showSubResults: true,
+        showImages: false,
+      });
+    });
+  } else {
+    // Hide search in dev mode
+    const el = document.getElementById('search');
+    if (el) el.style.display = 'none';
+  }
+</script>
+
+<style>
+  .search-container {
+    min-width: 200px;
+  }
+
+  /* Override Pagefind default styles to match theme */
+  :global(.pagefind-ui) {
+    --pagefind-ui-scale: 0.9;
+    --pagefind-ui-primary: var(--color-accent);
+    --pagefind-ui-text: var(--color-text);
+    --pagefind-ui-background: var(--color-bg);
+    --pagefind-ui-border: var(--color-border);
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: 6px;
+  }
+
+  :global([data-theme="dark"] .pagefind-ui) {
+    --pagefind-ui-background: var(--color-bg-secondary);
+  }
+</style>
