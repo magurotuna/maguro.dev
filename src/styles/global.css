@@ -138,6 +138,10 @@ pre {
   margin: var(--spacing-unit) 0;
 }
 
+.expressive-code {
+  margin: calc(var(--spacing-unit) * 1.5) 0;
+}
+
 pre code {
   background: none;
   padding: 0;
