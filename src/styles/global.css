@@ -170,11 +170,43 @@ hr {
 
 /* Heading anchors */
 .heading-anchor {
-  color: var(--color-text-secondary);
+  color: inherit;
   text-decoration: none;
 }
 
+.heading-anchor::before {
+  color: var(--color-text-secondary);
+}
+
 .heading-anchor:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.heading-anchor:hover::before {
   color: var(--color-accent);
-  text-decoration: none;
+}
+
+.heading-anchor[data-level="1"]::before {
+  content: "# ";
+}
+
+.heading-anchor[data-level="2"]::before {
+  content: "## ";
+}
+
+.heading-anchor[data-level="3"]::before {
+  content: "### ";
+}
+
+.heading-anchor[data-level="4"]::before {
+  content: "#### ";
+}
+
+.heading-anchor[data-level="5"]::before {
+  content: "##### ";
+}
+
+.heading-anchor[data-level="6"]::before {
+  content: "###### ";
 }

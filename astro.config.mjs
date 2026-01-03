@@ -32,11 +32,10 @@ export default defineConfig({
       [
         rehypeAutolinkHeadings,
         {
-          behavior: 'prepend',
-          properties: { className: ['heading-anchor'], ariaHidden: true, tabIndex: -1 },
-          content: (heading) => {
+          behavior: 'wrap',
+          properties: (heading) => {
             const level = Number(heading.tagName.charAt(1));
-            return { type: 'text', value: '#'.repeat(level) + ' ' };
+            return { className: ['heading-anchor'], 'data-level': level };
           },
         },
       ],
