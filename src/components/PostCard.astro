@@ -17,7 +17,7 @@ const formattedDate = date.toLocaleDateString('ja-JP', {
 ---
 
 <article class="post-card">
-  <a href={`/blog/${post.id}/`} class="post-link">
+  <a href={`/blog/${post.id.replace(/\.mdx?$/, '')}/`} class="post-link">
     <h2 class="post-title">{title}</h2>
   </a>
   <div class="post-meta">

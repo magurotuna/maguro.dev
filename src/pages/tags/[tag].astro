@@ -5,7 +5,7 @@ import PostCard from '../../components/PostCard.astro';
 import { slugifyTag } from '../../utils/slugify';
 
 export async function getStaticPaths() {
-  const posts = await getCollection('blog', ({ data }) => !data.draft);
+  const posts = await getCollection('blog', ({ data }) => !data.draft || import.meta.env.DEV);
 
   // Collect all unique tags
   const tagSet = new Set<string>();
