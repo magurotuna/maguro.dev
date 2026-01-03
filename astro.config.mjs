@@ -19,9 +19,9 @@ export default defineConfig({
   },
   integrations: [
     expressiveCode({
-      themes: ["github-light", "github-dark"],
+      themes: ["catppuccin-latte", "catppuccin-mocha"],
       themeCssSelector: (theme) => {
-        return theme.name === "github-dark"
+        return theme.name === "catppuccin-mocha"
           ? '[data-theme="dark"]'
           : '[data-theme="light"]';
       },
