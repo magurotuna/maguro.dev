@@ -55,12 +55,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         <li>
           <span class="period">2025</span>
           <a href="https://findy-code.io/media/series/modoku" target="_blank" rel="noopener">あの人も読んでる (も読)</a>
-          <span class="role">(Column on Findy Media)</span>
         </li>
         <li>
           <span class="period">2021</span>
           <a href="https://gihyo.jp/magazine/wdpress/archive/2021/vol124" target="_blank" rel="noopener">速習Deno</a>
-          <span class="role">(Author)</span>
         </li>
         <li>
           <span class="period">2021</span>
@@ -173,5 +171,26 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
   .links li {
     display: list-item;
+  }
+
+  /* Mobile responsive */
+  @media (max-width: 600px) {
+    .profile-header {
+      flex-direction: column;
+      text-align: center;
+    }
+
+    .profile-info {
+      align-items: center;
+    }
+
+    .history li {
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .history .period {
+      min-width: unset;
+    }
   }
 </style>
