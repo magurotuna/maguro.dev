@@ -1,0 +1,111 @@
+---
+title: "maguro.devを支える技術"
+date: 2026-01-05
+tags: ["Astro", "Deno", "Netlify", "AI", "Claude Code", "Codex"]
+description: "Denoで働きながらNode.js + Netlifyを選んだ理由、そしてAI駆動のブログ開発について"
+draft: false
+---
+
+2026年1月3日、このブログ maguro.dev をリニューアルした。
+
+新生 maguro.dev を支える技術スタックについて紹介する。
+
+## 技術スタック概要
+
+- フレームワーク: [Astro](https://astro.build/)
+- ビルド環境: [Node.js](https://nodejs.org/)
+- ホスティング: [Netlify](https://www.netlify.com/)
+- OG画像生成: [satori](https://github.com/vercel/satori) + [budoux](https://github.com/google/budoux)
+
+### フレームワーク: Astro
+
+以前はRust製の静的サイトジェネレーター[Zola](https://www.getzola.org/)を使っていた。Zolaは問題なく動いていたが、Astroに移行することにした。理由は2つある。
+
+#### 1. エコシステムの充実
+
+Astroは個人ブログを構築するためのエコシステムが非常に充実している。MDXのサポート、コードハイライト、数式レンダリングなど、ブログに必要な機能がプラグインとして豊富に揃っている。
+
+現時点では組み込んでいないが、静的サイト向けのサイト内検索のサポートも充実している。
+
+[shishkin/astro-pagefind: Astro integration for Pagefind static site search.](https://github.com/shishkin/astro-pagefind?tab=readme-ov-file)
+
+今はサイト内検索よりもGoogle検索への移譲で十分なのでは、と判断した。将来的に、利便性向上や自分の技術検証の目的で、サイト内検索を実装することはありかもしれない。
+
+#### 2. AIとの相性
+
+2025年～2026年において、AIがAstroについて非常に詳しいという点も大きい。特にドキュメントを読ませずとも、大枠の実装をスムーズに進めてくれた。
+
+### ビルド環境: Node.js
+
+Denoで働いているのにNode.jsを使っているのは何事だという感じかもしれない。
+
+正直に言うと、これはAI（Claude Code）が自動的に選択したものだ。AstroはDenoでも動作するはず[^1]だが、最初の移行ステップとして、標準的な技術スタックでブログプラットフォームが正常に動作することを確認したかった。
+
+[^1]: Astro公式にDenoのガイドもある: https://docs.astro.build/en/guides/deploy/deno/
+
+将来的にはDenoベースに移行しようと思っている。まずは `package.json` を維持したままDenoにそのまま移行できないか試し、それがうまくいったら `package.json` を `deno.json` に移行して、Denoネイティブな環境にできるのが理想だ。
+
+### ホスティング: Netlify
+
+ホスティングにはNetlifyを選んだ。[Deno Deploy](https://deno.com/deploy)という選択肢もあったが、2つの理由からNetlifyにした。
+
+#### 1. 移行コスト
+
+元々の maguro.dev は Netlify でホストされていた。静的サイトをホストする上でNetlifyは非常に安定していて面倒事も少ないと思っている。移行を実施する上で、まずは負担少なく移行することを重視して、従来と同じインフラを選択した。
+
+#### 2. リージョンの問題
+
+今のDeno DeployはEUとUSリージョンのみをサポートしている。このブログの主要な読者は日本にいるため、EU/USリージョンだけでは最適なパフォーマンスを提供できない。
+
+Deno Deployにアジアリージョン（特に日本）が追加されたら、移行しようと思っている（が、具体的な予定はない）
+
+### OG画像の動的生成
+
+以前はサイト全体で共通のOG画像を使用していたが、現在は各記事ごとにタイトルと日付が入ったOG画像を動的に生成している。
+
+<figure>
+  <img src="/img/ogp.png" alt="common og image" />
+  <figcaption>共通OG画像</figcaption>
+</figure>
+
+<figure>
+  <img src="/og/associated-type-vs-generic-type-in-trait.png" alt="動的に生成されたOG画像の例" />
+  <figcaption>[Rust のトレイトで、associated type (関連型) か generic type (ジェネリクス) のどちらを使うか迷ったときの指針](/blog/associated-type-vs-generic-type-in-trait/) のOG画像</figcaption>
+</figure>
+
+これを実現しているのが[satori](https://github.com/vercel/satori)と[budoux](https://github.com/nicklockwood/budoux)だ。
+
+satoriはJSXをSVGに変換するライブラリで、美しいOG画像のデザインを可能にしている。デザインに関しては、Claude Codeに最初作ってもらったものがあまり良くなかったので、"polish it!!"と3回くらいお願いしたらこのようにクールな感じになった。
+
+budouxは日本語テキストの改行位置を最適化するライブラリで、OG画像内の日本語タイトルが自然な位置で改行されるようになっている。 No more 「あなたとJAVA,\n今すぐダウンロー\nド」[^2]
+
+[^2]: 改行位置がちょっとおかしいものの代表として長年君臨していたもの。参考: https://nowokay.hatenablog.com/entry/2022/05/25/034700
+
+## AI駆動の開発
+
+このブログのリニューアルは約70%がAI（Claude Code）によって駆動された。
+
+自分の好みをClaude Codeに伝えて調整してもらったが、全体的な方向性はAIが主導した。Node.jsの選択、satori・budouxの採用なども、AIが選んだものだ。
+
+まずは従来の maguro.dev からのスムーズな移行を実現するための計画を練ってもらった。具体的には、「いくつかの記事は残しつつ、重要性の低い記事に関しては https://archive.maguro.dev に移行し、元のURLからリダイレクトするようにする」というような要件を加え、これを満たすような移行計画を考えてもらった。
+
+Claude Codeが考えた計画を、Codex CLIにレビューさせて、レビュー結果の文言を再びClaude Codeに渡してブラッシュアップする、という工程を1月2日から1月3日の睡眠時間の間に自動実行させた。
+
+起きたあと確認すると、合計で40ラウンドくらいのレビューサイクルを繰り返していたが、指摘と修正が堂々巡りになっているような気がしたため、こちらで強制的に打ち切って、実装に進んだ。
+
+その後、Claude Codeによる実装をレビューしていった。最初の実装はいろいろな問題点を含んでいたので、それらを1つずつ丹念に潰していった。修正事項を指摘しさえすれば、解決方法はおおむね自律的に見つけてくれた。
+
+一部、Astroのプラグイン回りのことだったり、パフォーマンスチューニングのことだったりは、こちらで[Deepwiki MCP](https://docs.devin.ai/work-with-devin/deepwiki-mcp)や[Devtools MCP](https://github.com/ChromeDevTools/chrome-devtools-mcp)を追加して（開発作業を行っていたマシンはまっさらなClaude Codeが動いていて、最初はほぼ何の設定もなされていなかった）、AIが必要な情報と文脈を得られるように補助する場面もあった。
+
+「maguro.devを支える技術」というタイトルだが、「maguro.devを支えるAI」と言った方がより正確かもしれない。
+
+## まとめ
+
+| 技術 | 選定理由 |
+|------|----------|
+| Astro | エコシステムの充実、AIとの相性 |
+| Node.js | AIが選択、標準的な構成で安定性を優先 |
+| Netlify | 日本向けのパフォーマンス、Astroとの統合 |
+| satori + budoux | 美しい日本語OG画像の生成 |
+
+将来的にはDenoベースへの移行、Deno Deployへの移行を計画している。Denoはここ数年はnpmベースのプロジェクトがそのまま動くということを目指して開発が進められているので、特に大きな摩擦なく移行できるものと思っている。Denoへの移行ができたらまた別途記事を書こうと思う。
