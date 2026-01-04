@@ -6,9 +6,9 @@ description: "Denoで働きながらNode.js + Netlifyを選んだ理由、そし
 draft: false
 ---
 
-このブログ maguro.dev の技術スタックについて紹介する。
+2026年1月3日、このブログ maguro.dev をリニューアルした。
 
-Denoで働いているにも関わらずNode.jsとNetlifyを使っているという、ある種皮肉な構成になっているが、それぞれ理由がある。
+新生 maguro.dev を支える技術スタックについて紹介する。
 
 ## 技術スタック概要
 
@@ -35,7 +35,7 @@ Astroは個人ブログを構築するためのエコシステムが非常に充
 
 2025年～2026年において、AIがAstroについて非常に詳しいという点も大きい。特にドキュメントを読ませずとも、大枠の実装をスムーズに進めてくれた。
 
-## ランタイム: Node.js
+### ランタイム: Node.js
 
 Denoで働いているのにNode.jsを使っているのは何事だという感じかもしれない。
 
@@ -45,21 +45,21 @@ Denoで働いているのにNode.jsを使っているのは何事だという感
 
 将来的にはDenoベースに移行しようと思っている。まずは `package.json` を維持したままDenoにそのまま移行できないか試し、それがうまくいったら `package.json` を `deno.json` に移行して、Denoネイティブな環境にできるのが理想だ。
 
-## ホスティング: Netlify
+### ホスティング: Netlify
 
 ホスティングにはNetlifyを選んだ。[Deno Deploy](https://deno.com/deploy)という選択肢もあったが、2つの理由からNetlifyにした。
 
-### 1. 移行コスト
+#### 1. 移行コスト
 
 元々の maguro.dev は Netlify でホストされていた。静的サイトをホストする上でNetlifyは非常に安定していて面倒事も少ないと思っている。移行を実施する上で、まずは負担少なく移行することを重視して、従来と同じインフラを選択した。
 
-### 2. リージョンの問題
+#### 2. リージョンの問題
 
 今のDeno DeployはEUとUSリージョンのみをサポートしている。このブログの主要な読者は日本にいるため、EU/USリージョンだけでは最適なパフォーマンスを提供できない。
 
 Deno Deployにアジアリージョン（特に日本）が追加されたら、移行しようと思っている（が、具体的な予定はない）
 
-## OG画像の動的生成
+### OG画像の動的生成
 
 以前はサイト全体で共通のOG画像を使用していたが、現在は各記事ごとにタイトルと日付が入ったOG画像を動的に生成している。
 
@@ -69,8 +69,8 @@ Deno Deployにアジアリージョン（特に日本）が追加されたら、
 </figure>
 
 <figure>
-  <img src="/og/associated-type-vs-generic-type-in-trait.png" alt="og image specific to https://maguro.dev/blog/associated-type-vs-generic-type-in-trait" />
-  <figcaption>[Rust のトレイトで、associated type (関連型) か generic type (ジェネリクス) のどちらを使うか迷ったときの指針](https://maguro.dev/blog/associated-type-vs-generic-type-in-trait) のOG画像</figcaption>
+  <img src="/og/associated-type-vs-generic-type-in-trait.png" alt="動的に生成されたOG画像の例" />
+  <figcaption>[Rust のトレイトで、associated type (関連型) か generic type (ジェネリクス) のどちらを使うか迷ったときの指針](/blog/associated-type-vs-generic-type-in-trait/) のOG画像</figcaption>
 </figure>
 
 これを実現しているのが[satori](https://github.com/vercel/satori)と[budoux](https://github.com/nicklockwood/budoux)だ。
