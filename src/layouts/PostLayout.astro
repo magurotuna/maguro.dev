@@ -13,7 +13,7 @@ const { post, headings } = Astro.props;
 const { title, date, tags, description } = post.data;
 
 const formattedDate = date.toISOString().split('T')[0];
-const slug = post.id.replace(/\.mdx?$/, '');
+const slug = post.id;
 const ogImage = `/og/${slug}.png`;
 
 // Filter headings for ToC (h1, h2, and h3)
