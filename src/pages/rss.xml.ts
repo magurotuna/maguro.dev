@@ -17,9 +17,6 @@ export async function GET(context: APIContext) {
       pubDate: post.data.date,
       description: post.data.description || '',
       link: `/blog/${post.id}/`,
-      // Use old URL format for GUID to maintain subscriber continuity
-      // Feed readers use GUID to identify articles; changing it makes posts appear as new
-      customData: `<guid isPermaLink="false">https://maguro.dev/${post.id}/</guid>`,
     })),
   });
 }
