@@ -62,4 +62,11 @@ const currentYear = new Date().getFullYear();
       text-align: center;
     }
   }
+
+  /* Extra bottom padding for in-app browsers (Twitter, etc.) that don't report safe-area-inset */
+  @media (max-width: 768px) {
+    .footer {
+      padding-bottom: max(3.5rem, env(safe-area-inset-bottom, 0));
+    }
+  }
 </style>
