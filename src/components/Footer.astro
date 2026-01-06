@@ -21,6 +21,8 @@ const currentYear = new Date().getFullYear();
     width: 100%;
     border-top: 1px solid var(--color-border);
     margin-top: auto;
+    /* Add safe area padding for in-app browsers (Twitter, etc.) with bottom overlays */
+    padding-bottom: env(safe-area-inset-bottom, 0);
   }
 
   .footer-inner {
