@@ -16,8 +16,8 @@
     -apple-system, BlinkMacSystemFont,
     "Segoe UI", Roboto,
     "Hiragino Sans", "Hiragino Kaku Gothic ProN",
-    Meiryo, "Yu Gothic", "Yu Gothic UI",
     "Noto Sans JP",
+    Meiryo, "Yu Gothic", "Yu Gothic UI",
     "Helvetica Neue", Arial,
     sans-serif,
     "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
@@ -68,6 +68,12 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+
+  /* Japanese text readability improvements */
+  overflow-wrap: anywhere;
+  word-break: normal;
+  line-break: strict;
+  text-autospace: normal;
 }
 
 main {
@@ -151,6 +157,17 @@ pre {
 pre code {
   background: none;
   padding: 0;
+}
+
+/* Disable text-autospace for code/monospace elements */
+code,
+pre,
+kbd,
+samp,
+input,
+textarea,
+time {
+  text-autospace: no-autospace;
 }
 
 /* Lists */
