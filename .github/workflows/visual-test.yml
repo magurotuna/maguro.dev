@@ -25,7 +25,12 @@ jobs:
         run: npm run build
 
       - name: Run visual tests
-        run: npm run test:visual
+        run: |
+          if [ -d "e2e/visual.spec.ts-snapshots" ]; then
+            npm run test:visual
+          else
+            echo "No snapshots found, skipping visual tests. Run 'Update Visual Snapshots' workflow to generate them."
+          fi
 
       - name: Upload test results
         uses: actions/upload-artifact@v4
