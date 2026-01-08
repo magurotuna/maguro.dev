@@ -11,7 +11,9 @@
     "refresh-link-cache": "tsx scripts/link-cards.ts --refresh",
     "link-cards:strict": "tsx scripts/link-cards.ts --strict",
     "test:redirects": "tsx scripts/smoke-test-redirects.ts",
-    "test:archive-noindex": "tsx scripts/smoke-test-archive-noindex.ts"
+    "test:archive-noindex": "tsx scripts/smoke-test-archive-noindex.ts",
+    "test:visual": "playwright test",
+    "test:visual:update": "playwright test --update-snapshots"
   },
   "dependencies": {
     "@astrojs/mdx": "^4.0.0",
@@ -38,6 +40,7 @@
     "tsx": "^4.0.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.57.0",
     "@types/node": "^22.0.0",
     "typescript": "^5.0.0"
   }
