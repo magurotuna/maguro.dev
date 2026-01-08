@@ -7,6 +7,12 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
   reporter: 'html',
+  snapshotPathTemplate: '{testDir}/{testFileDir}/{testFileName}-snapshots/{arg}-{projectName}{ext}',
+  expect: {
+    toHaveScreenshot: {
+      maxDiffPixelRatio: 0.02, // Allow 2% diff for cross-platform font rendering
+    },
+  },
   use: {
     baseURL: 'http://localhost:4321',
     trace: 'on-first-retry',

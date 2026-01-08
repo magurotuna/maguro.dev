@@ -13,7 +13,6 @@ for (const page of pages) {
 
     await expect(p).toHaveScreenshot(`${page.name}.png`, {
       fullPage: true,
-      maxDiffPixelRatio: 0.01,
     });
   });
 }
