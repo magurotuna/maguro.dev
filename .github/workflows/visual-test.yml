@@ -91,11 +91,14 @@ jobs:
           BRANCH="screenshots/pr-${PR_NUM}"
           BASE_URL="https://raw.githubusercontent.com/${REPO}/${BRANCH}"
 
-          # Generate markdown comment
-          cat << 'HEADER' > comment.md
+          # Generate markdown comment with unique marker for updates
+          cat << HEADER > comment.md
+          <!-- visual-screenshots-comment -->
           ## Visual Screenshots
 
           Comparing **main** (left) vs **this PR** (right)
+
+          *Updated: $(date -u '+%Y-%m-%d %H:%M:%S UTC')*
 
           HEADER
 
@@ -126,8 +129,17 @@ jobs:
 
           echo "comment_file=comment.md" >> $GITHUB_OUTPUT
 
+      - name: Find existing comment
+        uses: peter-evans/find-comment@v3
+        id: find-comment
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body-includes: <!-- visual-screenshots-comment -->
+
       - name: Comment on PR
         uses: peter-evans/create-or-update-comment@v4
         with:
           issue-number: ${{ github.event.pull_request.number }}
+          comment-id: ${{ steps.find-comment.outputs.comment-id }}
+          edit-mode: replace
           body-path: comment.md
