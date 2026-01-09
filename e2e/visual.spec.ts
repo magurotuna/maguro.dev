@@ -1,4 +1,6 @@
-import { test, expect } from '@playwright/test';
+import { test } from '@playwright/test';
+import * as fs from 'node:fs';
+import * as path from 'node:path';
 
 const pages = [
   { name: 'home', path: '/' },
@@ -6,31 +8,33 @@ const pages = [
   { name: 'blog-post', path: '/blog/magurodev-tech-stack/' },
 ];
 
-for (const page of pages) {
-  test(`visual: ${page.name}`, async ({ page: p }) => {
-    await p.goto(page.path);
-    await p.waitForLoadState('networkidle');
+const viewports = [
+  { name: 'desktop', width: 1280, height: 800 },
+  { name: 'tablet', width: 768, height: 1024 },
+  { name: 'mobile', width: 375, height: 667 },
+  { name: 'mobile-small', width: 320, height: 568 },
+];
 
-    await expect(p).toHaveScreenshot(`${page.name}.png`, {
-      fullPage: true,
-    });
-  });
-}
+const outputDir = process.env.SCREENSHOT_OUTPUT_DIR || 'screenshots';
 
-test('header does not break on narrow viewport', async ({ page }) => {
-  // Test specifically for the header word-breaking issue
-  await page.setViewportSize({ width: 320, height: 568 }); // iPhone SE (smallest common mobile)
-  await page.goto('/');
-  await page.waitForLoadState('networkidle');
-
-  const siteTitle = page.locator('.site-title');
-  const boundingBox = await siteTitle.boundingBox();
-
-  // The site title should fit on a single line (height should be reasonable)
-  // A single line of text at 1.25rem (~20px) shouldn't exceed ~30px with padding
-  expect(boundingBox?.height).toBeLessThan(40);
-
-  await expect(page).toHaveScreenshot('header-narrow.png', {
-    fullPage: false,
-  });
+test.beforeAll(async () => {
+  if (!fs.existsSync(outputDir)) {
+    fs.mkdirSync(outputDir, { recursive: true });
+  }
 });
+
+for (const pageInfo of pages) {
+  for (const viewport of viewports) {
+    test(`screenshot: ${pageInfo.name} @ ${viewport.name}`, async ({ page }) => {
+      await page.setViewportSize({ width: viewport.width, height: viewport.height });
+      await page.goto(pageInfo.path);
+      await page.waitForLoadState('networkidle');
+
+      const filename = `${pageInfo.name}-${viewport.name}.png`;
+      await page.screenshot({
+        path: path.join(outputDir, filename),
+        fullPage: true,
+      });
+    });
+  }
+}

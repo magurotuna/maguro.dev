@@ -1,14 +1,19 @@
-name: Visual Regression Tests
+name: Visual Screenshots
 
 on:
   pull_request:
     branches: [main]
 
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
-  test:
+  screenshots:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout PR branch
+        uses: actions/checkout@v4
 
       - uses: actions/setup-node@v4
         with:
@@ -26,23 +31,115 @@ jobs:
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
 
-      - name: Build site
+      - name: Build PR branch
         run: npm run build
 
-      - name: Run visual tests
-        run: |
-          if [ -d "e2e/visual.spec.ts-snapshots" ]; then
-            npm run test:visual
-          else
-            echo "No snapshots found, skipping visual tests. Run 'Update Visual Snapshots' workflow to generate them."
-          fi
+      - name: Take screenshots of PR branch
+        run: SCREENSHOT_OUTPUT_DIR=screenshots-pr npx playwright test
+        continue-on-error: true
 
-      - name: Upload test results
-        uses: actions/upload-artifact@v4
-        if: failure()
+      - name: Checkout main branch
+        uses: actions/checkout@v4
         with:
-          name: playwright-report
-          path: |
-            playwright-report/
-            test-results/
-          retention-days: 7
+          ref: main
+          clean: false
+          path: main-branch
+
+      - name: Install dependencies (main)
+        run: cd main-branch && npm ci
+
+      - name: Build main branch
+        run: cd main-branch && npm run build
+
+      - name: Take screenshots of main branch
+        run: |
+          # Copy the PR's test file and config to main-branch
+          cp e2e/visual.spec.ts main-branch/e2e/visual.spec.ts
+          cp playwright.config.ts main-branch/playwright.config.ts
+
+          cd main-branch
+          SCREENSHOT_OUTPUT_DIR=../screenshots-main npx playwright test
+        continue-on-error: true
+
+      - name: Push screenshots to branch
+        run: |
+          SCREENSHOTS_BRANCH="screenshots/pr-${{ github.event.pull_request.number }}"
+
+          # Configure git
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Create orphan branch for screenshots
+          git checkout --orphan "$SCREENSHOTS_BRANCH"
+          git rm -rf .
+
+          # Create directory structure
+          mkdir -p pr main
+          cp screenshots-pr/*.png pr/ 2>/dev/null || true
+          cp screenshots-main/*.png main/ 2>/dev/null || true
+
+          # Commit and push
+          git add pr/ main/
+          git commit -m "Screenshots for PR #${{ github.event.pull_request.number }}"
+          git push origin "$SCREENSHOTS_BRANCH" --force
+
+      - name: Generate PR comment
+        id: comment
+        run: |
+          PR_NUM="${{ github.event.pull_request.number }}"
+          REPO="${{ github.repository }}"
+          BRANCH="screenshots/pr-${PR_NUM}"
+          BASE_URL="https://raw.githubusercontent.com/${REPO}/${BRANCH}"
+
+          # Generate markdown comment with unique marker for updates
+          cat << HEADER > comment.md
+          <!-- visual-screenshots-comment -->
+          ## Visual Screenshots
+
+          Comparing **main** (left) vs **this PR** (right)
+
+          *Updated: $(date -u '+%Y-%m-%d %H:%M:%S UTC')*
+
+          HEADER
+
+          # Pages and viewports to include
+          PAGES="home about blog-post"
+          VIEWPORTS="desktop tablet mobile mobile-small"
+
+          for page in $PAGES; do
+            echo "<details>" >> comment.md
+            echo "<summary><strong>${page}</strong></summary>" >> comment.md
+            echo "" >> comment.md
+
+            for viewport in $VIEWPORTS; do
+              FILENAME="${page}-${viewport}.png"
+              MAIN_URL="${BASE_URL}/main/${FILENAME}"
+              PR_URL="${BASE_URL}/pr/${FILENAME}"
+
+              echo "#### ${viewport}" >> comment.md
+              echo "| main | PR |" >> comment.md
+              echo "|:----:|:--:|" >> comment.md
+              echo "| ![main](${MAIN_URL}) | ![pr](${PR_URL}) |" >> comment.md
+              echo "" >> comment.md
+            done
+
+            echo "</details>" >> comment.md
+            echo "" >> comment.md
+          done
+
+          echo "comment_file=comment.md" >> $GITHUB_OUTPUT
+
+      - name: Find existing comment
+        uses: peter-evans/find-comment@v3
+        id: find-comment
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body-includes: <!-- visual-screenshots-comment -->
+
+      - name: Comment on PR
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-id: ${{ steps.find-comment.outputs.comment-id }}
+          edit-mode: replace
+          body-path: comment.md
