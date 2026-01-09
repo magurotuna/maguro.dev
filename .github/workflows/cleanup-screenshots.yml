@@ -1,0 +1,24 @@
+name: Cleanup Screenshot Branches
+
+on:
+  pull_request:
+    types: [closed]
+
+permissions:
+  contents: write
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete screenshot branch
+        run: |
+          BRANCH="screenshots/pr-${{ github.event.pull_request.number }}"
+
+          # Check if branch exists and delete it
+          if git ls-remote --heads https://github.com/${{ github.repository }}.git "$BRANCH" | grep -q "$BRANCH"; then
+            echo "Deleting branch: $BRANCH"
+            git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git --delete "$BRANCH"
+          else
+            echo "Branch $BRANCH does not exist, skipping cleanup"
+          fi

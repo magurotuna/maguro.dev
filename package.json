@@ -12,8 +12,7 @@
     "link-cards:strict": "tsx scripts/link-cards.ts --strict",
     "test:redirects": "tsx scripts/smoke-test-redirects.ts",
     "test:archive-noindex": "tsx scripts/smoke-test-archive-noindex.ts",
-    "test:visual": "playwright test",
-    "test:visual:update": "playwright test --update-snapshots"
+    "test:screenshots": "playwright test"
   },
   "dependencies": {
     "@astrojs/mdx": "^4.0.0",
