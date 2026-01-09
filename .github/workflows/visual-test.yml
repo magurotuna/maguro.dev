@@ -53,6 +53,10 @@ jobs:
 
       - name: Take screenshots of main branch
         run: |
+          # Copy the PR's test file and config to main-branch
+          cp e2e/visual.spec.ts main-branch/e2e/visual.spec.ts
+          cp playwright.config.ts main-branch/playwright.config.ts
+
           cd main-branch
           SCREENSHOT_OUTPUT_DIR=../screenshots-main npx playwright test
         continue-on-error: true
