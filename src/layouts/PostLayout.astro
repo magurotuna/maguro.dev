@@ -1,5 +1,6 @@
 ---
 import type { CollectionEntry } from 'astro:content';
+import { Icon } from 'astro-icon/components';
 import BaseLayout from './BaseLayout.astro';
 import TableOfContents from '../components/TableOfContents.astro';
 import { slugifyTag } from '../utils/slugify';
@@ -47,6 +48,18 @@ const tocHeadings = headings.filter((h) => h.depth >= 1 && h.depth <= 3);
     <div class="post-content">
       <slot />
     </div>
+
+    <footer class="post-footer">
+      <a
+        href={`https://x.com/intent/tweet?url=${encodeURIComponent(`https://maguro.dev/blog/${slug}/`)}&text=${encodeURIComponent(title)}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="share-button icon-link"
+      >
+        <Icon name="simple-icons:x" size={16} />
+        Share on X
+      </a>
+    </footer>
   </article>
 </BaseLayout>
 
@@ -125,5 +138,34 @@ const tocHeadings = headings.filter((h) => h.depth >= 1 && h.depth <= 3);
   .post-content :global(a) {
     text-decoration: underline;
     text-underline-offset: 2px;
+  }
+
+  .post-footer {
+    margin-top: calc(var(--spacing-unit) * 3);
+    padding-top: calc(var(--spacing-unit) * 1.5);
+    border-top: 1px solid var(--color-border);
+  }
+
+  .share-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5em;
+    padding: 0.5em 1em;
+    font-size: 0.9rem;
+    color: var(--color-text);
+    background-color: var(--color-border);
+    border-radius: 4px;
+    text-decoration: none;
+    transition: background-color 0.2s;
+  }
+
+  .share-button:hover {
+    background-color: var(--color-text-secondary);
+    color: var(--color-bg);
+    text-decoration: none;
+  }
+
+  .share-button [data-icon] {
+    flex-shrink: 0;
   }
 </style>
