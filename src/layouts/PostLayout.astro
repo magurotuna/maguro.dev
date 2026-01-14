@@ -31,7 +31,7 @@ const tocHeadings = headings.filter((h) => h.depth >= 1 && h.depth <= 3);
           <ul class="post-tags">
             {tags.map((tag) => (
               <li>
-                <a href={`/tags/${slugifyTag(tag)}/`} class="tag">{tag}</a>
+                <a href={`/tags/${slugifyTag(tag)}/`} class="tag">#{tag}</a>
               </li>
             ))}
           </ul>
@@ -82,7 +82,7 @@ const tocHeadings = headings.filter((h) => h.depth >= 1 && h.depth <= 3);
 
   .post-meta {
     display: flex;
-    align-items: center;
+    align-items: baseline;
     gap: var(--spacing-unit);
     flex-wrap: wrap;
     font-size: 0.9rem;
@@ -99,6 +99,8 @@ const tocHeadings = headings.filter((h) => h.depth >= 1 && h.depth <= 3);
   }
 
   .tag {
+    display: inline-flex;
+    align-items: center;
     font-size: 0.85rem;
     color: var(--color-accent);
     background-color: var(--color-bg-secondary);
