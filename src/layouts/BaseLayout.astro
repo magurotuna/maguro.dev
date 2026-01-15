@@ -1,8 +1,8 @@
 ---
-import Header from '../components/Header.astro';
-import Footer from '../components/Footer.astro';
-import '../styles/global.css';
-import 'katex/dist/katex.min.css';
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import "../styles/global.css";
+import "katex/dist/katex.min.css";
 
 interface Props {
   title: string;
@@ -10,9 +10,15 @@ interface Props {
   ogImage?: string;
 }
 
-const { title, description = 'maguro.dev - Personal blog', ogImage } = Astro.props;
+const {
+  title,
+  description = "maguro.dev - Personal blog",
+  ogImage,
+} = Astro.props;
 const baseUrl = import.meta.env.DEV ? Astro.url.origin : Astro.site;
-const ogImageUrl = ogImage ? new URL(ogImage, baseUrl) : new URL('/img/ogp.png', baseUrl);
+const ogImageUrl = ogImage
+  ? new URL(ogImage, baseUrl)
+  : new URL("/img/ogp.png", baseUrl);
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 ---
 
@@ -22,7 +28,12 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-    <link rel="alternate" type="application/rss+xml" title="RSS" href="/rss.xml" />
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title="RSS"
+      href="/rss.xml"
+    />
     <link rel="canonical" href={canonicalURL} />
     <meta name="generator" content={Astro.generator} />
 
@@ -45,16 +56,19 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
     <!-- Theme: Prevent flash by setting theme before render -->
     <script is:inline>
-      (function() {
-        const stored = localStorage.getItem('theme');
-        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        const theme = stored || (prefersDark ? 'dark' : 'light');
-        document.documentElement.setAttribute('data-theme', theme);
+      (function () {
+        const stored = localStorage.getItem("theme");
+        const prefersDark = window.matchMedia(
+          "(prefers-color-scheme: dark)",
+        ).matches;
+        const theme = stored || (prefersDark ? "dark" : "light");
+        document.documentElement.setAttribute("data-theme", theme);
       })();
     </script>
 
     <!-- Twitter widgets.js for embeds -->
-    <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+    <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"
+    ></script>
   </head>
   <body>
     <Header />
@@ -66,18 +80,20 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <!-- Theme toggle helper -->
     <script>
       function getCurrentTheme(): string {
-        return document.documentElement.getAttribute('data-theme') || 'light';
+        return document.documentElement.getAttribute("data-theme") || "light";
       }
 
       function setTheme(theme: string): void {
-        document.documentElement.setAttribute('data-theme', theme);
-        localStorage.setItem('theme', theme);
-        document.dispatchEvent(new CustomEvent('theme-changed', { detail: { theme } }));
+        document.documentElement.setAttribute("data-theme", theme);
+        localStorage.setItem("theme", theme);
+        document.dispatchEvent(
+          new CustomEvent("theme-changed", { detail: { theme } }),
+        );
       }
 
       function toggleTheme(): void {
         const current = getCurrentTheme();
-        setTheme(current === 'dark' ? 'light' : 'dark');
+        setTheme(current === "dark" ? "light" : "dark");
       }
 
       // Expose to window for components
@@ -89,44 +105,51 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <!-- Tweet embed rendering -->
     <script>
       function renderTweets(theme: string): void {
-        document.querySelectorAll('.tweet-container').forEach((container) => {
-          const tweetId = container.getAttribute('data-tweet-id');
-          const embedTarget = container.querySelector('.tweet-embed') as HTMLElement;
+        document.querySelectorAll(".tweet-container").forEach((container) => {
+          const tweetId = container.getAttribute("data-tweet-id");
+          const embedTarget = container.querySelector(
+            ".tweet-embed",
+          ) as HTMLElement;
           if (!tweetId || !embedTarget) return;
 
           // Clear and render using createTweet for better control
-          embedTarget.innerHTML = '';
-          (window as any).twttr.widgets.createTweet(tweetId, embedTarget, {
-            theme: theme,
-            dnt: true,
-          }).then((el: HTMLElement | undefined) => {
-            if (!el) {
-              // Tweet failed to load (deleted, private, or invalid ID)
+          embedTarget.innerHTML = "";
+          (window as any).twttr.widgets
+            .createTweet(tweetId, embedTarget, {
+              theme: theme,
+              dnt: true,
+            })
+            .then((el: HTMLElement | undefined) => {
+              if (!el) {
+                // Tweet failed to load (deleted, private, or invalid ID)
+                embedTarget.innerHTML = `<p class="tweet-error"><a href="https://x.com/i/web/status/${tweetId}">View tweet on X</a> (embed unavailable)</p>`;
+              }
+            })
+            .catch(() => {
               embedTarget.innerHTML = `<p class="tweet-error"><a href="https://x.com/i/web/status/${tweetId}">View tweet on X</a> (embed unavailable)</p>`;
-            }
-          }).catch(() => {
-            embedTarget.innerHTML = `<p class="tweet-error"><a href="https://x.com/i/web/status/${tweetId}">View tweet on X</a> (embed unavailable)</p>`;
-          });
+            });
         });
       }
 
       function getCurrentThemeForTweets(): string {
-        return document.documentElement.getAttribute('data-theme') || 'light';
+        return document.documentElement.getAttribute("data-theme") || "light";
       }
 
       // Initial render on page load
       (window as any).twttr = (window as any).twttr || {};
-      (window as any).twttr.ready = (window as any).twttr.ready || function(fn: () => void) {
-        (window as any).twttr._e = (window as any).twttr._e || [];
-        (window as any).twttr._e.push(fn);
-      };
-      (window as any).twttr.ready(function() {
+      (window as any).twttr.ready =
+        (window as any).twttr.ready ||
+        function (fn: () => void) {
+          (window as any).twttr._e = (window as any).twttr._e || [];
+          (window as any).twttr._e.push(fn);
+        };
+      (window as any).twttr.ready(function () {
         renderTweets(getCurrentThemeForTweets());
       });
 
       // On theme toggle: re-render with new theme (debounced)
       let debounceTimer: ReturnType<typeof setTimeout>;
-      document.addEventListener('theme-changed', function(e: Event) {
+      document.addEventListener("theme-changed", function (e: Event) {
         clearTimeout(debounceTimer);
         debounceTimer = setTimeout(() => {
           renderTweets((e as CustomEvent).detail.theme);
@@ -134,6 +157,11 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
       });
     </script>
 
-    <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "be8e841bfae443d2b4bb7edbdd5357bc"}'></script><!-- End Cloudflare Web Analytics -->
+    <!-- Cloudflare Web Analytics -->
+    <script
+      defer
+      src="https://static.cloudflareinsights.com/beacon.min.js"
+      data-cf-beacon='{"token": "be8e841bfae443d2b4bb7edbdd5357bc"}'
+    ></script><!-- End Cloudflare Web Analytics -->
   </body>
 </html>

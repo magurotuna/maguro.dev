@@ -1,12 +1,12 @@
 ---
-import type { CollectionEntry } from 'astro:content';
-import { Icon } from 'astro-icon/components';
-import BaseLayout from './BaseLayout.astro';
-import TableOfContents from '../components/TableOfContents.astro';
-import { slugifyTag } from '../utils/slugify';
+import type { CollectionEntry } from "astro:content";
+import { Icon } from "astro-icon/components";
+import BaseLayout from "./BaseLayout.astro";
+import TableOfContents from "../components/TableOfContents.astro";
+import { slugifyTag } from "../utils/slugify";
 
 interface Props {
-  post: CollectionEntry<'blog'>;
+  post: CollectionEntry<"blog">;
   headings: { depth: number; slug: string; text: string }[];
   readingTime: number;
 }
@@ -14,7 +14,7 @@ interface Props {
 const { post, headings, readingTime } = Astro.props;
 const { title, date, tags, description } = post.data;
 
-const formattedDate = date.toISOString().split('T')[0];
+const formattedDate = date.toISOString().split("T")[0];
 const slug = post.id;
 const ogImage = `/og/${slug}.png`;
 
@@ -22,30 +22,40 @@ const ogImage = `/og/${slug}.png`;
 const tocHeadings = headings.filter((h) => h.depth >= 1 && h.depth <= 3);
 ---
 
-<BaseLayout title={`${title} | maguro.dev`} description={description} ogImage={ogImage}>
+<BaseLayout
+  title={`${title} | maguro.dev`}
+  description={description}
+  ogImage={ogImage}
+>
   <article class="post">
     <header class="post-header">
       <h1 class="post-title">{title}</h1>
       <div class="post-meta">
         <time datetime={date.toISOString()}>{formattedDate}</time>
         <span class="reading-time">{readingTime}分で読めます</span>
-        {tags.length > 0 && (
-          <ul class="post-tags">
-            {tags.map((tag) => (
-              <li>
-                <a href={`/tags/${slugifyTag(tag)}/`} class="tag">#{tag}</a>
-              </li>
-            ))}
-          </ul>
-        )}
+        {
+          tags.length > 0 && (
+            <ul class="post-tags">
+              {tags.map((tag) => (
+                <li>
+                  <a href={`/tags/${slugifyTag(tag)}/`} class="tag">
+                    #{tag}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          )
+        }
       </div>
     </header>
 
-    {tocHeadings.length > 0 && (
-      <aside class="toc-container" data-pagefind-ignore>
-        <TableOfContents headings={tocHeadings} />
-      </aside>
-    )}
+    {
+      tocHeadings.length > 0 && (
+        <aside class="toc-container" data-pagefind-ignore>
+          <TableOfContents headings={tocHeadings} />
+        </aside>
+      )
+    }
 
     <div class="post-content">
       <slot />

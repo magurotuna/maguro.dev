@@ -5,7 +5,7 @@ tags: ["Rust", "async-recursion"]
 description: "Rustで再帰asyncが書けない問題をasync-recursionクレートで解決する方法"
 ---
 
-import Tweet from '../../components/Tweet.astro';
+import Tweet from "../../components/Tweet.astro";
 
 Rust で async な関数を再帰的に呼び出したい……という気持ちになったことはありませんか？
 
@@ -68,7 +68,7 @@ async fn get_category_by_id(conn: &mut PoolConnection<MySql>, category_id: u32) 
 }
 ```
 
-(2箇所ある `&mut *conn` のところを `conn` と書くことはできません。*1)
+(2箇所ある `&mut *conn` のところを `conn` と書くことはできません。\*1)
 
 これがコンパイルできれば何の問題もないのですが、コンパイラに怒られてしまいます。
 
@@ -221,7 +221,7 @@ where
 
 ## 注釈
 
-- (*1) 暗黙の再借用 (reborrowing) がここでは行われないからと思いますが、なぜ行われないのかの明確な理由は探しきれませんでした。もう少し調査してみたいと思います。
+- (\*1) 暗黙の再借用 (reborrowing) がここでは行われないからと思いますが、なぜ行われないのかの明確な理由は探しきれませんでした。もう少し調査してみたいと思います。
   - [Reborrow について](https://cheats.rs/#language-sugar)
   - [&mut T seems to behave like a Copy type - help - The Rust Programming Language Forum](https://users.rust-lang.org/t/mut-t-seems-to-behave-like-a-copy-type/16578)
   - [Why can I use an &mut reference twice? : rust](https://www.reddit.com/r/rust/comments/46qwjv/why_can_i_use_an_mut_reference_twice/)

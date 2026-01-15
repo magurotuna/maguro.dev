@@ -9,11 +9,13 @@ This is a personal blog/website built with [Astro](https://astro.build/), a mode
 ## Development Commands
 
 ### Build & Development
+
 - **Install dependencies**: `npm install`
 - **Build the site**: `npm run build` (generates redirects then builds)
 - **Local development server**: `npm run dev` (auto-reloads on changes)
 
 ### Common Tasks
+
 - **Create a new blog post**: Add a new `.mdx` file in `src/content/blog/` with YAML frontmatter
 - **Generate redirects**: `npm run build` (runs generate-redirects.ts before Astro build)
 - **Link card metadata**: `npm run link-cards:strict` (strict mode for link card generation)
@@ -21,6 +23,7 @@ This is a personal blog/website built with [Astro](https://astro.build/), a mode
 ## Architecture & Structure
 
 ### Content Organization
+
 - **Blog posts**: `src/content/blog/*.mdx` - Technical articles in MDX format
 - **Pages**: `src/pages/` - Astro page components
 - **Layouts**: `src/layouts/` - Base layout with theme and SEO support
@@ -28,6 +31,7 @@ This is a personal blog/website built with [Astro](https://astro.build/), a mode
 - **Static assets**: `public/` - Images, favicon, robots.txt, redirects
 
 ### Post Frontmatter Structure
+
 ```yaml
 ---
 title: "Post Title"
@@ -39,25 +43,29 @@ draft: false
 ```
 
 ### Key Configuration
+
 - **astro.config.mjs**: Main Astro configuration (integrations, markdown plugins)
 - **netlify.toml**: Deployment configuration (Node.js 22)
 - **tsconfig.json**: TypeScript configuration
 - **src/content/config.ts**: Content collection schema definition
 
 ### Component Library
+
 - **Tweet.astro**: Twitter embed with theme-aware re-rendering
 - **YouTube.astro**: YouTube video embed component
 - **LinkCard.astro**: Rich link preview cards
 - **ThemeToggle.astro**: Dark/light theme switcher with localStorage
 
 ### Data Files
+
 - **data/preserved-posts.json**: List of 13 post slugs to keep on main site
 - **data/weekly-reports.json**: Weekly report slugs (redirected to archive)
 - **data/archived-tags.json**: Tags only appearing in archived content
 - **data/zola-tag-slugs.json**: Mapping of tag names to old Zola URL slugs
 
 ### Scripts
-- **scripts/generate-redirects.ts**: Generates _redirects file from data JSONs
+
+- **scripts/generate-redirects.ts**: Generates \_redirects file from data JSONs
 
 ## Important Notes
 

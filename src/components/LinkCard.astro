@@ -9,15 +9,17 @@ interface Props {
 const { url, title, description, image } = Astro.props;
 
 // Extract domain from URL
-const domain = new URL(url).hostname.replace('www.', '');
+const domain = new URL(url).hostname.replace("www.", "");
 ---
 
 <a href={url} class="link-card" target="_blank" rel="noopener noreferrer">
-  {image && (
-    <div class="link-card-image">
-      <img src={image} alt="" loading="lazy" />
-    </div>
-  )}
+  {
+    image && (
+      <div class="link-card-image">
+        <img src={image} alt="" loading="lazy" />
+      </div>
+    )
+  }
   <div class="link-card-content">
     <div class="link-card-title">{title || url}</div>
     {description && <div class="link-card-description">{description}</div>}
