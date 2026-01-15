@@ -12,7 +12,9 @@
     "link-cards:strict": "tsx scripts/link-cards.ts --strict",
     "test:redirects": "tsx scripts/smoke-test-redirects.ts",
     "test:archive-noindex": "tsx scripts/smoke-test-archive-noindex.ts",
-    "test:screenshots": "playwright test"
+    "test:screenshots": "playwright test",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "dependencies": {
     "@astrojs/mdx": "^4.0.0",
@@ -41,6 +43,8 @@
   "devDependencies": {
     "@playwright/test": "^1.57.0",
     "@types/node": "^22.0.0",
+    "prettier": "^3.8.0",
+    "prettier-plugin-astro": "^0.14.1",
     "typescript": "^5.0.0"
   }
 }
