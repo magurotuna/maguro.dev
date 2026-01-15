@@ -8,9 +8,10 @@ import { slugifyTag } from '../utils/slugify';
 interface Props {
   post: CollectionEntry<'blog'>;
   headings: { depth: number; slug: string; text: string }[];
+  readingTime: number;
 }
 
-const { post, headings } = Astro.props;
+const { post, headings, readingTime } = Astro.props;
 const { title, date, tags, description } = post.data;
 
 const formattedDate = date.toISOString().split('T')[0];
@@ -27,6 +28,7 @@ const tocHeadings = headings.filter((h) => h.depth >= 1 && h.depth <= 3);
       <h1 class="post-title">{title}</h1>
       <div class="post-meta">
         <time datetime={date.toISOString()}>{formattedDate}</time>
+        <span class="reading-time">{readingTime}分で読めます</span>
         {tags.length > 0 && (
           <ul class="post-tags">
             {tags.map((tag) => (
@@ -86,6 +88,10 @@ const tocHeadings = headings.filter((h) => h.depth >= 1 && h.depth <= 3);
     gap: var(--spacing-unit);
     flex-wrap: wrap;
     font-size: 0.9rem;
+    color: var(--color-text-secondary);
+  }
+
+  .reading-time {
     color: var(--color-text-secondary);
   }
 

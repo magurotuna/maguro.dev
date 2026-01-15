@@ -12,8 +12,13 @@ export async function getStaticPaths() {
 
 const { post } = Astro.props;
 const { Content, headings } = await render(post);
+
+// 読了時間を計算（日本語: 約500文字/分）
+const CHARS_PER_MINUTE = 500;
+const charCount = post.body?.length ?? 0;
+const readingTime = Math.max(1, Math.round(charCount / CHARS_PER_MINUTE));
 ---
 
-<PostLayout post={post} headings={headings}>
+<PostLayout post={post} headings={headings} readingTime={readingTime}>
   <Content />
 </PostLayout>
