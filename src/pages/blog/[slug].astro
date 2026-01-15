@@ -12,8 +12,17 @@ export async function getStaticPaths() {
 
 const { post } = Astro.props;
 const { Content, headings } = await render(post);
+
+// Calculate estimated reading minutes
+// Strip code blocks and inline code to get more accurate reading time for prose
+const CHARS_PER_MINUTE_JA = 500;
+const bodyWithoutCode = (post.body ?? '')
+  .replace(/```[\s\S]*?```/g, '') // Remove fenced code blocks
+  .replace(/`[^`]+`/g, '');       // Remove inline code
+const charCount = bodyWithoutCode.length;
+const readingTime = Math.max(1, Math.round(charCount / CHARS_PER_MINUTE_JA));
 ---
 
-<PostLayout post={post} headings={headings}>
+<PostLayout post={post} headings={headings} readingTime={readingTime}>
   <Content />
 </PostLayout>
