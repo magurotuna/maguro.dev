@@ -1,9 +1,12 @@
 ---
-import { getCollection } from 'astro:content';
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import { slugifyTag } from '../../utils/slugify';
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { slugifyTag } from "../../utils/slugify";
 
-const posts = await getCollection('blog', ({ data }) => !data.draft || import.meta.env.DEV);
+const posts = await getCollection(
+  "blog",
+  ({ data }) => !data.draft || import.meta.env.DEV,
+);
 
 // Collect all unique tags with their post counts
 const tagCounts = new Map<string, number>();
@@ -23,20 +26,22 @@ const sortedTags = Array.from(tagCounts.entries()).sort((a, b) => {
 <BaseLayout title="Tags | maguro.dev" description="All tags">
   <section class="tags-page">
     <h1>Tags</h1>
-    {sortedTags.length === 0 ? (
-      <p class="no-tags">No tags yet.</p>
-    ) : (
-      <ul class="tag-list">
-        {sortedTags.map(([tag, count]) => (
-          <li>
-            <a href={`/tags/${slugifyTag(tag)}/`} class="tag-link">
-              <span class="tag-name">{tag}</span>
-              <span class="tag-count">({count})</span>
-            </a>
-          </li>
-        ))}
-      </ul>
-    )}
+    {
+      sortedTags.length === 0 ? (
+        <p class="no-tags">No tags yet.</p>
+      ) : (
+        <ul class="tag-list">
+          {sortedTags.map(([tag, count]) => (
+            <li>
+              <a href={`/tags/${slugifyTag(tag)}/`} class="tag-link">
+                <span class="tag-name">{tag}</span>
+                <span class="tag-count">({count})</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      )
+    }
   </section>
 </BaseLayout>
 

@@ -1,9 +1,12 @@
 ---
-import { getCollection, render } from 'astro:content';
-import PostLayout from '../../layouts/PostLayout.astro';
+import { getCollection, render } from "astro:content";
+import PostLayout from "../../layouts/PostLayout.astro";
 
 export async function getStaticPaths() {
-  const posts = await getCollection('blog', ({ data }) => !data.draft || import.meta.env.DEV);
+  const posts = await getCollection(
+    "blog",
+    ({ data }) => !data.draft || import.meta.env.DEV,
+  );
   return posts.map((post) => ({
     params: { slug: post.id },
     props: { post },
@@ -16,9 +19,9 @@ const { Content, headings } = await render(post);
 // Calculate estimated reading minutes
 // Strip code blocks and inline code to get more accurate reading time for prose
 const CHARS_PER_MINUTE_JA = 500;
-const bodyWithoutCode = (post.body ?? '')
-  .replace(/```[\s\S]*?```/g, '') // Remove fenced code blocks
-  .replace(/`[^`]+`/g, '');       // Remove inline code
+const bodyWithoutCode = (post.body ?? "")
+  .replace(/```[\s\S]*?```/g, "") // Remove fenced code blocks
+  .replace(/`[^`]+`/g, ""); // Remove inline code
 const charCount = bodyWithoutCode.length;
 const readingTime = Math.max(1, Math.round(charCount / CHARS_PER_MINUTE_JA));
 ---

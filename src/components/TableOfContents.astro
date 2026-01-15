@@ -10,11 +10,13 @@ const { headings } = Astro.props;
   <details open>
     <summary class="toc-title">目次</summary>
     <ul class="toc-list">
-      {headings.map((heading) => (
-        <li class={`toc-item depth-${heading.depth}`}>
-          <a href={`#${heading.slug}`}>{heading.text}</a>
-        </li>
-      ))}
+      {
+        headings.map((heading) => (
+          <li class={`toc-item depth-${heading.depth}`}>
+            <a href={`#${heading.slug}`}>{heading.text}</a>
+          </li>
+        ))
+      }
     </ul>
   </details>
 </nav>

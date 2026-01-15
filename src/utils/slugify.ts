@@ -15,24 +15,24 @@
  */
 export function slugifyTag(tag: string): string {
   // NFC normalization
-  let slug = tag.normalize('NFC');
+  let slug = tag.normalize("NFC");
 
   // Replace special characters with text equivalents
   const replacements: [string | RegExp, string][] = [
-    [/\+/g, '-plus-'],
-    [/#/g, '-sharp-'],
-    [/\./g, '-dot-'],
-    [/&/g, '-and-'],
-    [/@/g, '-at-'],
-    [/!/g, '-bang-'],
-    [/\*/g, '-star-'],
-    [/\^/g, '-caret-'],
-    [/~/g, '-tilde-'],
-    [/%/g, '-pct-'],
-    [/\$/g, '-dollar-'],
-    [/=/g, '-eq-'],
-    [/:/g, '-colon-'],
-    [/;/g, '-semi-'],
+    [/\+/g, "-plus-"],
+    [/#/g, "-sharp-"],
+    [/\./g, "-dot-"],
+    [/&/g, "-and-"],
+    [/@/g, "-at-"],
+    [/!/g, "-bang-"],
+    [/\*/g, "-star-"],
+    [/\^/g, "-caret-"],
+    [/~/g, "-tilde-"],
+    [/%/g, "-pct-"],
+    [/\$/g, "-dollar-"],
+    [/=/g, "-eq-"],
+    [/:/g, "-colon-"],
+    [/;/g, "-semi-"],
   ];
 
   for (const [pattern, replacement] of replacements) {
@@ -40,24 +40,24 @@ export function slugifyTag(tag: string): string {
   }
 
   // Remove unsafe characters
-  slug = slug.replace(/[/?\\]/g, '');
+  slug = slug.replace(/[/?\\]/g, "");
   // Remove control characters
-  slug = slug.replace(/[\x00-\x1f\x7f]/g, '');
+  slug = slug.replace(/[\x00-\x1f\x7f]/g, "");
 
   // Convert spaces to hyphens
-  slug = slug.replace(/\s+/g, '-');
+  slug = slug.replace(/\s+/g, "-");
 
   // Lowercase ASCII only (preserve non-ASCII case)
   slug = slug.replace(/[A-Z]/g, (char) => char.toLowerCase());
 
   // Clean up multiple consecutive hyphens
-  slug = slug.replace(/-+/g, '-');
+  slug = slug.replace(/-+/g, "-");
 
   // Remove leading/trailing hyphens
-  slug = slug.replace(/^-+|-+$/g, '');
+  slug = slug.replace(/^-+|-+$/g, "");
 
   // Check for empty or degenerate slug
-  if (!slug || slug === '-') {
+  if (!slug || slug === "-") {
     throw new Error(`Tag "${tag}" produces empty or invalid slug`);
   }
 

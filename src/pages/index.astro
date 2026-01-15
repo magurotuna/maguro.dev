@@ -1,49 +1,64 @@
 ---
-import { getCollection } from 'astro:content';
-import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection } from "astro:content";
+import BaseLayout from "../layouts/BaseLayout.astro";
 
-const posts = await getCollection('blog', ({ data }) => !data.draft || import.meta.env.DEV);
-const sortedPosts = posts.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const posts = await getCollection(
+  "blog",
+  ({ data }) => !data.draft || import.meta.env.DEV,
+);
+const sortedPosts = posts.sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
+);
 
 // Group posts by year
-const postsByYear = sortedPosts.reduce((acc, post) => {
-  const year = post.data.date.getFullYear();
-  if (!acc[year]) acc[year] = [];
-  acc[year].push(post);
-  return acc;
-}, {} as Record<number, typeof sortedPosts>);
+const postsByYear = sortedPosts.reduce(
+  (acc, post) => {
+    const year = post.data.date.getFullYear();
+    if (!acc[year]) acc[year] = [];
+    acc[year].push(post);
+    return acc;
+  },
+  {} as Record<number, typeof sortedPosts>,
+);
 
-const years = Object.keys(postsByYear).map(Number).sort((a, b) => b - a);
+const years = Object.keys(postsByYear)
+  .map(Number)
+  .sort((a, b) => b - a);
 
 function formatDate(date: Date): string {
-  return date.toISOString().split('T')[0];
+  return date.toISOString().split("T")[0];
 }
 ---
 
 <BaseLayout title="maguro.dev" description="技術ブログ">
   <section class="posts">
     <h1 class="sr-only">Posts</h1>
-    {years.length === 0 ? (
-      <p class="no-posts">No posts yet.</p>
-    ) : (
-      years.map((year) => (
-        <div class="year-group">
-          <h2 class="year-heading">{year}</h2>
-          <ul class="post-list">
-            {postsByYear[year].map((post) => (
-              <li class="post-item">
-                <a href={`/blog/${post.id}/`} class="post-link">
-                  <span class="post-title">{post.data.title}</span>
-                  <time datetime={post.data.date.toISOString()} class="post-date">
-                    {formatDate(post.data.date)}
-                  </time>
-                </a>
-              </li>
-            ))}
-          </ul>
-        </div>
-      ))
-    )}
+    {
+      years.length === 0 ? (
+        <p class="no-posts">No posts yet.</p>
+      ) : (
+        years.map((year) => (
+          <div class="year-group">
+            <h2 class="year-heading">{year}</h2>
+            <ul class="post-list">
+              {postsByYear[year].map((post) => (
+                <li class="post-item">
+                  <a href={`/blog/${post.id}/`} class="post-link">
+                    <span class="post-title">{post.data.title}</span>
+                    <time
+                      datetime={post.data.date.toISOString()}
+                      class="post-date"
+                    >
+                      {formatDate(post.data.date)}
+                    </time>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))
+      )
+    }
   </section>
 </BaseLayout>
 

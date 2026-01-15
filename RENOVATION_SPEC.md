@@ -9,25 +9,27 @@ Renovate maguro.dev by migrating from Zola to Astro, preserving valuable technic
 ## 1. Content Strategy
 
 ### Posts to Preserve (13 posts)
+
 These will live on the new maguro.dev at `/blog/[slug]/`:
 
-| Slug | Title |
-|------|-------|
-| `async-recursion` | Rust で再帰的に呼び出される async 関数を作りたいときには async-recursion クレートが便利 |
-| `associated-type-vs-generic-type-in-trait` | Rust のトレイトで、associated type か generic type のどちらを使うか迷ったときの指針 |
-| `btree-maximum-value` | Rust の BTreeSet / BTreeMap で最大値を素早く取得する方法 |
-| `cargo-snippet-pr` | cargo-snippet にPRを出し、爆速でmergeされました |
-| `chmin-chmax-macro` | 競プロ用のライブラリを Rust で作ってみたシリーズ 〜 chmin! / chmax! マクロ編〜 |
-| `coc-pairs-cursor` | coc.nvim の拡張機能である coc-pairs で改行時にカーソル位置を望む場所にもってくる |
-| `debug-macro` | 競技プログラミングでの使い勝手を考えたオレオレデバッグマクロを作りました |
-| `hashmap-value-i32` | HashMap / BTreeMap に何かの回数を値として管理させるときにはオーバーフローに注意 |
-| `rust-dbg-in-release` | Rust の dbg! マクロはリリースビルドでも普通に動く |
-| `rust-itertools-join` | Rustで文字列イテレータを連結するときに便利な itertools::join は結構遅い |
-| `rust-std-fs-copy` | Rust の std::fs::copy の macOS と Linux での挙動の違い |
-| `rustup-noninteractively` | rustup を非対話的環境でインストールする方法 |
-| `shinjuku-rs-10` | 2020/06/30 に開催された Shinjuku.rs #10 に参加しました |
+| Slug                                       | Title                                                                                   |
+| ------------------------------------------ | --------------------------------------------------------------------------------------- |
+| `async-recursion`                          | Rust で再帰的に呼び出される async 関数を作りたいときには async-recursion クレートが便利 |
+| `associated-type-vs-generic-type-in-trait` | Rust のトレイトで、associated type か generic type のどちらを使うか迷ったときの指針     |
+| `btree-maximum-value`                      | Rust の BTreeSet / BTreeMap で最大値を素早く取得する方法                                |
+| `cargo-snippet-pr`                         | cargo-snippet にPRを出し、爆速でmergeされました                                         |
+| `chmin-chmax-macro`                        | 競プロ用のライブラリを Rust で作ってみたシリーズ 〜 chmin! / chmax! マクロ編〜          |
+| `coc-pairs-cursor`                         | coc.nvim の拡張機能である coc-pairs で改行時にカーソル位置を望む場所にもってくる        |
+| `debug-macro`                              | 競技プログラミングでの使い勝手を考えたオレオレデバッグマクロを作りました                |
+| `hashmap-value-i32`                        | HashMap / BTreeMap に何かの回数を値として管理させるときにはオーバーフローに注意         |
+| `rust-dbg-in-release`                      | Rust の dbg! マクロはリリースビルドでも普通に動く                                       |
+| `rust-itertools-join`                      | Rustで文字列イテレータを連結するときに便利な itertools::join は結構遅い                 |
+| `rust-std-fs-copy`                         | Rust の std::fs::copy の macOS と Linux での挙動の違い                                  |
+| `rustup-noninteractively`                  | rustup を非対話的環境でインストールする方法                                             |
+| `shinjuku-rs-10`                           | 2020/06/30 に開催された Shinjuku.rs #10 に参加しました                                  |
 
 ### Posts to Archive
+
 These will redirect to archive.maguro.dev:
 
 - `laravel-nuxt-twitter-login`
@@ -38,6 +40,7 @@ These will redirect to archive.maguro.dev:
 - All 53 weekly reports (`weekly-report-*`)
 
 ### Static Pages
+
 - **Keep**: About page (Japanese only)
 - **Remove**: About-en, Apps (will return 404 - intentionally not redirected)
 
@@ -62,6 +65,7 @@ These will redirect to archive.maguro.dev:
   - **RSS/Sitemap/Fallback handling**: Add `X-Robots-Tag` headers via Netlify `_headers` file:
     - **Location**: Create `static/_headers` in archive Zola repo (Zola copies `static/` contents to `public/` root)
     - Contents:
+
     ```
     # Fallback for all HTML pages (belt-and-suspenders with meta tag)
     /*
@@ -75,7 +79,9 @@ These will redirect to archive.maguro.dev:
     /atom.xml
       X-Robots-Tag: noindex
     ```
+
     - **Why both meta + header**: Defense in depth; if any template misses meta tag, header still prevents indexing
+
   - **Validation**: Add archive noindex smoke test to verify:
     - All HTML pages have `<meta name="robots" content="noindex, follow">`
     - `X-Robots-Tag: noindex` header is present on all responses
@@ -94,6 +100,7 @@ These will redirect to archive.maguro.dev:
     - Users who want main site can use header/footer nav or the canonical URL
     - This is acceptable since archive is noindexed anyway
   - Archived-only posts self-canonicalize (no equivalent on main site)
+
 - **Setup workflow**:
   1. Create new repo `magurotuna/archive.maguro.dev`
   2. Copy current maguro.dev content to the new repo
@@ -118,6 +125,7 @@ These will redirect to archive.maguro.dev:
 ## 3. URL Structure & Redirects
 
 ### New URL Pattern
+
 - Blog posts: `/blog/[slug]/`
 - Tag pages: `/tags/[tag]/`
 - About: `/about/`
@@ -126,6 +134,7 @@ These will redirect to archive.maguro.dev:
 ### Redirect Strategy
 
 **Redirect file policy**:
+
 - `public/_redirects.static` — Manually maintained, committed to repo
 - `public/_redirects` — **Generated at build time**, NOT committed
   - Add to `.gitignore`: `public/_redirects`
@@ -223,11 +232,13 @@ These will redirect to archive.maguro.dev:
 ## 4. Technology Stack
 
 ### Framework
+
 - **Astro** (latest stable)
 - Static site generation (SSG)
 - Content Collections for blog posts
 
 ### Key Dependencies
+
 - `astro` - Core framework
 - `@astrojs/mdx` - MDX support for rich content
 - `@astrojs/rss` - RSS feed generation
@@ -245,28 +256,33 @@ These will redirect to archive.maguro.dev:
 - `tsx` - TypeScript execution for build scripts
 
 ### Hosting
+
 - **Netlify** (same as current)
 - Build command: `npm run link-cards:strict && npm run build` (validates cache then builds)
 - Publish directory: `dist/`
 
 ### Astro Configuration
+
 Key settings in `astro.config.mjs`:
+
 ```js
 export default defineConfig({
-  site: 'https://maguro.dev',  // Required for RSS, sitemap, canonical URLs
-  trailingSlash: 'always',     // Enforce trailing slashes on all URLs
+  site: "https://maguro.dev", // Required for RSS, sitemap, canonical URLs
+  trailingSlash: "always", // Enforce trailing slashes on all URLs
   integrations: [
     mdx(),
     sitemap(),
     pagefind(),
-    expressiveCode(),          // Code blocks with copy button, line numbers
+    expressiveCode(), // Code blocks with copy button, line numbers
   ],
   // ... other config
 });
 ```
 
 ### Build Pipeline
+
 The `npm run build` command runs the following in order:
+
 1. `scripts/generate-redirects.ts` - generates weekly-report and tag redirects, merges with static redirects
 2. `astro build` - builds the site
 3. `astro-pagefind` - auto-indexes after build (configured in astro.config.mjs)
@@ -289,6 +305,7 @@ The `npm run build` command runs the following in order:
 Note: Pagefind indexing is handled by `astro-pagefind` integration, not a separate script.
 
 ### Analytics
+
 - **Cloudflare Web Analytics** (privacy-friendly, no cookies)
 
 ---
@@ -296,6 +313,7 @@ Note: Pagefind indexing is handled by `astro-pagefind` integration, not a separa
 ## 5. Design Specification
 
 ### Design Philosophy
+
 - Between joshwcomeau.com (colorful, good typography) and blog.jim-nielsen.com (minimal)
 - **No decorative animations** - clean, static design
   - Minimal UI transitions OK (e.g., dropdown fades, hover states)
@@ -305,24 +323,28 @@ Note: Pagefind indexing is handled by `astro-pagefind` integration, not a separa
 ### Color Scheme
 
 #### Light Mode
+
 - Background: `#fafafa` or similar off-white
 - Text: `#1a1a1a` (near black)
 - Accent: Retain brand color `#c05b4d` (current rust/coral)
 - Code background: Light gray `#f5f5f5`
 
 #### Dark Mode
+
 - Background: `#0d0d0d` or `#121212`
 - Text: `#e5e5e5`
 - Accent: Lighter variant of brand color
 - Code background: `#1e1e1e`
 
 ### Typography
+
 - Body: System font stack or clean sans-serif (Noto Sans JP for Japanese)
 - Code: Monospace (JetBrains Mono, Fira Code, or system monospace)
 - Base size: 16-18px
 - Line height: 1.6-1.7 for readability
 
 ### Layout
+
 - Max content width: 720-800px (current is 800px)
 - Responsive breakpoints: Mobile (<768px), Desktop (≥768px)
 - Generous whitespace
@@ -330,12 +352,14 @@ Note: Pagefind indexing is handled by `astro-pagefind` integration, not a separa
 ### Components
 
 #### Header
+
 - Site title/logo (left)
 - Navigation links (right): Home, About, Event (links to event.maguro.dev)
 - Inline search box (results as dropdown)
 - Theme toggle (light/dark)
 
 #### Homepage
+
 - List of posts with:
   - Title (linked)
   - Date
@@ -343,6 +367,7 @@ Note: Pagefind indexing is handled by `astro-pagefind` integration, not a separa
   - Excerpt (first ~150 chars or custom description)
 
 #### Blog Post
+
 - Title
 - Date and tags
 - Table of Contents (auto-generated, collapsible on mobile)
@@ -350,6 +375,7 @@ Note: Pagefind indexing is handled by `astro-pagefind` integration, not a separa
 - Footnotes (bottom of page, traditional style)
 
 #### Footer
+
 - Copyright
 - RSS link
 - Social links (optional)
@@ -359,19 +385,25 @@ Note: Pagefind indexing is handled by `astro-pagefind` integration, not a separa
 ## 6. Features Specification
 
 ### 6.1 Light/Dark Mode
+
 - Default: Follow system preference (`prefers-color-scheme`)
 - Manual toggle in header
 - Persist preference in localStorage
 - No flash on page load (inline script in `<head>`)
 - **Emit `theme-changed` event** on toggle for components that need to react:
+
   ```js
-  document.dispatchEvent(new CustomEvent('theme-changed', { detail: { theme: 'dark' } }));
+  document.dispatchEvent(
+    new CustomEvent("theme-changed", { detail: { theme: "dark" } }),
+  );
   ```
+
   - Required by: Tweet embeds (re-render with new theme), potentially other dynamic components
 
 ### 6.2 Embeds
 
 #### X (Twitter) Embeds
+
 - Use `<Tweet id="xxx" />` component
 - **Loading strategy**: Eager render on page load (not lazy)
   - Lazy loading conflicts with theme toggle re-rendering
@@ -381,6 +413,7 @@ Note: Pagefind indexing is handled by `astro-pagefind` integration, not a separa
 - **Theme toggle handling**: Twitter embeds use an iframe that doesn't auto-update on theme change
   - `window.twttr.widgets.load()` only renders NEW tweets, not already-rendered ones
   - **Correct approach**: Store original blockquote in `<template>`, clone on initial render AND theme toggle
+
     ```astro
     <!-- Tweet.astro (component) -->
     <div class="tweet-container" data-tweet-id={id}>
@@ -395,55 +428,58 @@ Note: Pagefind indexing is handled by `astro-pagefind` integration, not a separa
     ```
 
     ```astro
-    <!-- BaseLayout.astro (global, once) — NOT in Tweet.astro to avoid duplication -->
-    <!-- Script runs after DOM ready (Astro bundled scripts default behavior) -->
-    <!-- Place at end of body, NOT in head, to ensure .tweet-container nodes exist -->
+    <!-- BaseLayout.astro (global, once) — NOT in Tweet.astro to avoid duplication --><!-- Script runs after DOM ready (Astro bundled scripts default behavior) --><!-- Place at end of body, NOT in head, to ensure .tweet-container nodes exist -->
     <script>
-    // Helper function to render tweets with current theme
-    function renderTweets(theme) {
-      document.querySelectorAll('.tweet-container').forEach(container => {
-        const template = container.querySelector('.tweet-template');
-        const embedTarget = container.querySelector('.tweet-embed');
-        if (template && embedTarget) {
-          const clone = template.content.cloneNode(true);
-          const blockquote = clone.querySelector('blockquote');
-          if (blockquote) blockquote.dataset.theme = theme;
-          embedTarget.innerHTML = '';
-          embedTarget.appendChild(clone);
+      // Helper function to render tweets with current theme
+      function renderTweets(theme) {
+        document.querySelectorAll(".tweet-container").forEach((container) => {
+          const template = container.querySelector(".tweet-template");
+          const embedTarget = container.querySelector(".tweet-embed");
+          if (template && embedTarget) {
+            const clone = template.content.cloneNode(true);
+            const blockquote = clone.querySelector("blockquote");
+            if (blockquote) blockquote.dataset.theme = theme;
+            embedTarget.innerHTML = "";
+            embedTarget.appendChild(clone);
+          }
+        });
+        // Guard: Only call if widgets.js is loaded
+        if (window.twttr?.widgets) {
+          window.twttr.widgets.load();
         }
-      });
-      // Guard: Only call if widgets.js is loaded
-      if (window.twttr?.widgets) {
-        window.twttr.widgets.load();
       }
-    }
 
-    // getCurrentTheme() must be attached to window (Astro scripts are modules by default)
-    // Define in theme toggle script: window.getCurrentTheme = function() { ... }
-    // Or use inline approach: const theme = document.documentElement.dataset.theme || 'light';
-    function getCurrentTheme() {
-      return document.documentElement.dataset.theme || 'light';
-    }
+      // getCurrentTheme() must be attached to window (Astro scripts are modules by default)
+      // Define in theme toggle script: window.getCurrentTheme = function() { ... }
+      // Or use inline approach: const theme = document.documentElement.dataset.theme || 'light';
+      function getCurrentTheme() {
+        return document.documentElement.dataset.theme || "light";
+      }
 
-    // Initial render on page load (wait for widgets.js)
-    if (window.twttr?.widgets) {
-      renderTweets(getCurrentTheme());
-    } else {
-      // widgets.js not yet loaded; wait for it
-      window.twttr = window.twttr || {};
-      window.twttr.ready = window.twttr.ready || function(fn) {
-        window.twttr._e = window.twttr._e || [];
-        window.twttr._e.push(fn);
-      };
-      window.twttr.ready(function() { renderTweets(getCurrentTheme()); });
-    }
+      // Initial render on page load (wait for widgets.js)
+      if (window.twttr?.widgets) {
+        renderTweets(getCurrentTheme());
+      } else {
+        // widgets.js not yet loaded; wait for it
+        window.twttr = window.twttr || {};
+        window.twttr.ready =
+          window.twttr.ready ||
+          function (fn) {
+            window.twttr._e = window.twttr._e || [];
+            window.twttr._e.push(fn);
+          };
+        window.twttr.ready(function () {
+          renderTweets(getCurrentTheme());
+        });
+      }
 
-    // On theme toggle: re-render with new theme
-    document.addEventListener('theme-changed', function(e) {
-      renderTweets(e.detail.theme);
-    });
+      // On theme toggle: re-render with new theme
+      document.addEventListener("theme-changed", function (e) {
+        renderTweets(e.detail.theme);
+      });
     </script>
     ```
+
   - **Script placement**: Tweet rendering script in `BaseLayout.astro` (once), NOT in `Tweet.astro`
     - Prevents duplicate listeners when multiple tweets on same page
   - **widgets.js loading**: Load `https://platform.twitter.com/widgets.js` in base layout (global, once)
@@ -453,7 +489,7 @@ Note: Pagefind indexing is handled by `astro-pagefind` integration, not a separa
   - **Required: Debounce theme toggle** to prevent rapid re-renders:
     ```js
     let debounceTimer;
-    document.addEventListener('theme-changed', function(e) {
+    document.addEventListener("theme-changed", function (e) {
       clearTimeout(debounceTimer);
       debounceTimer = setTimeout(() => renderTweets(e.detail.theme), 300);
     });
@@ -464,19 +500,22 @@ Note: Pagefind indexing is handled by `astro-pagefind` integration, not a separa
     ```js
     setTimeout(() => {
       if (!window.twttr?.widgets) {
-        document.querySelectorAll('.tweet-embed:empty').forEach(el => {
-          el.innerHTML = '<p><a href="https://twitter.com/...">View tweet</a></p>';
+        document.querySelectorAll(".tweet-embed:empty").forEach((el) => {
+          el.innerHTML =
+            '<p><a href="https://twitter.com/...">View tweet</a></p>';
         });
       }
     }, 5000);
     ```
 
 #### YouTube Embeds
+
 - Use `<YouTube id="xxx" />` component
 - Responsive 16:9 aspect ratio
 - Lazy load with facade/thumbnail
 
 #### Link Cards (Auto-detect)
+
 - Automatically convert standalone links (link on its own line) to rich cards
 - Card displays:
   - Title (from OG/meta)
@@ -539,6 +578,7 @@ Note: Pagefind indexing is handled by `astro-pagefind` integration, not a separa
       - GitHub Actions `link-cards:strict` is optional additional check
 
 ### 6.3 Footnotes
+
 - **Primary syntax**: Inline footnotes (Pandoc-style): `^[footnote content here]`
   - No manual numbering required
   - Numbers auto-assigned in order of appearance **per article** (each post starts at 1)
@@ -565,12 +605,14 @@ Note: Pagefind indexing is handled by `astro-pagefind` integration, not a separa
     - This prevents silent content loss from `remark-remove-gfm-footnotes`
 
 ### 6.4 KaTeX / Math Support
+
 - Inline math: `$...$`
 - Block math: `$$...$$`
 - Rendered at build time (no client-side JS)
 - **Required CSS**: Import `katex/dist/katex.min.css` in base layout (rehype-katex only generates HTML, not styles)
 
 ### 6.5 Code Blocks
+
 - **Use `astro-expressive-code`** (wraps Shiki with additional features)
   - Provides copy button, line numbers, and language label out of the box
   - Shiki alone doesn't include these UI features
@@ -582,30 +624,35 @@ Note: Pagefind indexing is handled by `astro-pagefind` integration, not a separa
 - Language label (enabled by default)
 
 ### 6.6 Table of Contents
+
 - Auto-generated from headings (h2, h3)
 - Sticky sidebar on desktop (if space allows)
 - Collapsible on mobile
 - Highlight current section on scroll
 
 ### 6.7 Search
+
 - Client-side search using **astro-pagefind** integration
 - **No keyboard shortcuts** (to avoid conflicts with user-defined shortcuts)
 - **UI implementation**:
   - `Search.astro` wraps `@pagefind/default-ui` component
   - Import Pagefind CSS: `import '@pagefind/default-ui/css/ui.css'`
   - **Client-side initialization** (required for interactivity):
+
     ```astro
     <!-- Search.astro component -->
     <div id="search"></div>
     <script>
       // Astro bundles this script and resolves bare imports
       // Runs after DOM is ready (Astro default behavior)
-      import { PagefindUI } from '@pagefind/default-ui';
-      new PagefindUI({ element: '#search', showSubResults: true });
+      import { PagefindUI } from "@pagefind/default-ui";
+      new PagefindUI({ element: "#search", showSubResults: true });
     </script>
     ```
+
     - Note: Don't use `is:inline` — bare imports won't resolve in inline scripts
     - Astro's bundled scripts execute after DOM is ready by default
+
   - **Dev mode handling**: Pagefind index doesn't exist during `astro dev` (only after `astro build`)
     - The `PagefindUI` constructor will 404 on `/pagefind/pagefind.js` and show an error in console
     - **Note**: try/catch won't suppress async fetch errors from PagefindUI
@@ -613,9 +660,9 @@ Note: Pagefind indexing is handled by `astro-pagefind` integration, not a separa
       ```js
       // Astro exposes import.meta.env.DEV for this
       if (!import.meta.env.DEV) {
-        new PagefindUI({ element: '#search', showSubResults: true });
+        new PagefindUI({ element: "#search", showSubResults: true });
       } else {
-        document.getElementById('search')?.remove(); // Hide search UI in dev
+        document.getElementById("search")?.remove(); // Hide search UI in dev
       }
       ```
     - This prevents noisy console errors and keeps dev environment clean
@@ -623,6 +670,7 @@ Note: Pagefind indexing is handled by `astro-pagefind` integration, not a separa
   - Inline search box in header (not a modal)
   - Results appear as dropdown below the search input
   - Override CSS variables to match site theme (light/dark mode)
+
 - **How it works**:
   - Build time: `astro-pagefind` auto-indexes after `astro build` (configured in astro.config.mjs)
   - Runtime: 100% client-side, no server required
@@ -644,6 +692,7 @@ Note: Pagefind indexing is handled by `astro-pagefind` integration, not a separa
   - Most common Pagefind issues are with compound words; single-character searches work well
 
 ### 6.8 RSS Feed
+
 - **Canonical URL**: `/rss.xml` (same as current Zola site for subscriber continuity)
 - Redirect `/feed.xml` → `/rss.xml` if accessed
 - **Trailing slash note**: `trailingSlash: 'always'` applies to HTML pages, not file endpoints
@@ -654,28 +703,32 @@ Note: Pagefind indexing is handled by `astro-pagefind` integration, not a separa
   - This prevents feed readers from treating all posts as new after migration
   - `<link>` uses new URL; `<guid>` uses old URL (with `isPermaLink="false"`)
   - **Important**: `@astrojs/rss` ignores unknown fields like `guid` — use `customData` instead:
+
     ```js
     // rss.xml.ts
-    import rss from '@astrojs/rss';
+    import rss from "@astrojs/rss";
 
     // Note: In Astro content collections, use post.id or post.slug depending on config
     // Default is post.id (filename without extension)
-    items: posts.map(post => ({
+    items: posts.map((post) => ({
       title: post.data.title,
       link: `https://maguro.dev/blog/${post.id}/`,
       pubDate: post.data.date,
       // Use customData for guid — @astrojs/rss ignores top-level guid
       customData: `<guid isPermaLink="false">https://maguro.dev/${post.id}/</guid>`,
-    }))
+    }));
     ```
+
   - **Verification**: After build, check RSS doesn't have duplicate `<guid>` tags:
     - `curl https://maguro.dev/rss.xml | grep '<guid>'` — should see exactly one per item
     - If `@astrojs/rss` auto-generates `<guid>`, the `customData` approach will create duplicates
     - Alternative: Use `link` as GUID (less ideal but simpler) if customData causes issues
+
 - Include full content or excerpt
 - Validate with W3C Feed Validator
 
 ### 6.9 Tags
+
 - Display tags on each post
 - Tag pages at `/tags/[tag]/` listing all posts with that tag
 - Tag cloud or list on homepage/sidebar (optional)
@@ -947,12 +1000,14 @@ Note: Pagefind indexing is handled by `astro-pagefind` integration, not a separa
 ## 9. Migration Checklist
 
 ### Phase 1: Setup
+
 - [ ] Initialize new Astro project
 - [ ] Configure TypeScript
 - [ ] Set up content collections
 - [ ] Install dependencies (MDX, RSS, KaTeX, etc.)
 
 ### Phase 2: Design & Layout
+
 - [ ] Create base layout with theme support
 - [ ] Build header component with navigation
 - [ ] Build footer component
@@ -960,6 +1015,7 @@ Note: Pagefind indexing is handled by `astro-pagefind` integration, not a separa
 - [ ] Set up global styles and CSS variables
 
 ### Phase 3: Core Pages
+
 - [ ] Homepage with post list
 - [ ] Blog post template with ToC
 - [ ] About page
@@ -967,6 +1023,7 @@ Note: Pagefind indexing is handled by `astro-pagefind` integration, not a separa
 - [ ] 404 page
 
 ### Phase 4: Features
+
 - [ ] Implement embed components (Tweet, YouTube, LinkCard)
 - [ ] Set up KaTeX rendering
 - [ ] Configure syntax highlighting themes
@@ -975,6 +1032,7 @@ Note: Pagefind indexing is handled by `astro-pagefind` integration, not a separa
 - [ ] Generate RSS feed
 
 ### Phase 5: Content Migration
+
 - [ ] Copy 13 preserved posts to new structure
 - [ ] Update frontmatter format for Astro
 - [ ] **Audit and convert Zola shortcodes to MDX components**:
@@ -1043,6 +1101,7 @@ Note: Pagefind indexing is handled by `astro-pagefind` integration, not a separa
   - Required for old tag URL → new tag URL redirects
 
 ### Phase 6: Redirects & Archive
+
 - [ ] Create new repo `magurotuna/archive.maguro.dev`
 - [ ] Copy current Zola site to archive repo
 - [ ] Configure Netlify to deploy archive repo to `archive.maguro.dev`
@@ -1061,9 +1120,9 @@ Note: Pagefind indexing is handled by `astro-pagefind` integration, not a separa
     - **Try HEAD first, fall back to GET**: Some CDN/Netlify setups handle HEAD differently or omit Location header
     - Example logic:
       ```ts
-      let res = await fetch(url, { method: 'HEAD', redirect: 'manual' });
+      let res = await fetch(url, { method: "HEAD", redirect: "manual" });
       if (res.status !== 301 && res.status !== 302) {
-        res = await fetch(url, { method: 'GET', redirect: 'manual' });
+        res = await fetch(url, { method: "GET", redirect: "manual" });
       }
       ```
     - This reduces false negatives from HEAD-specific CDN behavior
@@ -1083,6 +1142,7 @@ Note: Pagefind indexing is handled by `astro-pagefind` integration, not a separa
 - [ ] Test all redirect rules using smoke test script
 
 ### Phase 7: Polish & Deploy
+
 - [ ] Add Cloudflare Analytics
 - [ ] SEO optimization (meta tags, sitemap, robots.txt)
 - [ ] Performance audit (Lighthouse)
@@ -1104,10 +1164,12 @@ draft: false
 ```
 
 ### Draft Handling
+
 Drafts (`draft: true`) are excluded from:
+
 - **Page generation**: Filter in `getStaticPaths()` and `getCollection()`
   ```ts
-  const posts = await getCollection('blog', ({ data }) => !data.draft);
+  const posts = await getCollection("blog", ({ data }) => !data.draft);
   ```
 - **RSS feed**: Same filter applied in `rss.xml.ts`
 - **Search index**: `data-pagefind-ignore` attribute on draft pages
@@ -1117,26 +1179,27 @@ Drafts (`draft: true`) are excluded from:
 
 ## 11. Decisions Summary
 
-| Question | Decision |
-|----------|----------|
-| Posts to preserve | 13 Rust/tech posts (listed above) |
-| Archive setup | Separate repo `magurotuna/archive.maguro.dev` with frozen Zola site |
-| URL structure | /blog/[slug]/ with redirects |
-| Design style | Clean, between joshwcomeau and jim-nielsen, no decorative animations (minimal UI transitions OK) |
-| Homepage layout | List with excerpts |
-| Footnotes | Inline `^[...]` syntax (Pandoc-style), rendered at bottom |
-| Analytics | Cloudflare Web Analytics |
-| Language | Japanese only |
-| Code theme | Match site theme (light/dark) |
-| Tags | Keep with dedicated tag pages |
-| Link cards | Auto-detect standalone links |
-| Search | Pagefind, inline dropdown (not modal), no keyboard shortcuts |
+| Question          | Decision                                                                                         |
+| ----------------- | ------------------------------------------------------------------------------------------------ |
+| Posts to preserve | 13 Rust/tech posts (listed above)                                                                |
+| Archive setup     | Separate repo `magurotuna/archive.maguro.dev` with frozen Zola site                              |
+| URL structure     | /blog/[slug]/ with redirects                                                                     |
+| Design style      | Clean, between joshwcomeau and jim-nielsen, no decorative animations (minimal UI transitions OK) |
+| Homepage layout   | List with excerpts                                                                               |
+| Footnotes         | Inline `^[...]` syntax (Pandoc-style), rendered at bottom                                        |
+| Analytics         | Cloudflare Web Analytics                                                                         |
+| Language          | Japanese only                                                                                    |
+| Code theme        | Match site theme (light/dark)                                                                    |
+| Tags              | Keep with dedicated tag pages                                                                    |
+| Link cards        | Auto-detect standalone links                                                                     |
+| Search            | Pagefind, inline dropdown (not modal), no keyboard shortcuts                                     |
 
 ---
 
 ## 12. Migration Day Checklist
 
 ### Pre-Migration (Day Before)
+
 - [ ] **Content freeze**: Stop publishing new posts on Zola site
   - Any posts published after this point could be lost
   - Announce freeze date internally if applicable
@@ -1146,6 +1209,7 @@ Drafts (`draft: true`) are excluded from:
 - [ ] Verify DNS TTL is low enough for quick propagation (recommend 300s)
 
 ### Migration Day
+
 1. [ ] Final `zola build` and snapshot of production site
 2. [ ] Deploy archive.maguro.dev with frozen Zola content
 3. [ ] Verify archive site: noindex headers, canonical tags, all posts accessible
@@ -1157,7 +1221,9 @@ Drafts (`draft: true`) are excluded from:
 9. [ ] Monitor for 404s in Netlify analytics (first hour)
 
 ### Rollback Plan
+
 If critical issues are discovered post-deploy:
+
 1. **Immediate (< 1 hour)**: Revert Netlify deploy to previous production
    - Netlify keeps deploy history; one-click rollback in dashboard
 2. **DNS-level**: Point maguro.dev to archive.maguro.dev temporarily
@@ -1168,6 +1234,7 @@ If critical issues are discovered post-deploy:
    - Keep for at least 2 weeks post-migration
 
 ### Post-Migration Verification
+
 - [ ] Submit new sitemap to Google Search Console
 - [ ] Verify RSS feed in a feed reader
 - [ ] Check search works with Japanese queries

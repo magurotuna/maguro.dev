@@ -1,5 +1,5 @@
 ---
-import { Icon } from 'astro-icon/components';
+import { Icon } from "astro-icon/components";
 
 const currentYear = new Date().getFullYear();
 ---
@@ -8,10 +8,30 @@ const currentYear = new Date().getFullYear();
   <div class="footer-inner">
     <p class="copyright">&copy; {currentYear} maguro.dev</p>
     <nav class="footer-links">
-      <a href="/rss.xml" title="RSS Feed" class="icon-link"><Icon name="lucide:rss" size={18} /></a>
-      <a href="https://github.com/magurotuna" target="_blank" rel="noopener" title="GitHub" class="icon-link"><Icon name="lucide:github" size={18} /></a>
-      <a href="https://x.com/yusuktan" target="_blank" rel="noopener" title="X" class="icon-link"><Icon name="simple-icons:x" size={18} /></a>
-      <a href="https://www.linkedin.com/in/yusuktan/" target="_blank" rel="noopener" title="LinkedIn" class="icon-link"><Icon name="lucide:linkedin" size={18} /></a>
+      <a href="/rss.xml" title="RSS Feed" class="icon-link"
+        ><Icon name="lucide:rss" size={18} /></a
+      >
+      <a
+        href="https://github.com/magurotuna"
+        target="_blank"
+        rel="noopener"
+        title="GitHub"
+        class="icon-link"><Icon name="lucide:github" size={18} /></a
+      >
+      <a
+        href="https://x.com/yusuktan"
+        target="_blank"
+        rel="noopener"
+        title="X"
+        class="icon-link"><Icon name="simple-icons:x" size={18} /></a
+      >
+      <a
+        href="https://www.linkedin.com/in/yusuktan/"
+        target="_blank"
+        rel="noopener"
+        title="LinkedIn"
+        class="icon-link"><Icon name="lucide:linkedin" size={18} /></a
+      >
     </nav>
   </div>
 </footer>

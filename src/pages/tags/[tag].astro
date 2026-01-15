@@ -1,10 +1,13 @@
 ---
-import { getCollection } from 'astro:content';
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import { slugifyTag } from '../../utils/slugify';
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { slugifyTag } from "../../utils/slugify";
 
 export async function getStaticPaths() {
-  const posts = await getCollection('blog', ({ data }) => !data.draft || import.meta.env.DEV);
+  const posts = await getCollection(
+    "blog",
+    ({ data }) => !data.draft || import.meta.env.DEV,
+  );
 
   // Collect all unique tags
   const tagSet = new Set<string>();
@@ -29,29 +32,36 @@ export async function getStaticPaths() {
 const { tag, posts } = Astro.props;
 
 function formatDate(date: Date): string {
-  return date.toISOString().split('T')[0];
+  return date.toISOString().split("T")[0];
 }
 ---
 
-<BaseLayout title={`${tag} | maguro.dev`} description={`Posts tagged with ${tag}`}>
+<BaseLayout
+  title={`${tag} | maguro.dev`}
+  description={`Posts tagged with ${tag}`}
+>
   <section class="tag-page">
     <header class="tag-header">
       <a href="/tags/" class="back-link">&larr; All Tags</a>
       <h1>{tag}</h1>
-      <p class="post-count">{posts.length} post{posts.length !== 1 ? 's' : ''}</p>
+      <p class="post-count">
+        {posts.length} post{posts.length !== 1 ? "s" : ""}
+      </p>
     </header>
 
     <ul class="post-list">
-      {posts.map((post) => (
-        <li class="post-item">
-          <a href={`/blog/${post.id}/`} class="post-link">
-            <span class="post-title">{post.data.title}</span>
-            <time datetime={post.data.date.toISOString()} class="post-date">
-              {formatDate(post.data.date)}
-            </time>
-          </a>
-        </li>
-      ))}
+      {
+        posts.map((post) => (
+          <li class="post-item">
+            <a href={`/blog/${post.id}/`} class="post-link">
+              <span class="post-title">{post.data.title}</span>
+              <time datetime={post.data.date.toISOString()} class="post-date">
+                {formatDate(post.data.date)}
+              </time>
+            </a>
+          </li>
+        ))
+      }
     </ul>
   </section>
 </BaseLayout>

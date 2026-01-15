@@ -1,5 +1,5 @@
 ---
-import { Icon } from 'astro-icon/components';
+import { Icon } from "astro-icon/components";
 ---
 
 <button
@@ -13,8 +13,8 @@ import { Icon } from 'astro-icon/components';
 </button>
 
 <script>
-  const button = document.querySelector('.theme-toggle');
-  button?.addEventListener('click', () => {
+  const button = document.querySelector(".theme-toggle");
+  button?.addEventListener("click", () => {
     (window as any).toggleTheme?.();
   });
 </script>
