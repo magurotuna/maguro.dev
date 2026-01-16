@@ -21,7 +21,7 @@
     ui-monospace, "SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono",
     "Courier New", monospace;
   --font-size-base: 17px;
-  --line-height: 1.7;
+  --line-height: 1.8;
 
   /* Layout */
   --max-width: 760px;
