@@ -110,6 +110,140 @@ SSE のレスポンスは、サーバーが接続を閉じるか、クライア�
 
 現在の設計なら、ヘッダーが届いた時点で `await` が完了し、そこからストリームを少しずつ読んでいくことができます。
 
+## JavaScript エコシステムの HTTP クライアントライブラリ
+
+`fetch` の「2回 await」が面倒だと感じる人は多いようで、npm には様々な HTTP クライアントライブラリがあります。これらは `fetch` の設計をどう扱っているのでしょうか？
+
+### axios
+
+[axios](https://github.com/axios/axios) は最も人気のある HTTP クライアントライブラリの1つです。axios では1回の `await` でレスポンスボディまで取得できます。
+
+```javascript
+const response = await axios.get("https://api.example.com/users");
+// response.data にはすでにパース済みの JSON オブジェクトが入っている
+console.log(response.data);
+```
+
+axios は内部でレスポンス全体をバッファリングし、`Content-Type` を見て自動的に JSON をパースしてくれます。便利ですが、これは**ストリーミングに対応していない**ことを意味します。
+
+大きなファイルのダウンロードやSSEを扱う場合は、`responseType: 'stream'`（Node.js）を指定する必要があります。
+
+```javascript
+// Node.js でのストリーミング
+const response = await axios.get("https://example.com/large-file.zip", {
+  responseType: "stream"
+});
+response.data.pipe(fs.createWriteStream("large-file.zip"));
+```
+
+ブラウザでは axios のストリーミングサポートは限定的で、[公式ドキュメント](https://blog.logrocket.com/axios-vs-fetch-2025/)でも「fetch supports streaming responses on the browser, unlike Axios」と言及されています。
+
+### ky
+
+[ky](https://github.com/sindresorhus/ky) は `fetch` のラッパーとして設計された軽量ライブラリです。`fetch` の設計思想を尊重しつつ、より使いやすい API を提供しています。
+
+```javascript
+// ky では .json() を直接チェーンできる
+const data = await ky.get("https://api.example.com/users").json();
+
+// 上記は以下と同じ
+const response = await ky.get("https://api.example.com/users");
+const data = await response.json();
+```
+
+ky は `fetch` ベースなので、ストリーミングも自然に扱えます。
+
+```javascript
+const response = await ky.get("https://example.com/stream");
+const reader = response.body.getReader();
+// 以降は fetch と同じ
+```
+
+ky の `.json()` は内部的には2回の非同期処理を行っていますが、チェーンして書けるので見た目はシンプルになります。ただし、ヘッダーを先に確認してからボディを読むかどうか決めたい場合は、やはり2段階に分けて書く必要があります。
+
+### got
+
+[got](https://github.com/sindresorhus/got) は Node.js 向けの高機能な HTTP クライアントです。Promise API とストリーム API の両方を提供しています。
+
+```javascript
+// Promise API: レスポンス全体をバッファリング
+const response = await got("https://api.example.com/users");
+console.log(response.body); // 文字列
+
+// JSON の場合
+const data = await got("https://api.example.com/users").json();
+```
+
+got の Promise API は便利ですが、レスポンス全体をメモリに読み込みます。大きなファイルやストリーミングを扱う場合は、明示的にストリーム API を使います。
+
+```javascript
+import { pipeline } from "node:stream/promises";
+import { createWriteStream } from "node:fs";
+import got from "got";
+
+// ストリーム API: メモリ効率が良い
+await pipeline(
+  got.stream("https://example.com/large-file.zip"),
+  createWriteStream("large-file.zip")
+);
+```
+
+[got のドキュメント](https://github.com/sindresorhus/got/blob/main/documentation/3-streams.md)には次のように書かれています。
+
+> The promise API will load responses into memory until the response is finished before fulfilling the promise, but with the stream API you can act on chunks of the response as they arrive.
+
+### superagent
+
+[superagent](https://github.com/ladjs/superagent) は古くからある HTTP クライアントで、Node.js とブラウザの両方で動作します。
+
+```javascript
+const response = await superagent.get("https://api.example.com/users");
+console.log(response.body); // パース済みの JSON
+```
+
+superagent もデフォルトではレスポンス全体をバッファリングしますが、ストリーミングも可能です。
+
+```javascript
+// ストリーミングダウンロード
+superagent
+  .get("https://example.com/large-file.zip")
+  .pipe(fs.createWriteStream("large-file.zip"));
+```
+
+ただし、[公式ドキュメント](https://ladjs.github.io/superagent/)には「It's not possible to mix pipes and callbacks or promises」と書かれており、ストリーミングと Promise を同時に使うことはできません。
+
+### undici
+
+[undici](https://github.com/nodejs/undici) は Node.js の公式 HTTP クライアントで、Node.js 18 以降の組み込み `fetch` の内部実装にも使われています。
+
+```javascript
+import { request } from "undici";
+
+const { statusCode, headers, body } = await request("https://api.example.com/users");
+
+// body は AsyncIterable
+let data = "";
+for await (const chunk of body) {
+  data += chunk;
+}
+console.log(JSON.parse(data));
+```
+
+undici は `fetch` と同様、レスポンスヘッダーが届いた時点で Promise が解決され、ボディは後から読み取る設計になっています。
+
+### まとめ: ライブラリごとの設計方針
+
+| ライブラリ | await 1回で完結 | ストリーミング対応 | 備考 |
+|-----------|----------------|------------------|------|
+| fetch (native) | No | Yes | 標準 API、2回 await が必要 |
+| axios | Yes | 限定的 | 便利だがブラウザでのストリーミングは弱い |
+| ky | Yes（チェーン時） | Yes | fetch ラッパー、ストリーミングも自然に扱える |
+| got | Yes | Yes | Promise API とストリーム API を使い分け |
+| superagent | Yes | Yes | ストリーミング時は Promise と併用不可 |
+| undici | No | Yes | fetch と同じ設計思想 |
+
+多くのライブラリは「1回の await で済む」便利な API を提供していますが、その裏ではレスポンス全体をメモリにバッファリングしています。ストリーミングが必要な場合は、結局 `fetch` と同様に2段階の処理が必要になるか、別のストリーム専用 API を使うことになります。
+
 ## 他の言語の HTTP クライアントはどうしているか
 
 この「ヘッダーとボディを分けて取得する」設計は、実は `fetch` 特有のものではありません。他の言語の HTTP クライアントも同様の設計を採用しています。
@@ -246,6 +380,11 @@ WHATWG の GitHub リポジトリには、この設計に関連するいくつ�
 - [Fetch Standard - WHATWG](https://fetch.spec.whatwg.org/)
 - [Using the Fetch API - MDN](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch)
 - [Using readable streams - MDN](https://developer.mozilla.org/en-US/docs/Web/API/Streams_API/Using_readable_streams)
+- [Axios vs. Fetch (2025 update) - LogRocket Blog](https://blog.logrocket.com/axios-vs-fetch-2025/)
+- [ky - GitHub](https://github.com/sindresorhus/ky)
+- [got Streams documentation](https://github.com/sindresorhus/got/blob/main/documentation/3-streams.md)
+- [SuperAgent documentation](https://ladjs.github.io/superagent/)
+- [undici - GitHub](https://github.com/nodejs/undici)
 - [The aiohttp Request Lifecycle](https://docs.aiohttp.org/en/latest/http_request_lifecycle.html)
 - [Response in reqwest - Rust](https://docs.rs/reqwest/latest/reqwest/struct.Response.html)
 - [Using HttpCompletionOption to Improve HttpClient Performance in .NET](https://www.stevejgordon.co.uk/using-httpcompletionoption-responseheadersread-to-improve-httpclient-performance-dotnet)
