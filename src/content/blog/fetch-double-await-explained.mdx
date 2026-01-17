@@ -106,7 +106,7 @@ SSE のレスポンスは、サーバーが接続を閉じるか、クライア�
 
 ## JavaScript エコシステムの HTTP クライアントライブラリ
 
-さて、`fetch` は「2回 await」の設計になっていますが、npm にある他の HTTP クライアントライブラリはどのような設計になっているかも見てみます。
+さて、`fetch` は「2回 `await`」の設計になっていますが、npm にある他の HTTP クライアントライブラリはどのような設計になっているかも見てみます。
 
 ### axios
 
@@ -134,7 +134,7 @@ const response = await axios.get("https://example.com/large-file.zip", {
 response.data.pipe(fs.createWriteStream("large-file.zip"));
 ```
 
-`fetch` が「2回await」方式を採用したのに対して、`axios` は「基本は1回awaitだけど、レスポンスボディをストリームとして扱いたい場合はオプションを指定する」という形になっていることが分かります。
+`fetch` が「2回 `await`」方式を採用したのに対して、`axios` は「基本は1回 `await` だけど、レスポンスボディをストリームとして扱いたい場合はオプションを指定する」という形になっていることが分かります。
 
 ### ky
 
