@@ -14,7 +14,7 @@ const data = await response.json();
 
 `await` を2回書いているのが気になったことはありませんか？1回の `await` で一気にレスポンスボディまで取れたら楽なのに、と思ったことはないでしょうか。
 
-とある休日の午前中、いつものようにYouTube上でライブコーディングを垂れ流していました[^1]。そこで配信者の方が、`fetch`を使ってレスポンスボディを取得する際に2回目の`await`が必要であることに対して、「なんでfetchはこんなにめんどくさいんだろう」と言っていました。言われてみると、確かにめんどくさいような気もします。
+とある休日の午前中、いつものようにYouTube上でライブコーディング動画を見ていました[^1]。そこで配信者の方が、`fetch`を使ってレスポンスボディを取得する際に2回目の`await`が必要であることに対して、「なんでfetchはこんなにめんどくさいんだろう」と言っていました。言われてみると、確かにめんどくさいような気もします。
 
 [^1]: ライブコーディング動画を見るのが好きです。過去に [YouTubeにあるライブコーディング動画を見て Rust を学ぼう](https://zenn.dev/magurotuna/articles/d5621291b8da87) や [【#も読】ライブコーディング視聴のすすめ（@yusuktan）](https://findy-code.io/media/articles/modoku20250519-yusuktan) などを書いています。
 
@@ -29,8 +29,8 @@ const data = await response.json();
 const response = await fetch("https://api.example.com/users");
 
 // この時点でヘッダーにはアクセスできる
-console.log(response.status); // ステータスコード
-console.log(response.headers.get("Content-Type")); // application/json
+console.log(response.status);
+console.log(response.headers.get("Content-Type"));
 
 // 2回目の await: レスポンスボディを読み取る
 const users = await response.json();
@@ -129,7 +129,7 @@ import axios from "axios";
 import fs from "node:fs";
 
 const response = await axios.get("https://example.com/large-file.zip", {
-  responseType: "stream"
+  responseType: "stream",
 });
 response.data.pipe(fs.createWriteStream("large-file.zip"));
 ```
@@ -138,7 +138,11 @@ response.data.pipe(fs.createWriteStream("large-file.zip"));
 
 ### ky
 
-READMEの先頭に **極楽要求（しなさい）** と書いてあることで有名（？）な[ky](https://github.com/sindresorhus/ky) はどうでしょうか。
+READMEの先頭に
+
+**極楽要求（しなさい）**
+
+と書いてあることで有名（？）な[ky](https://github.com/sindresorhus/ky) はどうでしょうか。
 
 ```js
 import ky from "ky";
@@ -195,9 +199,9 @@ await pipeline(
 
 ついでに、他言語のHTTPクライアントライブラリがどのようなAPIになっているのかも確認してみます。
 
-### Rust (reqwest / hyper)
+### Rust (reqwest)
 
-Rust の [reqwest](https://github.com/seanmonstar/reqwest) も同じパターンです。
+Rust の [reqwest](https://github.com/seanmonstar/reqwest) も `fetch` と同じ要領で、ヘッダ取得までで1回 `await`、 ボディ取得で2回目の `await` が必要です。
 
 ```rust
 // 1回目の await: レスポンスヘッダーを取得
@@ -215,26 +219,40 @@ let body = response.text().await?;
 Rustは `await` が後置なので、レスポンスボディだけに興味がある場合は、以下のようにスマートに書くこともできます。
 
 ```rust
-let body = reqwest::get("https://api.example.com/data").await?.text().await?;
+let body = reqwest::get("https://api.example.com/data")
+    .await?
+    .text()
+    .await?;
 ```
 
 ### Python (aiohttp)
 
-Python の [aiohttp](https://docs.aiohttp.org/en/stable/) はおもしろくて、公式ドキュメントの [The aiohttp Request Lifecycle](https://docs.aiohttp.org/en/stable/http_request_lifecycle.html)というページでまさにこの問題について解説をしています。
+Python の [aiohttp](https://docs.aiohttp.org/en/stable/) はおもしろくて、公式ドキュメントの [The aiohttp Request Lifecycle](https://docs.aiohttp.org/en/stable/http_request_lifecycle.html)というページでまさにこの問題について解説をしています。そこでは、Pythonで昔からとても人気のあるHTTPライブラリである [requests](https://requests.readthedocs.io/en/latest/) との対比をすることで、aiohttpの特徴を際立たせています。コード例を引用しつつまとめてみます。
 
-> aiohttp loads only the headers when `.get()` is executed, letting you decide to pay the cost of loading the body afterward, in a second asynchronous operation.
+まず、aiohttpでは以下のように、`fetch` と同じく2回の `await` に分かれています。
 
 ```python
 async with aiohttp.ClientSession() as session:
-    # 1回目の await: ヘッダーを取得
-    async with session.get("https://api.example.com/data") as response:
-        print(response.status)
-
-        # 2回目の await: ボディを取得
-        data = await response.json()
+    # 1回目のawait
+    async with session.get('http://python.org') as response:
+        # 2回目のawait
+        print(await response.text())
 ```
 
-### Go
+一方で requests は次のようにシンプルです。
+
+```python
+response = requests.get('http://python.org')
+print(response.text)
+```
+
+この記事をここまで読んできたみなさんなら分かる通り、aiohttp は `fetch` と同じ思想で設計されています。公式ドキュメントでは次のように説明されています。
+
+> aiohttp loads only the headers when `.get()` is executed, letting you decide to pay the cost of loading the body afterward, in a second asynchronous operation.
+
+つまり、`.get()` の時点ではヘッダーだけを読み込み、その後ボディの読み込みコストを払うかどうかは開発者が後から決められるようになっているのです。非同期I/Oの利点を最大限に活かすために、ブロッキングのタイミングを明示的に分離しているわけですね。
+
+### Go (net/http)
 
 Go は async/await の構文を持たないので少し違って見えますが、本質的には同じです。`http.Client.Do()` はレスポンスヘッダーが届いた時点でリターンし、ボディは `io.Reader` として提供されます。
 
@@ -249,98 +267,103 @@ defer resp.Body.Close()
 fmt.Println("Status:", resp.Status)
 
 // ボディは io.Reader として提供される
-// 読み取りは同期的だが、ストリームとして少しずつ処理できる
+// io.ReadAll によってレスポンスボディが終わるまでまとめて読み取ることもできるし、
+// bufio.Reader を使って1行ごとに読み進めていく、もできる
 body, err := io.ReadAll(resp.Body)
 ```
 
-### Java (HttpClient)
+ところで5行目に `defer resp.Body.Close()` とあります。もしこれを忘れて、なおかつレスポンスボディを読み切らずに放置してしまうと、HTTPレスポンスを中途半端な状態で止めてしまうことになり、TCPコネクションを次のHTTPリクエストのために再利用することができなくなるなどの問題が発生します。
 
-Java 11 以降の HttpClient は、[`BodyHandler`](https://docs.oracle.com/en/java/javase/11/docs/api/java.net.http/java/net/http/HttpResponse.BodyHandler.html) という仕組みでこれを実現しています。
+net/http のドキュメントにも[「絶対にレスポンスボディをcloseしてね」と書かれている](https://pkg.go.dev/net/http#pkg-overview)し、[golangci-lint](https://golangci-lint.run/)にもこれを検知するリントルール [bodyclose](https://golangci-lint.run/docs/linters/configuration/#bodyclose) があります。
 
-> The BodyHandler is invoked when the response status code and headers are available, but before the response body bytes are received.
+JavaScriptの `fetch` でも同じような問題は発生するのでしょうか？つまり、レスポンスボディを読み切らなかったり、明示的なclose処理を忘れたりすると、リソースリークが発生するのでしょうか？
 
-```java
-HttpClient client = HttpClient.newHttpClient();
-HttpRequest request = HttpRequest.newBuilder()
-    .uri(URI.create("https://api.example.com/data"))
-    .build();
+## fetch でレスポンスボディを消費しきらなかったらどうなるか？
 
-// BodyHandlers.ofInputStream() を使うと、
-// ヘッダーが届いた時点でレスポンスが返り、
-// ボディは InputStream として後から読める
-HttpResponse<InputStream> response = client.send(request,
-    HttpResponse.BodyHandlers.ofInputStream());
+### Fetch 仕様上は GC に頼っても OK
 
-System.out.println("Status: " + response.statusCode());
+[Fetch 仕様の Garbage collection セクション](https://fetch.spec.whatwg.org/#garbage-collection)では、レスポンスボディを消費せずに放置しても、ガベージコレクションによってリソースが解放されることが許容されています。つまり、仕様上はボディを読み切らなくても問題ないことになっています。
 
-// ボディはストリームとして読み取る
-try (InputStream body = response.body()) {
-    // ...
+### Node.js (undici) では GC に頼るべきではない
+
+しかし、Node.js の `fetch` の内部実装である [undici](https://github.com/nodejs/undici) のドキュメントには、[Garbage collection](https://github.com/nodejs/undici?tab=readme-ov-file#garbage-collection) というセクションがあり、次のような警告が書かれています。
+
+> Garbage collection in Node is less aggressive and deterministic (due to the lack of clear idle periods that browsers have through the rendering refresh rate) which means that leaving the release of connection resources to the garbage collector can lead to excessive connection usage, reduced performance (due to less connection re-use), and even stalls or deadlocks when running out of connections.
+
+ブラウザには画面描画のリフレッシュレートがあり、その合間がガベージコレクションを実行するのにちょうどいいタイミングになります。しかし Node.js にはそのような「明確なアイドル期間」がないため、GCの実行タイミングが不定期で予測しづらくなります。その結果、レスポンスボディの消費を GC 任せにしてしまうと、コネクションが過剰に使われたり、再利用がうまくいかずパフォーマンスが低下したり、最悪の場合はコネクションが枯渇してデッドロックに陥る可能性があるということです。
+
+そのため、「必ずレスポンスボディを消費するかキャンセルするように」と注意喚起されています。Goと同じですね。
+
+### Deno ではリソースリーク検知機能がある
+
+Deno には [Resource sanitizer](https://docs.deno.com/runtime/fundamentals/testing/#sanitizers) という機能があり、テスト実行時にリソースリークを検知してくれます。もしレスポンスボディを消費もキャンセルもせずに放置すると、テストが失敗します。
+
+```ts
+import { assertEquals } from "jsr:@std/assert";
+
+Deno.test("fetch without consuming body", async () => {
+  const resp = await fetch("https://example.com");
+  assertEquals(resp.status, 200);
+  // ⚠️ レスポンスボディを消費し忘れている！
+});
+```
+
+<figure>
+  <img
+    src="/img/deno_resource_sanitizer_detecting_unclosed_resp_body.png"
+    alt="Deno's resource sanitizer detecting unclosed response body"
+  />
+  <figcaption>
+  Denoのresource sanitizerが未消費のレスポンスボディを検知している
+  </figcaption>
+</figure>
+
+エラーメッセージで教えてくれているとおり、`await resp.text()` などしてレスポンスボディを消費しきるようにすれば、このエラーは出なくなります。
+
+```ts
+import { assertEquals } from "jsr:@std/assert";
+
+Deno.test("fetch without consuming body", async () => {
+  const resp = await fetch("https://example.com");
+  assertEquals(resp.status, 200);
+  // ✅ レスポンスボディを消費する
+  await resp.text();
+});
+```
+
+### Explicit Resource Managementとの統合は？
+
+Goだと `defer resp.Body.Close()` というようにして、`resp`を取得した直後に `defer` を使って `Close` の予約をすることができました。直後に置くことで忘れにくくなるというのはもちろん、例えばレスポンスボディを読む前に何かがエラーになってその関数を抜けないといけなくなった、みたいな「異常系」の場合でも、確実に `Close` が呼ばれるようにできるため、優れた方法です。
+
+JavaScriptでもGoの `defer` みたいなこと、やりたいですよね？あります。[Explicit Resource Management](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Resource_management) です。2026年1月現在、Chrome, Firefox, Node.js (v24以降)、Deno、Bunで利用可能です。Safariはダメです。
+
+「解放し忘れると良くない」リソース代表として、ファイルディスクリプタがあります。以下のDenoの例では、Explicit Resource Managementを活用することで、確実に `file.close()` が呼ばれるようにしています。たとえ `await file.stat()` のところで例外が発生したとしてもです。
+
+```ts
+async function printStat() {
+  // using がポイント
+  using file = await Deno.open("foo.txt");
+  const info = await file.stat();
+  console.log(info);
 }
 ```
 
-### C# (HttpClient)
+これを踏まえて考えると、以下のように `fetch` の戻り値に対してExplicit Resource Managementの仕組みを使えたら嬉しいような気がします。これでレスポンスボディの消費し忘れを防げます。
 
-C# の HttpClient は [`HttpCompletionOption.ResponseHeadersRead`](https://www.stevejgordon.co.uk/using-httpcompletionoption-responseheadersread-to-improve-httpclient-performance-dotnet) というオプションでこの動作を明示的に制御できます。
-
-```csharp
-using var client = new HttpClient();
-
-// ResponseHeadersRead を指定すると、ヘッダーが届いた時点でタスクが完了
-var response = await client.GetAsync(
-    "https://api.example.com/data",
-    HttpCompletionOption.ResponseHeadersRead);
-
-Console.WriteLine($"Status: {response.StatusCode}");
-
-// ボディはストリームとして読み取る
-await using var stream = await response.Content.ReadAsStreamAsync();
+```ts
+// こうできたら理想（実際はできない 2026年1月時点）
+await using resp = await fetch("https://example.com");
 ```
 
-デフォルトでは `ResponseContentRead`（ボディまで全部読んでから完了）ですが、ストリーミングや大きなレスポンスを扱う場合は `ResponseHeadersRead` を使うのがベストプラクティスとされています。
+ただ、これに関してはまだ議論の初期段階で、具体的な話は進んでいないように見えます。今後の進展に期待です。
 
-## Fetch 仕様はどう定めているか
-
-[WHATWG の Fetch 仕様](https://fetch.spec.whatwg.org/)では、レスポンスボディは `ReadableStream` として定義されており、ストリーミング処理を前提とした設計になっています。
-
-仕様には "incrementally read a body"（ボディを漸進的に読む）というアルゴリズムが定義されていて、ボディを全部バッファリングしてから返すのではなく、少しずつ読み取ることが意図されていることがわかります。
-
-### 仕様策定時の議論
-
-WHATWG の GitHub リポジトリには、この設計に関連するいくつかの議論が残っています。
-
-[Issue #88](https://github.com/whatwg/fetch/issues/88) では、開発者がリクエスト/レスポンスのストリームを制御できるようにする議論が行われました。HTTP の専門家である Mark Nottingham 氏は、サーバー側の制約（多くのサーバーは `Content-Length` がないと無限にバッファリングしようとしてしまう）なども踏まえた設計の必要性を指摘しています。
-
-[Issue #1254](https://github.com/whatwg/fetch/issues/1254) では、HTTP/2 や QUIC の全二重ストリーミングを `fetch` で活用できないかという議論がありました。現状の `fetch` はリクエストボディの送信が完了してからレスポンスの Promise が解決される設計ですが、将来的にはリクエストとレスポンスを並行してストリーミングできるようになるかもしれません。
+- [Discussion: How should streams handle Explicit Resource Management · Issue #1307 · whatwg/streams](https://github.com/whatwg/streams/issues/1307)
+- [ECMAScript Explicit Resource Management proposal integration with web APIs · Issue #8557 · whatwg/html](https://github.com/whatwg/html/issues/8557)
 
 ## まとめ
 
-`fetch` で `await` を2回する必要があるのは、**ストリーミングを適切に扱うため**の意図的な設計です。
+HTTP ではヘッダーが先に届き、ボディは後から（場合によっては永遠に）届き続けます。`fetch` の2回の `await` はこの性質をそのまま API に落とし込んだものである、ということでした。
 
-- 1回目の `await`: レスポンスヘッダーが届くまで待つ
-- 2回目の `await`: ボディを（全部または一部）読み取る
+一方で、「ほとんどのケースではボディを全部取得したいだけなのに、毎回2回 `await` するのは冗長だ」という気持ちもわかります。`ky` のように `.json()` をチェーンできるAPIは、よくあるユースケースに対してのシンプルな記法を用意しつつ、レスポンスヘッダとボディを別々に取り扱うというやり方に違和感なく統合されている感じがしました。
 
-この設計により、以下のことが可能になります。
-
-- ヘッダーを見てからボディの処理方法を決められる
-- 巨大なレスポンスをメモリに全部載せずにストリーム処理できる
-- SSE のような終わらないストリーミングレスポンスを扱える
-
-`await` を2回書くのは少し冗長に感じるかもしれませんが、その背後にはHTTPという通信の性質上、どうしてもそうならざるを得ない理由があるのでした。
-
-## 参考資料
-
-- [Fetch Standard - WHATWG](https://fetch.spec.whatwg.org/)
-- [Using the Fetch API - MDN](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch)
-- [Using readable streams - MDN](https://developer.mozilla.org/en-US/docs/Web/API/Streams_API/Using_readable_streams)
-- [Axios vs. Fetch (2025 update) - LogRocket Blog](https://blog.logrocket.com/axios-vs-fetch-2025/)
-- [ky - GitHub](https://github.com/sindresorhus/ky)
-- [got Streams documentation](https://github.com/sindresorhus/got/blob/main/documentation/3-streams.md)
-- [SuperAgent documentation](https://ladjs.github.io/superagent/)
-- [undici - GitHub](https://github.com/nodejs/undici)
-- [The aiohttp Request Lifecycle](https://docs.aiohttp.org/en/latest/http_request_lifecycle.html)
-- [Response in reqwest - Rust](https://docs.rs/reqwest/latest/reqwest/struct.Response.html)
-- [Using HttpCompletionOption to Improve HttpClient Performance in .NET](https://www.stevejgordon.co.uk/using-httpcompletionoption-responseheadersread-to-improve-httpclient-performance-dotnet)
-- [HttpResponse.BodyHandler (Java SE 11)](https://docs.oracle.com/en/java/javase/11/docs/api/java.net.http/java/net/http/HttpResponse.BodyHandler.html)
-- [Developer-controlled streams for request/response - Issue #88](https://github.com/whatwg/fetch/issues/88)
-- [Fetch body streams are not full duplex - Issue #1254](https://github.com/whatwg/fetch/issues/1254)
+HTTPは奥が深いです。この記事で見てきたクライアント側だけではなく、サーバー側も、ライブラリのAPI設計などから透けて見える背後の事情を理解していくのが楽しいと感じます。今後も何かおもしろそうなネタがあったらまとめようと思います。
