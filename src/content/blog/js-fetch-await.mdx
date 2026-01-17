@@ -25,10 +25,10 @@ const data = await response.json();
 まずはJavaScriptの`fetch`の基本的な使い方を確認してみます。
 
 ```js
-// 1回目の await: レスポンスヘッダーが届くまで待つ
+// 1回目の await: レスポンスヘッダが届くまで待つ
 const response = await fetch("https://api.example.com/users");
 
-// この時点でヘッダーにはアクセスできる
+// この時点でヘッダにはアクセスできる
 console.log(response.status);
 console.log(response.headers.get("Content-Type"));
 
@@ -36,11 +36,11 @@ console.log(response.headers.get("Content-Type"));
 const users = await response.json();
 ```
 
-`fetch()` が返す Promise は、レスポンスヘッダーが届いた時点で解決されます。この時点ではまだボディは読み取れていません。ボディを読むには [`.json()`](https://developer.mozilla.org/en-US/docs/Web/API/Response/json) や [`.text()`](https://developer.mozilla.org/en-US/docs/Web/API/Response/text), [`bytes()`](https://developer.mozilla.org/en-US/docs/Web/API/Response/bytes) といったメソッドを呼ぶ必要があり、これらも Promise を返すので再度 `await` が必要になります。
+`fetch()` が返す Promise は、レスポンスヘッダが届いた時点で解決されます。この時点ではまだボディは読み取れていません。ボディを読むには [`.json()`](https://developer.mozilla.org/en-US/docs/Web/API/Response/json) や [`.text()`](https://developer.mozilla.org/en-US/docs/Web/API/Response/text), [`bytes()`](https://developer.mozilla.org/en-US/docs/Web/API/Response/bytes) といったメソッドを呼ぶ必要があり、これらも Promise を返すので再度 `await` が必要になります。
 
 ## もし await が1回で済む設計だったら
 
-「1回の `await` でヘッダーもボディも全部取れたら便利なのに」と思うこともあると思います。以下のようなイメージです。
+「1回の `await` でヘッダもボディも全部取れたら便利なのに」と思うこともあると思います。以下のようなイメージです。
 
 ```javascript
 // 仮想的なAPI: 1回のawaitでボディまで取得
@@ -55,7 +55,7 @@ const { headers, body } = await fetch("https://api.example.com/users");
 
 1回の `await` でボディまで取得する設計だと、全データがメモリに読み込まれるまで待つことになります。時間がかかるだけでなく、メモリを大量に消費してしまいます。
 
-現在の設計なら、ヘッダーを見てからボディをストリームとして少しずつ処理できます。
+現在の設計なら、ヘッダを見てからボディをストリームとして少しずつ処理できます。
 
 ```js
 const response = await fetch("https://example.com/huge-file.zip");
@@ -92,7 +92,7 @@ while (true) {
   const { done, value } = await reader.read();
   if (done) break;
 
-  const chunk = decoder.decode(value);
+  const chunk = decoder.decode(value, { stream: true });
   console.log("received chunk:", chunk);
   // data: {"message": "Hello"}
   // data: {"message": "World"}
@@ -102,7 +102,7 @@ while (true) {
 
 SSE のレスポンスは、サーバーが接続を閉じるか、クライアントが明示的に中断するまで終わりません。
 
-もし1回の `await` でヘッダーとボディを全部取得するようになっていたら、この `await` はかなり長い間完了しないことになってしまいます。
+もし1回の `await` でヘッダとボディを全部取得するようになっていたら、この `await` はかなり長い間完了しないことになってしまいます。
 
 ## JavaScript エコシステムの HTTP クライアントライブラリ
 
@@ -140,7 +140,9 @@ response.data.pipe(fs.createWriteStream("large-file.zip"));
 
 READMEの先頭に
 
-**極楽要求（しなさい）**
+**極楽要求（しなさい）**[^2]
+
+[^2]: なんだこのキャッチコピーは、と思って調べてみたら、僕の同僚の [@kt3k](https://github.com/kt3k) さんが提案したキャッチコピーであるということが判明しました。参考: [猫の額爪の垢を煎じて飲む sounds so strange as the description of this library · Issue #150 · sindresorhus/ky](https://github.com/sindresorhus/ky/issues/150)
 
 と書いてあることで有名（？）な[ky](https://github.com/sindresorhus/ky) はどうでしょうか。
 
@@ -182,9 +184,8 @@ console.log(response.body); // レスポンスボディ文字列が出力され�
 
 ```js
 import { pipeline } from "node:stream/promises";
-import { createWriteStream } from "node:fs";
-import got from "got";
 import fs from "node:fs";
+import got from "got";
 
 // Stream API: チャンクごとに読み込む
 await pipeline(
@@ -204,10 +205,10 @@ await pipeline(
 Rust の [reqwest](https://github.com/seanmonstar/reqwest) も `fetch` と同じ要領で、ヘッダ取得までで1回 `await`、 ボディ取得で2回目の `await` が必要です。
 
 ```rust
-// 1回目の await: レスポンスヘッダーを取得
+// 1回目の await: レスポンスヘッダを取得
 let response = reqwest::get("https://api.example.com/data").await?;
 
-// ヘッダーにアクセス可能
+// ヘッダにアクセス可能
 println!("Status: {}", response.status());
 
 // 2回目の await: ボディを取得
@@ -250,26 +251,29 @@ print(response.text)
 
 > aiohttp loads only the headers when `.get()` is executed, letting you decide to pay the cost of loading the body afterward, in a second asynchronous operation.
 
-つまり、`.get()` の時点ではヘッダーだけを読み込み、その後ボディの読み込みコストを払うかどうかは開発者が後から決められるようになっているのです。非同期I/Oの利点を最大限に活かすために、ブロッキングのタイミングを明示的に分離しているわけですね。
+つまり、`.get()` の時点ではヘッダだけを読み込み、その後ボディの読み込みコストを払うかどうかは開発者が後から決められるようになっているのです。非同期I/Oの利点を最大限に活かすために、ブロッキングのタイミングを明示的に分離しているわけですね。
 
 ### Go (net/http)
 
-Go は async/await の構文を持たないので少し違って見えますが、本質的には同じです。`http.Client.Do()` はレスポンスヘッダーが届いた時点でリターンし、ボディは `io.Reader` として提供されます。
+Go は async/await の構文を持たないので少し違って見えますが、本質的には同じです。`http.Client.Do()` はレスポンスヘッダが届いた時点でリターンし、ボディは `io.Reader` として提供されます。
 
 ```go
 resp, err := http.Get("https://api.example.com/data")
 if err != nil {
-    log.Fatal(err)
+    log.Panic(err)
 }
 defer resp.Body.Close()
 
-// この時点でヘッダーにアクセス可能
+// この時点でヘッダにアクセス可能
 fmt.Println("Status:", resp.Status)
 
 // ボディは io.Reader として提供される
 // io.ReadAll によってレスポンスボディが終わるまでまとめて読み取ることもできるし、
 // bufio.Reader を使って1行ごとに読み進めていく、もできる
 body, err := io.ReadAll(resp.Body)
+if err != nil {
+    log.Panic(err)
+}
 ```
 
 ところで5行目に `defer resp.Body.Close()` とあります。もしこれを忘れて、なおかつレスポンスボディを読み切らずに放置してしまうと、HTTPレスポンスを中途半端な状態で止めてしまうことになり、TCPコネクションを次のHTTPリクエストのために再利用することができなくなるなどの問題が発生します。
@@ -326,8 +330,8 @@ import { assertEquals } from "jsr:@std/assert";
 Deno.test("fetch without consuming body", async () => {
   const resp = await fetch("https://example.com");
   assertEquals(resp.status, 200);
-  // ✅ レスポンスボディを消費する
-  await resp.text();
+  // ✅ レスポンスボディを解放する
+  await resp.body?.cancel();
 });
 ```
 
@@ -362,8 +366,8 @@ await using resp = await fetch("https://example.com");
 
 ## まとめ
 
-HTTP ではヘッダーが先に届き、ボディは後から（場合によっては永遠に）届き続けます。`fetch` の2回の `await` はこの性質をそのまま API に落とし込んだものである、ということでした。
+HTTP ではヘッダが先に届き、ボディは後から（場合によっては永遠に）届き続けます。`fetch` の2回の `await` はこの性質をそのまま API に落とし込んだものである、ということでした。
 
 一方で、「ほとんどのケースではボディを全部取得したいだけなのに、毎回2回 `await` するのは冗長だ」という気持ちもわかります。`ky` のように `.json()` をチェーンできるAPIは、よくあるユースケースに対してのシンプルな記法を用意しつつ、レスポンスヘッダとボディを別々に取り扱うというやり方に違和感なく統合されている感じがしました。
 
-HTTPは奥が深いです。この記事で見てきたクライアント側だけではなく、サーバー側も、ライブラリのAPI設計などから透けて見える背後の事情を理解していくのが楽しいと感じます。今後も何かおもしろそうなネタがあったらまとめようと思います。
+HTTPは奥が深いです。この記事で見てきたクライアント側だけではなく、サーバー側も、ライブラリのAPI設計などから透けて見える背後の事情を理解していくのが飽きない楽しさです。またHTTPやWebの仕様について気になることがあったら、掘り下げてみます。
