@@ -90,7 +90,9 @@ const tocHeadings = headings.filter((h) => h.depth >= 1 && h.depth <= 3);
           data-url={`https://maguro.dev/blog/${slug}/`}
           aria-label="Copy link"
         >
-          <Icon name="lucide:link" size={18} />
+          <Icon name="lucide:link" size={18} class="icon-link" />
+          <Icon name="lucide:check" size={18} class="icon-check" />
+          <span class="copy-tooltip">Copied!</span>
         </button>
       </div>
     </footer>
@@ -255,9 +257,65 @@ const tocHeadings = headings.filter((h) => h.depth >= 1 && h.depth <= 3);
     background-color: var(--color-accent);
     color: var(--color-bg);
   }
+
+  /* Icon toggling */
+  .share-copy .icon-check {
+    display: none;
+  }
+
+  .share-copy.copied .icon-link {
+    display: none;
+  }
+
+  .share-copy.copied .icon-check {
+    display: block;
+  }
+
+  /* Tooltip */
+  .share-copy {
+    position: relative;
+  }
+
+  .copy-tooltip {
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: var(--color-text);
+    color: var(--color-bg);
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      opacity 0.2s,
+      visibility 0.2s;
+  }
+
+  .copy-tooltip::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-top-color: var(--color-text);
+  }
+
+  .share-copy.copied .copy-tooltip {
+    opacity: 1;
+    visibility: visible;
+  }
 </style>
 
 <script>
+  function showCopiedFeedback(button: Element) {
+    button.classList.add("copied");
+    setTimeout(() => button.classList.remove("copied"), 1500);
+  }
+
   document.querySelectorAll(".share-copy").forEach((button) => {
     button.addEventListener("click", async () => {
       const url = button.getAttribute("data-url");
@@ -265,8 +323,7 @@ const tocHeadings = headings.filter((h) => h.depth >= 1 && h.depth <= 3);
 
       try {
         await navigator.clipboard.writeText(url);
-        button.classList.add("copied");
-        setTimeout(() => button.classList.remove("copied"), 1500);
+        showCopiedFeedback(button);
       } catch {
         // Fallback for older browsers
         const textarea = document.createElement("textarea");
@@ -275,6 +332,7 @@ const tocHeadings = headings.filter((h) => h.depth >= 1 && h.depth <= 3);
         textarea.select();
         document.execCommand("copy");
         document.body.removeChild(textarea);
+        showCopiedFeedback(button);
       }
     });
   });

@@ -29,7 +29,7 @@ export default defineConfig({
     }),
     icon({
       include: {
-        lucide: ["sun", "moon", "rss", "github", "linkedin", "link"],
+        lucide: ["sun", "moon", "rss", "github", "linkedin", "link", "check"],
         "simple-icons": ["x", "hatenabookmark"],
       },
     }),
