@@ -17,12 +17,26 @@ const { post } = Astro.props;
 const { Content, headings } = await render(post);
 
 // Calculate estimated reading minutes
-// Strip code blocks and inline code to get more accurate reading time for prose
-const CHARS_PER_MINUTE_JA = 500;
-const bodyWithoutCode = (post.body ?? "")
-  .replace(/```[\s\S]*?```/g, "") // Remove fenced code blocks
-  .replace(/`[^`]+`/g, ""); // Remove inline code
-const charCount = bodyWithoutCode.length;
+// Strip non-prose content for more accurate reading time
+const CHARS_PER_MINUTE_JA = 650;
+const readableText = (post.body ?? "")
+  // Remove fenced code blocks first
+  .replace(/```[\s\S]*?```/g, "")
+  // Remove inline code
+  .replace(/`[^`]+`/g, "")
+  // Convert markdown links to just their text: [text](url) → text
+  .replace(/\[([^\]]*)\]\([^)]+\)/g, "$1")
+  // Remove HTML/MDX tags
+  .replace(/<[^>]+>/g, "")
+  // Remove footnote references [^1]
+  .replace(/\[\^[^\]]+\]/g, "")
+  // Remove footnote definitions [^1]: ...
+  .replace(/^\[\^[^\]]+\]:.*$/gm, "")
+  // Remove heading markers
+  .replace(/^#+\s*/gm, "")
+  // Collapse multiple newlines
+  .replace(/\n{2,}/g, "\n");
+const charCount = readableText.trim().length;
 const readingTime = Math.max(1, Math.round(charCount / CHARS_PER_MINUTE_JA));
 ---
 
