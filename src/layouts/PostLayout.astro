@@ -18,12 +18,15 @@ const formattedDate = date.toISOString().split("T")[0];
 const slug = post.id;
 const ogImage = `/og/${slug}.png`;
 
+// Replace "maguro.dev" with zero-width space to prevent X from parsing it as a URL
+const tweetTitle = title.replace(/maguro\.dev/g, "maguro\u200B.dev");
+
 // Filter headings for ToC (h1, h2, and h3)
 const tocHeadings = headings.filter((h) => h.depth >= 1 && h.depth <= 3);
 ---
 
 <BaseLayout
-  title={`${title} | maguro.dev`}
+  title={`${title} | maguro\u200B.dev`}
   description={description}
   ogImage={ogImage}
 >
@@ -62,15 +65,34 @@ const tocHeadings = headings.filter((h) => h.depth >= 1 && h.depth <= 3);
     </div>
 
     <footer class="post-footer">
-      <a
-        href={`https://x.com/intent/tweet?url=${encodeURIComponent(`https://maguro.dev/blog/${slug}/`)}&text=${encodeURIComponent(title)}`}
-        target="_blank"
-        rel="noopener noreferrer"
-        class="share-button icon-link"
-      >
-        <Icon name="simple-icons:x" size={16} />
-        Share on X
-      </a>
+      <div class="share-buttons">
+        <a
+          href={`https://x.com/intent/tweet?url=${encodeURIComponent(`https://maguro.dev/blog/${slug}/`)}&text=${encodeURIComponent(`${tweetTitle} | maguro\u200B.dev`)}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="share-button share-x"
+          aria-label="Share on X"
+        >
+          <Icon name="simple-icons:x" size={18} />
+        </a>
+        <a
+          href={`https://b.hatena.ne.jp/entry/s/maguro.dev/blog/${slug}/`}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="share-button share-hatena"
+          aria-label="Hatena Bookmark"
+        >
+          <Icon name="simple-icons:hatenabookmark" size={18} />
+        </a>
+        <button
+          type="button"
+          class="share-button share-copy"
+          data-url={`https://maguro.dev/blog/${slug}/`}
+          aria-label="Copy link"
+        >
+          <Icon name="lucide:link" size={18} />
+        </button>
+      </div>
     </footer>
   </article>
 </BaseLayout>
@@ -164,26 +186,96 @@ const tocHeadings = headings.filter((h) => h.depth >= 1 && h.depth <= 3);
     border-top: 1px solid var(--color-border);
   }
 
+  .share-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+  }
+
   .share-button {
     display: inline-flex;
     align-items: center;
-    gap: 0.5em;
-    padding: 0.5em 1em;
-    font-size: 0.9rem;
-    color: var(--color-text);
-    background-color: var(--color-border);
-    border-radius: 4px;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    background-color: transparent;
+    border: 1.5px solid;
+    border-radius: 50%;
     text-decoration: none;
-    transition: background-color 0.2s;
+    transition:
+      background-color 0.2s,
+      border-color 0.2s,
+      color 0.2s,
+      transform 0.15s;
+    cursor: pointer;
   }
 
   .share-button:hover {
-    background-color: var(--color-text-secondary);
-    color: var(--color-bg);
-    text-decoration: none;
+    transform: scale(1.1);
   }
 
-  .share-button [data-icon] {
-    flex-shrink: 0;
+  .share-button:active {
+    transform: scale(0.95);
+  }
+
+  /* X - theme-aware */
+  .share-x {
+    color: var(--color-text);
+    border-color: var(--color-text);
+  }
+
+  .share-x:hover {
+    background-color: var(--color-text);
+    color: var(--color-bg);
+  }
+
+  /* Hatena Bookmark - brand blue */
+  .share-hatena {
+    color: #00a4de;
+    border-color: #00a4de;
+  }
+
+  .share-hatena:hover {
+    background-color: #00a4de;
+    color: #fff;
+  }
+
+  /* Copy link - accent color */
+  .share-copy {
+    color: var(--color-accent);
+    border-color: var(--color-accent);
+  }
+
+  .share-copy:hover {
+    background-color: var(--color-accent);
+    color: var(--color-bg);
+  }
+
+  .share-copy.copied {
+    background-color: var(--color-accent);
+    color: var(--color-bg);
   }
 </style>
+
+<script>
+  document.querySelectorAll(".share-copy").forEach((button) => {
+    button.addEventListener("click", async () => {
+      const url = button.getAttribute("data-url");
+      if (!url) return;
+
+      try {
+        await navigator.clipboard.writeText(url);
+        button.classList.add("copied");
+        setTimeout(() => button.classList.remove("copied"), 1500);
+      } catch {
+        // Fallback for older browsers
+        const textarea = document.createElement("textarea");
+        textarea.value = url;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand("copy");
+        document.body.removeChild(textarea);
+      }
+    });
+  });
+</script>

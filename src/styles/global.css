@@ -127,7 +127,9 @@ a:hover {
 }
 
 /* External link indicator (Lucide external-link icon) */
-a[target="_blank"]:not(.icon-link):not(.link-card):not(:has(img))::after {
+a[target="_blank"]:not(.icon-link):not(.link-card):not(.share-button):not(
+    :has(img)
+  )::after {
   content: "";
   display: inline-block;
   width: 0.75em;
