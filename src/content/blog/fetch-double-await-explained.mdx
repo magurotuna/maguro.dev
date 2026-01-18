@@ -2,7 +2,7 @@
 title: "なぜJavaScriptのfetchはawaitを2回しないとレスポンスを取れないのか"
 date: 2026-01-18
 tags: ["JavaScript", "fetch", "HTTP"]
-description: "fetchでawaitを2回する設計の背景と、他言語HTTPクライアントとの比較"
+description: "fetchの2回awaitの設計意図を、ストリーミング・他言語比較・リソース管理の観点から深掘りする"
 ---
 
 JavaScriptの [`fetch`](https://developer.mozilla.org/en-US/docs/Web/API/Window/fetch) を使ったことがある人なら、こんなコードを書いたことがあると思います。
