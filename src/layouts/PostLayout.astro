@@ -62,15 +62,34 @@ const tocHeadings = headings.filter((h) => h.depth >= 1 && h.depth <= 3);
     </div>
 
     <footer class="post-footer">
-      <a
-        href={`https://x.com/intent/tweet?url=${encodeURIComponent(`https://maguro.dev/blog/${slug}/`)}&text=${encodeURIComponent(title)}`}
-        target="_blank"
-        rel="noopener noreferrer"
-        class="share-button icon-link"
-      >
-        <Icon name="simple-icons:x" size={16} />
-        Share on X
-      </a>
+      <div class="share-buttons">
+        <a
+          href={`https://x.com/intent/tweet?url=${encodeURIComponent(`https://maguro.dev/blog/${slug}/`)}&text=${encodeURIComponent(title)}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="share-button icon-link"
+        >
+          <Icon name="simple-icons:x" size={16} />
+          <span>X</span>
+        </a>
+        <a
+          href={`https://b.hatena.ne.jp/entry/s/maguro.dev/blog/${slug}/`}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="share-button icon-link"
+        >
+          <Icon name="simple-icons:hatenabookmark" size={16} />
+          <span>Hatena</span>
+        </a>
+        <button
+          type="button"
+          class="share-button copy-link-button"
+          data-url={`https://maguro.dev/blog/${slug}/`}
+        >
+          <Icon name="lucide:link" size={16} />
+          <span class="copy-link-text">Copy Link</span>
+        </button>
+      </div>
     </footer>
   </article>
 </BaseLayout>
@@ -164,6 +183,12 @@ const tocHeadings = headings.filter((h) => h.depth >= 1 && h.depth <= 3);
     border-top: 1px solid var(--color-border);
   }
 
+  .share-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
   .share-button {
     display: inline-flex;
     align-items: center;
@@ -172,9 +197,12 @@ const tocHeadings = headings.filter((h) => h.depth >= 1 && h.depth <= 3);
     font-size: 0.9rem;
     color: var(--color-text);
     background-color: var(--color-border);
+    border: none;
     border-radius: 4px;
     text-decoration: none;
     transition: background-color 0.2s;
+    cursor: pointer;
+    font-family: inherit;
   }
 
   .share-button:hover {
@@ -186,4 +214,40 @@ const tocHeadings = headings.filter((h) => h.depth >= 1 && h.depth <= 3);
   .share-button [data-icon] {
     flex-shrink: 0;
   }
+
+  .copy-link-button.copied {
+    background-color: var(--color-accent);
+    color: var(--color-bg);
+  }
 </style>
+
+<script>
+  document.querySelectorAll('.copy-link-button').forEach((button) => {
+    button.addEventListener('click', async () => {
+      const url = button.getAttribute('data-url');
+      if (!url) return;
+
+      try {
+        await navigator.clipboard.writeText(url);
+        const textSpan = button.querySelector('.copy-link-text');
+        const originalText = textSpan?.textContent;
+        if (textSpan) {
+          textSpan.textContent = 'Copied!';
+          button.classList.add('copied');
+          setTimeout(() => {
+            textSpan.textContent = originalText;
+            button.classList.remove('copied');
+          }, 2000);
+        }
+      } catch {
+        // Fallback for older browsers
+        const textarea = document.createElement('textarea');
+        textarea.value = url;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+      }
+    });
+  });
+</script>

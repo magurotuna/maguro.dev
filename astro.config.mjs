@@ -29,8 +29,8 @@ export default defineConfig({
     }),
     icon({
       include: {
-        lucide: ["sun", "moon", "rss", "github", "linkedin"],
-        "simple-icons": ["x"],
+        lucide: ["sun", "moon", "rss", "github", "linkedin", "link"],
+        "simple-icons": ["x", "hatenabookmark"],
       },
     }),
     mdx(),
