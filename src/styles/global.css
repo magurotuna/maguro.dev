@@ -350,3 +350,9 @@ hr {
   -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='9 14 4 9 9 4'/%3E%3Cpath d='M20 20v-7a4 4 0 0 0-4-4H4'/%3E%3C/svg%3E");
   -webkit-mask-size: contain;
 }
+
+/* X (Twitter) in-app browser adjustments */
+[data-browser="x"] body {
+  /* Add padding at the bottom to account for X's bottom navigation bar */
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 60px);
+}
