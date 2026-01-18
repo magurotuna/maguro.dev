@@ -18,6 +18,9 @@ const formattedDate = date.toISOString().split("T")[0];
 const slug = post.id;
 const ogImage = `/og/${slug}.png`;
 
+// Replace "maguro.dev" with zero-width space to prevent X from parsing it as a URL
+const tweetTitle = title.replace(/maguro\.dev/g, "maguro\u200B.dev");
+
 // Filter headings for ToC (h1, h2, and h3)
 const tocHeadings = headings.filter((h) => h.depth >= 1 && h.depth <= 3);
 ---
@@ -64,7 +67,7 @@ const tocHeadings = headings.filter((h) => h.depth >= 1 && h.depth <= 3);
     <footer class="post-footer">
       <div class="share-buttons">
         <a
-          href={`https://x.com/intent/tweet?url=${encodeURIComponent(`https://maguro.dev/blog/${slug}/`)}&text=${encodeURIComponent(`${title} | maguro\u200B.dev`)}`}
+          href={`https://x.com/intent/tweet?url=${encodeURIComponent(`https://maguro.dev/blog/${slug}/`)}&text=${encodeURIComponent(`${tweetTitle} | maguro\u200B.dev`)}`}
           target="_blank"
           rel="noopener noreferrer"
           class="share-button share-x"
