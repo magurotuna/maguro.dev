@@ -67,7 +67,7 @@ const tocHeadings = headings.filter((h) => h.depth >= 1 && h.depth <= 3);
           href={`https://x.com/intent/tweet?url=${encodeURIComponent(`https://maguro.dev/blog/${slug}/`)}&text=${encodeURIComponent(title)}`}
           target="_blank"
           rel="noopener noreferrer"
-          class="share-button icon-link"
+          class="share-button share-x"
         >
           <Icon name="simple-icons:x" size={16} />
           <span>X</span>
@@ -76,18 +76,18 @@ const tocHeadings = headings.filter((h) => h.depth >= 1 && h.depth <= 3);
           href={`https://b.hatena.ne.jp/entry/s/maguro.dev/blog/${slug}/`}
           target="_blank"
           rel="noopener noreferrer"
-          class="share-button icon-link"
+          class="share-button share-hatena"
         >
           <Icon name="simple-icons:hatenabookmark" size={16} />
           <span>Hatena</span>
         </a>
         <button
           type="button"
-          class="share-button copy-link-button"
+          class="share-button share-copy"
           data-url={`https://maguro.dev/blog/${slug}/`}
         >
           <Icon name="lucide:link" size={16} />
-          <span class="copy-link-text">Copy Link</span>
+          <span class="copy-link-text">Copy</span>
         </button>
       </div>
     </footer>
@@ -192,60 +192,100 @@ const tocHeadings = headings.filter((h) => h.depth >= 1 && h.depth <= 3);
   .share-button {
     display: inline-flex;
     align-items: center;
-    gap: 0.5em;
-    padding: 0.5em 1em;
-    font-size: 0.9rem;
-    color: var(--color-text);
-    background-color: var(--color-border);
-    border: none;
-    border-radius: 4px;
+    gap: 0.4em;
+    padding: 0.5em 0.9em;
+    font-size: 0.85rem;
+    font-weight: 500;
+    background-color: transparent;
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
     text-decoration: none;
-    transition: background-color 0.2s;
+    transition:
+      background-color 0.2s,
+      border-color 0.2s,
+      color 0.2s,
+      transform 0.1s;
     cursor: pointer;
     font-family: inherit;
   }
 
   .share-button:hover {
-    background-color: var(--color-text-secondary);
-    color: var(--color-bg);
     text-decoration: none;
+    transform: translateY(-1px);
+  }
+
+  .share-button:active {
+    transform: translateY(0);
   }
 
   .share-button [data-icon] {
     flex-shrink: 0;
   }
 
-  .copy-link-button.copied {
+  /* X (Twitter) - black/white theme-aware */
+  .share-x {
+    color: var(--color-text);
+    border-color: var(--color-text);
+  }
+
+  .share-x:hover {
+    background-color: var(--color-text);
+    color: var(--color-bg);
+  }
+
+  /* Hatena Bookmark - brand blue */
+  .share-hatena {
+    color: #00a4de;
+    border-color: #00a4de;
+  }
+
+  .share-hatena:hover {
+    background-color: #00a4de;
+    color: #fff;
+  }
+
+  /* Copy link - accent color */
+  .share-copy {
+    color: var(--color-accent);
+    border-color: var(--color-accent);
+  }
+
+  .share-copy:hover {
+    background-color: var(--color-accent);
+    color: var(--color-bg);
+  }
+
+  .share-copy.copied {
     background-color: var(--color-accent);
     color: var(--color-bg);
   }
 </style>
 
 <script>
-  document.querySelectorAll('.copy-link-button').forEach((button) => {
-    button.addEventListener('click', async () => {
-      const url = button.getAttribute('data-url');
+  document.querySelectorAll(".share-copy").forEach((button) => {
+    button.addEventListener("click", async () => {
+      const url = button.getAttribute("data-url");
       if (!url) return;
 
       try {
         await navigator.clipboard.writeText(url);
-        const textSpan = button.querySelector('.copy-link-text');
+        const textSpan = button.querySelector(".copy-link-text");
         const originalText = textSpan?.textContent;
         if (textSpan) {
-          textSpan.textContent = 'Copied!';
-          button.classList.add('copied');
+          textSpan.textContent = "Copied!";
+          button.classList.add("copied");
           setTimeout(() => {
             textSpan.textContent = originalText;
-            button.classList.remove('copied');
+            button.classList.remove("copied");
           }, 2000);
         }
       } catch {
         // Fallback for older browsers
-        const textarea = document.createElement('textarea');
+        const textarea = document.createElement("textarea");
         textarea.value = url;
         document.body.appendChild(textarea);
         textarea.select();
-        document.execCommand('copy');
+        document.execCommand("copy");
         document.body.removeChild(textarea);
       }
     });
