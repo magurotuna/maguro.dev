@@ -55,14 +55,22 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <meta name="twitter:image" content={ogImageUrl} />
 
     <!-- Theme: Prevent flash by setting theme before render -->
+    <!-- Browser detection: Detect X (Twitter) in-app browser -->
     <script is:inline>
       (function () {
+        // Theme detection
         const stored = localStorage.getItem("theme");
         const prefersDark = window.matchMedia(
           "(prefers-color-scheme: dark)",
         ).matches;
         const theme = stored || (prefersDark ? "dark" : "light");
         document.documentElement.setAttribute("data-theme", theme);
+
+        // X (Twitter) in-app browser detection
+        const ua = navigator.userAgent;
+        if (/Twitter/i.test(ua)) {
+          document.documentElement.setAttribute("data-browser", "x");
+        }
       })();
     </script>
 
