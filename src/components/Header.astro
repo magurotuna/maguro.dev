@@ -6,7 +6,7 @@ import ThemeToggle from "./ThemeToggle.astro";
   <div class="header-inner">
     <a href="/" class="site-title">maguro.dev</a>
     <nav class="nav">
-      <a href="/">Home</a>
+      <a href="/" class="nav-home">Home</a>
       <a href="/about/">About</a>
       <a href="https://event.maguro.dev" target="_blank" rel="noopener">Event</a
       >
@@ -72,21 +72,95 @@ import ThemeToggle from "./ThemeToggle.astro";
   }
 
   @media (max-width: 600px) {
+    .header {
+      transition: transform 0.6s ease-out; /* Slower, gentler when appearing */
+    }
+
+    .header.header--hidden {
+      transform: translateY(-100%);
+      transition: transform 0.3s ease; /* Quick hide */
+    }
+
     .header-inner {
-      flex-wrap: wrap;
+      flex-wrap: nowrap;
+      padding: calc(var(--spacing-unit) * 0.75) var(--spacing-unit);
+      gap: calc(var(--spacing-unit) * 0.75);
     }
 
     .site-title {
-      flex: 1;
+      font-size: 1.1rem;
     }
 
     .nav {
-      order: 2;
-      width: auto;
+      gap: calc(var(--spacing-unit) * 0.75);
     }
 
-    .header-actions {
-      order: 1;
+    .nav-home {
+      display: none;
     }
   }
 </style>
+
+<script>
+  const MOBILE_BREAKPOINT = 600;
+  const HIDE_THRESHOLD = 5; // Quick hide on scroll down
+  const SHOW_THRESHOLD = 80; // Requires intentional scroll up
+
+  let lastScrollY = window.scrollY;
+  let ticking = false;
+
+  function isMobile() {
+    return window.innerWidth <= MOBILE_BREAKPOINT;
+  }
+
+  function updateHeader() {
+    const header = document.querySelector(".header");
+    if (!header) return;
+
+    const currentScrollY = window.scrollY;
+    const scrollDelta = currentScrollY - lastScrollY;
+
+    if (!isMobile()) {
+      header.classList.remove("header--hidden");
+      lastScrollY = currentScrollY;
+      return;
+    }
+
+    // Always show header at the top of the page
+    if (currentScrollY <= 0) {
+      header.classList.remove("header--hidden");
+      lastScrollY = currentScrollY;
+      return;
+    }
+
+    if (scrollDelta > HIDE_THRESHOLD) {
+      // Scrolling down - hide header
+      header.classList.add("header--hidden");
+      lastScrollY = currentScrollY;
+    } else if (scrollDelta < -SHOW_THRESHOLD) {
+      // Scrolling up significantly - show header
+      header.classList.remove("header--hidden");
+      lastScrollY = currentScrollY;
+    }
+  }
+
+  function onScroll() {
+    if (!ticking) {
+      requestAnimationFrame(() => {
+        updateHeader();
+        ticking = false;
+      });
+      ticking = true;
+    }
+  }
+
+  window.addEventListener("scroll", onScroll, { passive: true });
+  window.addEventListener("resize", () => {
+    if (!isMobile()) {
+      const header = document.querySelector(".header");
+      if (header) {
+        header.classList.remove("header--hidden");
+      }
+    }
+  });
+</script>

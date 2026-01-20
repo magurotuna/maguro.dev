@@ -7,7 +7,7 @@ const { headings } = Astro.props;
 ---
 
 <nav class="toc">
-  <details open>
+  <details class="toc-details">
     <summary class="toc-title">目次</summary>
     <ul class="toc-list">
       {
@@ -74,3 +74,16 @@ const { headings } = Astro.props;
     }
   }
 </style>
+
+<script>
+  const MOBILE_BREAKPOINT = 768;
+
+  function initToc() {
+    const details = document.querySelector(".toc-details");
+    if (details && window.innerWidth > MOBILE_BREAKPOINT) {
+      details.setAttribute("open", "");
+    }
+  }
+
+  initToc();
+</script>
