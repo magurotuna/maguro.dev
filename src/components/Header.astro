@@ -6,7 +6,7 @@ import ThemeToggle from "./ThemeToggle.astro";
   <div class="header-inner">
     <a href="/" class="site-title">maguro.dev</a>
     <nav class="nav">
-      <a href="/">Home</a>
+      <a href="/" class="nav-home">Home</a>
       <a href="/about/">About</a>
       <a href="https://event.maguro.dev" target="_blank" rel="noopener">Event</a
       >
@@ -82,20 +82,21 @@ import ThemeToggle from "./ThemeToggle.astro";
     }
 
     .header-inner {
-      flex-wrap: wrap;
+      flex-wrap: nowrap;
+      padding: calc(var(--spacing-unit) * 0.75) var(--spacing-unit);
+      gap: calc(var(--spacing-unit) * 0.75);
     }
 
     .site-title {
-      flex: 1;
+      font-size: 1.1rem;
     }
 
     .nav {
-      order: 2;
-      width: auto;
+      gap: calc(var(--spacing-unit) * 0.75);
     }
 
-    .header-actions {
-      order: 1;
+    .nav-home {
+      display: none;
     }
   }
 </style>
