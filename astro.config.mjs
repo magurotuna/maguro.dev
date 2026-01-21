@@ -10,6 +10,7 @@ import rehypeKatex from "rehype-katex";
 import rehypeSlug from "rehype-slug";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import rehypeExternalLinks from "rehype-external-links";
+import rehypeExternalLinkFavicon from "./src/plugins/rehype-external-link-favicon.ts";
 
 export default defineConfig({
   site: "https://maguro.dev",
@@ -63,6 +64,7 @@ export default defineConfig({
           rel: ["noopener", "noreferrer"],
         },
       ],
+      rehypeExternalLinkFavicon,
     ],
   },
 });

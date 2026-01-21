@@ -126,6 +126,20 @@ a:hover {
   text-decoration: underline;
 }
 
+/* External link favicon */
+.external-link-favicon {
+  width: 1em;
+  height: 1em;
+  vertical-align: -0.125em;
+  margin-inline-start: 0.2em;
+  margin-inline-end: 0.2em;
+}
+
+/* Add spacing after external links with favicons */
+a:has(.external-link-favicon) {
+  margin-inline-end: 0.1em;
+}
+
 /* External link indicator (Lucide external-link icon) */
 a[target="_blank"]:not(.icon-link):not(.link-card):not(.share-button):not(
     :has(img)
