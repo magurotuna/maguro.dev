@@ -126,6 +126,16 @@ a:hover {
   text-decoration: underline;
 }
 
+/* External link favicon */
+.external-link-favicon {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  margin-right: 0.25em;
+  vertical-align: -0.125em;
+  border-radius: 2px;
+}
+
 /* External link indicator (Lucide external-link icon) */
 a[target="_blank"]:not(.icon-link):not(.link-card):not(.share-button):not(
     :has(img)
