@@ -76,10 +76,7 @@ function isExternalLink(href: string): boolean {
   // Exclude own domain
   try {
     const url = new URL(href);
-    if (
-      url.hostname === "maguro.dev" ||
-      url.hostname.endsWith(".maguro.dev")
-    ) {
+    if (url.hostname === "maguro.dev" || url.hostname.endsWith(".maguro.dev")) {
       return false;
     }
   } catch {
