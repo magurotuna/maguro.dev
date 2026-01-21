@@ -135,6 +135,11 @@ a:hover {
   margin-inline-end: 0.2em;
 }
 
+/* Add spacing after external links with favicons */
+a:has(.external-link-favicon) {
+  margin-inline-end: 0.1em;
+}
+
 /* External link indicator (Lucide external-link icon) */
 a[target="_blank"]:not(.icon-link):not(.link-card):not(.share-button):not(
     :has(img)
