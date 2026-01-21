@@ -172,7 +172,7 @@ const tocHeadings = headings.filter((h) => h.depth >= 1 && h.depth <= 3);
     margin-top: calc(var(--spacing-unit) * 2);
   }
 
-  .post-content :global(img) {
+  .post-content :global(img:not(.external-link-favicon)) {
     border-radius: 4px;
     margin: var(--spacing-unit) 0;
   }
