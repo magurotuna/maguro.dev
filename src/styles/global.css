@@ -128,11 +128,11 @@ a:hover {
 
 /* External link favicon */
 .external-link-favicon {
-  display: inline-block;
+  display: inline;
   width: 1em;
   height: 1em;
-  margin-right: 0.25em;
-  vertical-align: -0.125em;
+  margin-right: 0.2em;
+  vertical-align: text-bottom;
   border-radius: 2px;
 }
 
