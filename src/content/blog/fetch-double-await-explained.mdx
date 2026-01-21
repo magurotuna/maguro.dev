@@ -16,7 +16,7 @@ const data = await resp.json();
 
 とある休日の午前中、いつものようにYouTube上でライブコーディング動画を見ていました[^1]。そこで配信者の方が、`fetch`を使ってレスポンスボディを取得する際に2回目の`await`が必要であることに対して、「なんで`fetch`はこんなにめんどくさいんだろう」と言っていました。言われてみると、確かにめんどくさいような気もします。
 
-[^1]: ライブコーディング動画を見るのが好きです。過去に [YouTubeにあるライブコーディング動画を見て Rust を学ぼう](https://zenn.dev/magurotuna/articles/d5621291b8da87) や [【#も読】ライブコーディング視聴のすすめ（@yusuktan）](https://findy-code.io/media/articles/modoku20250519-yusuktan) などを書いています。
+[^1]: ライブコーディング動画を見るのが好きです。過去に [YouTube にあるライブコーディング動画を見て Rust を学ぼう](https://zenn.dev/magurotuna/articles/d5621291b8da87) や [【#も読】 ライブコーディング視聴のすすめ（@yusuktan）](https://findy-code.io/media/articles/modoku20250519-yusuktan) などを書いています。
 
 この記事では、なぜ `fetch` がこのような設計になっているのかをいろいろな観点から掘り下げてみます。
 
@@ -278,7 +278,7 @@ if err != nil {
 
 ところで5行目に `defer resp.Body.Close()` とあります。もしこれを忘れて、なおかつレスポンスボディを読み切らずに放置してしまうと、HTTPレスポンスを中途半端な状態で止めてしまうことになり、TCPコネクションを次のHTTPリクエストのために再利用することができなくなるなどの問題が発生します。
 
-net/http のドキュメントにも[「絶対にレスポンスボディをcloseしてね」と書かれている](https://pkg.go.dev/net/http#pkg-overview)し、[golangci-lint](https://golangci-lint.run/)にもこれを検知するリントルール [bodyclose](https://golangci-lint.run/docs/linters/configuration/#bodyclose) があります。
+[net/http のドキュメント](https://pkg.go.dev/net/http#pkg-overview)にも「絶対にレスポンスボディをcloseしてね」と書かれているし、[golangci-lint](https://golangci-lint.run/)にもこれを検知するリントルール [bodyclose](https://golangci-lint.run/docs/linters/configuration/#bodyclose) があります。
 
 JavaScriptの `fetch` でも同じような問題は発生するのでしょうか？つまり、レスポンスボディを読み切らなかったり、明示的なclose処理を忘れたりすると、リソースリークが発生するのでしょうか？
 
