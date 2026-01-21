@@ -61,18 +61,38 @@ export default function rehypeExternalLinkFavicon() {
         children: [],
       };
 
-      // Wrap favicon in a span to prevent line break between favicon and text
-      const faviconWrapper: Element = {
-        type: "element",
-        tagName: "span",
-        properties: {
-          className: ["external-link-favicon-wrapper"],
-        },
-        children: [faviconImg],
-      };
+      // Get first text content to wrap with favicon in a nowrap span
+      const firstChild = node.children[0];
+      if (firstChild && firstChild.type === "text" && firstChild.value) {
+        // Find first word/character to keep with favicon
+        const text = firstChild.value;
+        const match = text.match(/^(\S+)([\s\S]*)$/);
+        if (match) {
+          const [, firstWord, rest] = match;
+          // Create span that wraps favicon + first word with nowrap
+          const nowrapSpan: Element = {
+            type: "element",
+            tagName: "span",
+            properties: {
+              style: "white-space:nowrap",
+            },
+            children: [
+              faviconImg,
+              { type: "text", value: firstWord },
+            ],
+          };
+          // Replace first child with nowrap span + rest of text
+          node.children = [
+            nowrapSpan,
+            ...(rest ? [{ type: "text" as const, value: rest }] : []),
+            ...node.children.slice(1),
+          ];
+          return;
+        }
+      }
 
-      // Prepend favicon wrapper to link children
-      node.children = [faviconWrapper, ...node.children];
+      // Fallback: just prepend favicon
+      node.children = [faviconImg, ...node.children];
     });
   };
 }
