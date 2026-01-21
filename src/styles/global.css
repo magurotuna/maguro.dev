@@ -126,14 +126,23 @@ a:hover {
   text-decoration: underline;
 }
 
+/* External link favicon wrapper - keeps favicon inline with text */
+.external-link-favicon-wrapper {
+  display: inline;
+  white-space: nowrap;
+}
+
+.external-link-favicon-wrapper::after {
+  content: "\200B"; /* Zero-width space to allow line break after favicon */
+}
+
 /* External link favicon */
 .external-link-favicon {
   display: inline;
   width: 1em;
   height: 1em;
-  margin-right: 0.2em;
-  vertical-align: text-bottom;
-  border-radius: 2px;
+  vertical-align: -0.15em;
+  margin-right: 0.1em;
 }
 
 /* External link indicator (Lucide external-link icon) */

@@ -53,16 +53,26 @@ export default function rehypeExternalLinkFavicon() {
           src: `https://www.google.com/s2/favicons?domain=${domain}&sz=32`,
           alt: "",
           className: ["external-link-favicon"],
-          width: 16,
-          height: 16,
+          width: 14,
+          height: 14,
           loading: "lazy",
           decoding: "async",
         },
         children: [],
       };
 
-      // Prepend favicon to link children
-      node.children = [faviconImg, ...node.children];
+      // Wrap favicon in a span to prevent line break between favicon and text
+      const faviconWrapper: Element = {
+        type: "element",
+        tagName: "span",
+        properties: {
+          className: ["external-link-favicon-wrapper"],
+        },
+        children: [faviconImg],
+      };
+
+      // Prepend favicon wrapper to link children
+      node.children = [faviconWrapper, ...node.children];
     });
   };
 }
