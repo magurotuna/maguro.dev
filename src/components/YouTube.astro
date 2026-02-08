@@ -2,14 +2,19 @@
 interface Props {
   id: string;
   title?: string;
+  start?: number;
 }
 
-const { id, title = "YouTube video" } = Astro.props;
+const { id, title = "YouTube video", start } = Astro.props;
+const params = new URLSearchParams();
+if (start != null) params.set("start", String(start));
+const query = params.toString();
+const embedUrl = `https://www.youtube-nocookie.com/embed/${id}${query ? `?${query}` : ""}`;
 ---
 
 <div class="youtube-container">
   <iframe
-    src={`https://www.youtube-nocookie.com/embed/${id}`}
+    src={embedUrl}
     title={title}
     frameborder="0"
     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
