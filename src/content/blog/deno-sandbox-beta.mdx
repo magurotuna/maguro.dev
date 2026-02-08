@@ -2,7 +2,7 @@
 title: "Deno Sandboxがリリースされた"
 date: 2026-02-04
 tags: ["Deno", "security", "AI", "Deno Sandbox"]
-description: "この半年間開発に携わってきたDeno Sandboxがついに公開。allowNetとsecrets機能について"
+description: "信頼できないコードを安全に実行する軽量VM、Deno Sandboxがベータ公開。ネットワーク制御のallowNetと機密情報保護のsecretsを紹介"
 draft: true
 ---
 
@@ -57,9 +57,7 @@ console.log(`ssh ${username}@${host}`);
 
 しかし、ここ1年でこの課題の重要性は格段に増しています。理由はそう、Agentic Codingの台頭です。
 
-### AIエージェント時代のセキュリティ課題
-
-最近の開発では、AIエージェントにコードを書かせることがもはや当たり前です。
+最近の開発では、AIエージェントにコードを書かせる場面が急速に増えています。
 
 僕の以前の記事 [Node.js作者の発言「人間がコードを書く時代は終わった」について思うこと](/blog/the-era-of-humans-writing-code-is-over/)でも触れたとおり、AIが運転席に座り、人間は助手席でナビゲーションをするようなスタイルで仕事をするようになりました。作業内容によっては完全自動運転のレベルに達しているといっても言い過ぎではないでしょう。
 
@@ -68,7 +66,7 @@ console.log(`ssh ${username}@${host}`);
 しかし、「大いなる力には、大いなる責任が伴う」[^sudo]という言葉が示すように、AIエージェントに強い権限を与えることはリスクを伴います。最近だと「AI秘書」として話題になった[OpenClaw](https://openclaw.ai)[^openclaw-history]も、あまりにも多くの権限をAIに与えるということで、多くのセキュリティ専門家がプロンプトインジェクションの危険性を指摘しています[^prompt-injection-risk]。
 
 
-[^sudo]: [sudo (すーどぅー)とは【ピクシブ百科事典】](https://dic.pixiv.net/a/sudo) にある通り、`sudo` の警告文として有名
+[^sudo]: コンピュータの文脈だと、[sudo (すーどぅー)とは【ピクシブ百科事典】](https://dic.pixiv.net/a/sudo) にある通り、`sudo` の警告文として有名
 [^openclaw-history]: 最初の名前はClawdbot、次にMoltbot、そして現在OpenClawという名前になりました。めまぐるしすぎる
 [^prompt-injection-risk]: [Personal AI Agents like OpenClaw Are a Security Nightmare - Cisco Blogs](https://blogs.cisco.com/ai/personal-ai-agents-like-openclaw-are-a-security-nightmare) や [What Security Teams Need to Know About OpenClaw, the AI Super Agent](https://www.crowdstrike.com/en-us/blog/what-security-teams-need-to-know-about-openclaw-ai-super-agent/) など。YouTube動画 [【危険なAI秘書!?】OpenClaw(旧Clawdbot/Moltbot) / Moltbook とは？何が起きている？](https://www.youtube.com/watch?v=IUxpoZYnEL0) も参考になります
 
@@ -79,7 +77,7 @@ AIに多くの権限（理想的には、人間と変わらない権限）を与
 1. ネットワーク出口の制御 — どこに通信できるかを制限する
 2. 機密情報の保護 — シークレット（環境変数）が悪用されないようにする
 
-### allowNet: ネットワーク出口の制御
+## allowNet: ネットワーク出口の制御
 
 `allowNet`オプションを使うと、Sandboxから通信可能なホストを許可リスト方式で制限できます[^allow-net-tip]。
 
@@ -134,7 +132,7 @@ await using sandbox = await Sandbox.create({
 
 似たようなことを実現するOSSとして[coder/httpjail](https://github.com/coder/httpjail)があります。Deno Sandboxでは、これと似た発想でありつつも、Deno Deployのインフラに最適化された実装を行っています。
 
-### secrets: 機密情報の保護
+## secrets: 機密情報の保護
 
 Sandboxの中ではAIエージェントを動かすのが最大の動機です。
 
@@ -142,8 +140,7 @@ AIエージェントを動かすためには、認証情報を適切に設定す
 
 これらの環境変数が設定されたSandbox内で、自由に活動するAIエージェント。プロンプトインジェクションの被害に遭って、`GITHUB_TOKEN` をGitHub上にパブリック状態でアップロードされてしまうかもしれません[^supplement-on-why-allow-net-does-not-protect-you]。そうなると攻撃者があなたの `GITHUB_TOKEN` を入手することができてしまいます。
 
-[^supplement-on-why-allow-net-does-not-protect-you]: 「AIエージェントにGitHubを操作させたい」という状況なので、上で説明した `allowNet` に `api.github.com` が設定済みと考えるのが自然です。つまり、このケースでは、`allowNet` 
-による防御は効果がないと言えます
+[^supplement-on-why-allow-net-does-not-protect-you]: 「AIエージェントにGitHubを操作させたい」という状況なので、上で説明した `allowNet` に `api.github.com` が設定済みと考えるのが自然です。つまり、このケースでは、`allowNet` による防御は効果がないと言えます
 
 ここで登場するのが secrets です。secretsとしてSandboxに渡した値は、Sandbox内ではダミーの値になっています。指定されたホスト名へのリクエスト時にのみ、本当の値に置き換えられます。
 
