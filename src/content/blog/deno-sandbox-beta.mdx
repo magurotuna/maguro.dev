@@ -6,11 +6,18 @@ description: "信頼できないコードを安全に実行する軽量VM、Deno
 draft: false
 ---
 
+import YouTube from "../../components/YouTube.astro";
+
 2026年2月3日、[Deno Sandbox](https://deno.com/deploy/sandbox)というサービスがベータ版として公開されました。
 
 昨年の8月くらいからこのサービスの開発に関わってきた[^hono-conf]ので、個人的にも感慨深いです。この記事では、Deno Sandboxの概要と、その中でも特に自分が力を入れて開発してきた`allowNet`と`secrets`という2つの機能について紹介しようと思います。
 
 [^hono-conf]: [Deno Sandbox – instant, disposable, and isolated VM for the AI era](https://www.docswell.com/s/magurotuna/Z37Q9J-2025-10-18-hono-conf-2025) というタイトルで [Hono Conf 2025](https://honoconf.dev/2025)でも発表していました。この頃（2025年10月）に比べると機能も拡充され、ようやくベータ版リリースにこぎつけました
+
+<figure>
+  <YouTube id="u1ppsGMUUuo" start={1245} />
+  <figcaption>RyanとLucaによるDeno Sandboxの紹介</figcaption>
+</figure>
 
 ## Deno Sandboxとは
 
