@@ -1,0 +1,194 @@
+---
+title: "Deno Sandboxがリリースされた"
+date: 2026-02-04
+tags: ["Deno", "security", "AI", "Deno Sandbox"]
+description: "この半年間開発に携わってきたDeno Sandboxがついに公開。allowNetとsecrets機能について"
+draft: true
+---
+
+2026年2月3日、[Deno Sandbox](https://deno.com/deploy/sandbox)というサービスがベータ版として公開されました。
+
+昨年の8月くらいからこのサービスの開発に関わってきた[^hono-conf]ので、個人的にも感慨深いです。この記事では、Deno Sandboxの概要と、その中でも特に自分が力を入れて開発してきた`allowNet`と`secrets`という2つの機能について紹介しようと思います。
+
+[^hono-conf]: [Deno Sandbox – instant, disposable, and isolated VM for the AI era](https://www.docswell.com/s/magurotuna/Z37Q9J-2025-10-18-hono-conf-2025) というタイトルで [Hono Conf 2025](https://honoconf.dev/2025)でも発表していました。この頃（2025年10月）に比べると機能も拡充され、ようやくベータ版リリースにこぎつけました
+
+## Deno Sandboxとは
+
+Deno Sandboxは、信頼できないコードを安全に実行するため[^other-usecases]の軽量Linux microVMを提供するサービスです。Denoという名前がついてはいますが、Linux VMなので、必ずしもDenoを使う必要はありません。Node.js、 Python、 シェルスクリプト、Claude Codeなどなんでも動かせます。
+
+[^other-usecases]: もちろん、他のユースケースも考えられます。例えば、オレオレ競プロジャッジサーバーの基盤として使う、プログラミング言語のプレイグラウンドとして、ユーザーが自由にプログラムしたコードを実行するために利用する、など
+
+[Deno Deploy](https://deno.com/deploy)[^deno-deploy]のインフラ上で動作し、以下のような特徴があります。
+
+[^deno-deploy]: Deno Deployも同日にGeneral Availabilityになりました。[Deno Deploy is Generally Available](https://deno.com/blog/deno-deploy-is-ga)
+
+- 高速な起動
+- `allowNet` や `secrets` などのセキュリティ機能
+- データの永続化
+  - ボリューム（読み書き可能）
+  - スナップショット（読み込み専用イメージ。ツールをプリインストールしたスナップショットを用意して、複数のSandboxにアタッチするなど）
+- Deno Deployとの統合（Sandbox内で作ったアプリをDeno Deployに直接にデプロイする、など）
+
+`@deno/sandbox` というSDKがあります。[JSR](https://jsr.io/@deno/sandbox) や [npm](https://www.npmjs.com/package/@deno/sandbox)、[PyPI](https://pypi.org/project/deno-sandbox/) から入手可能です。以下のような感じでSandboxの立ち上げや操作をすることができます。
+
+```javascript
+import { Sandbox } from "@deno/sandbox";
+
+await using sandbox = await Sandbox.create({ timeout: "10m" });
+await sandbox.sh`ls -lh /`;
+
+const { username, host } = await sandbox.exposeSsh();
+console.log(`ssh ${username}@${host}`);
+```
+
+これを実行すると以下のようになります[^need-to-sign-up]。Sandbox内で `ls` の実行と、Sandboxへの `ssh` ができています。
+
+[^need-to-sign-up]: 手元で試すためには、[Deno Deploy](https://console.deno.com) にログインして、APIトークンを作成する必要があります。
+
+<figure>
+  <img src="/img/deno-sandbox-demo.png" alt="@deno/sandbox SDKを使ってSandboxを立ち上げ、lsコマンドとsshコマンドを実行している" />
+  <figcaption>@deno/sandbox SDKを使う様子</figcaption>
+</figure>
+
+
+## なぜDeno Sandboxが必要なのか
+
+「信頼できないコードを安全に実行する」これは昔からある課題です。プラグインシステムやユーザー提供のスクリプト実行など、さまざまな場面でこのニーズは存在してきました。
+
+しかし、ここ1年でこの課題の重要性は格段に増しています。理由はそう、Agentic Codingの台頭です。
+
+### AIエージェント時代のセキュリティ課題
+
+最近の開発では、AIエージェントにコードを書かせることがもはや当たり前です。
+
+僕の以前の記事 [Node.js作者の発言「人間がコードを書く時代は終わった」について思うこと](/blog/the-era-of-humans-writing-code-is-over/)でも触れたとおり、AIが運転席に座り、人間は助手席でナビゲーションをするようなスタイルで仕事をするようになりました。作業内容によっては完全自動運転のレベルに達しているといっても言い過ぎではないでしょう。
+
+この流れは加速する一方です。AIのポテンシャルを最大限活用するためには「人間の介入をいかに減らすか」という点が重要になってきます。AIエージェントに強い権限を与え、可能な限り自律的にタスクをこなしてもらいたいです。
+
+しかし、「大いなる力には、大いなる責任が伴う」[^sudo]という言葉が示すように、AIエージェントに強い権限を与えることはリスクを伴います。最近だと「AI秘書」として話題になった[OpenClaw](https://openclaw.ai)[^openclaw-history]も、あまりにも多くの権限をAIに与えるということで、多くのセキュリティ専門家がプロンプトインジェクションの危険性を指摘しています[^prompt-injection-risk]。
+
+
+[^sudo]: [sudo (すーどぅー)とは【ピクシブ百科事典】](https://dic.pixiv.net/a/sudo) にある通り、`sudo` の警告文として有名
+[^openclaw-history]: 最初の名前はClawdbot、次にMoltbot、そして現在OpenClawという名前になりました。めまぐるしすぎる
+[^prompt-injection-risk]: [Personal AI Agents like OpenClaw Are a Security Nightmare - Cisco Blogs](https://blogs.cisco.com/ai/personal-ai-agents-like-openclaw-are-a-security-nightmare) や [What Security Teams Need to Know About OpenClaw, the AI Super Agent](https://www.crowdstrike.com/en-us/blog/what-security-teams-need-to-know-about-openclaw-ai-super-agent/) など。YouTube動画 [【危険なAI秘書!?】OpenClaw(旧Clawdbot/Moltbot) / Moltbook とは？何が起きている？](https://www.youtube.com/watch?v=IUxpoZYnEL0) も参考になります
+
+AIに多くの権限（理想的には、人間と変わらない権限）を与えて、自律的に動いてもらいたい。しかし、それはリスクが多すぎる。
+
+そこでDeno Sandboxでは、以下の2つの機能を搭載しています。
+
+1. ネットワーク出口の制御 — どこに通信できるかを制限する
+2. 機密情報の保護 — シークレット（環境変数）が悪用されないようにする
+
+### allowNet: ネットワーク出口の制御
+
+`allowNet`オプションを使うと、Sandboxから通信可能なホストを許可リスト方式で制限できます[^allow-net-tip]。
+
+[^allow-net-tip]: 何も指定しなかった場合は全許可になります。すべての外向きHTTPリクエストをブロックしたい場合は `[]` と指定します。
+
+```javascript
+import { Sandbox } from "@deno/sandbox";
+
+await using sandbox = await Sandbox.create({
+  allowNet: ["example.com", "*.mozilla.org"],
+});
+
+// Deno で example.com にアクセスしてみる
+// 許可リストに入っているので、成功するはず
+{
+  const cmd = await sandbox.deno.run({
+    code:
+      "const res = await fetch('https://example.com'); console.log(res.status);",
+    stdout: "piped",
+  });
+  const output = await cmd.output();
+  const stdout = new TextDecoder().decode(output.stdout!);
+  console.log("example.com:", stdout.trim());
+}
+
+// curl を使って developer.mozilla.org にアクセスしてみる
+// 許可リストに入っているので、成功するはず
+{
+  const status = await sandbox
+    .sh`curl -s -o /dev/null -w '%{http_code}' https://developer.mozilla.org/en-US/`
+    .text();
+  console.log("developer.mozilla.org:", status);
+}
+
+// curl を使って maguro.dev にアクセスしてみる
+// 許可リストに入っていないので、失敗するはず
+{
+  const status = await sandbox
+    .sh`curl -s -o /dev/null -w '%{http_code}' https://maguro.dev`
+    .text();
+  console.log("maguro.dev:", status);
+}
+```
+
+<figure>
+  <img src="/img/deno-sandbox-allow-net.png" alt="期待通り、example.com と developer.mozilla.org へのアクセスは成功し、maguro.devへのアクセスは失敗している" />
+  <figcaption>期待通り、example.com と developer.mozilla.org へのアクセスは成功し、maguro.devへのアクセスは失敗している</figcaption>
+</figure>
+
+
+指定されていないホストへのリクエストはブロックされ、403エラーが返されます。これにより、たとえプロンプトインジェクションによって悪意のあるコードが実行され、攻撃者のサーバーに何かが送信されそうになったとしても、それを防ぐことができます。
+
+似たようなことを実現するOSSとして[coder/httpjail](https://github.com/coder/httpjail)があります。Deno Sandboxでは、これと似た発想でありつつも、Deno Deployのインフラに最適化された実装を行っています。
+
+### secrets: 機密情報の保護
+
+Sandboxの中ではAIエージェントを動かすのが最大の動機です。
+
+AIエージェントを動かすためには、認証情報を適切に設定する必要があります。CLIツール（Claude Code、Codexなど）を使うと水面下でやってくれることが多いですが、例えばClaude Codeだと `ANTHROPIC_API_KEY` や `CLAUDE_CODE_OAUTH_TOKEN` といった環境変数の設定が必要です。さらに、AIエージェントに`gh`コマンドを使ってGitHub関連の操作をしてもらいたいとなったら、`GITHUB_TOKEN` も設定する必要があります。
+
+これらの環境変数が設定されたSandbox内で、自由に活動するAIエージェント。プロンプトインジェクションの被害に遭って、`GITHUB_TOKEN` をGitHub上にパブリック状態でアップロードされてしまうかもしれません[^supplement-on-why-allow-net-does-not-protect-you]。そうなると攻撃者があなたの `GITHUB_TOKEN` を入手することができてしまいます。
+
+[^supplement-on-why-allow-net-does-not-protect-you]: 「AIエージェントにGitHubを操作させたい」という状況なので、上で説明した `allowNet` に `api.github.com` が設定済みと考えるのが自然です。つまり、このケースでは、`allowNet` 
+による防御は効果がないと言えます
+
+ここで登場するのが secrets です。secretsとしてSandboxに渡した値は、Sandbox内ではダミーの値になっています。指定されたホスト名へのリクエスト時にのみ、本当の値に置き換えられます。
+
+```javascript
+import { Sandbox } from "@deno/sandbox";
+
+await using sandbox = await Sandbox.create({
+  // Sandbox内で `gh` コマンドを使うため、
+  // `gh`があらかじめインストールされたボリュームをマウント
+  root: "gh-cli",
+  allowNet: ["api.github.com"],
+  secrets: {
+    GITHUB_TOKEN: {
+      hosts: ["api.github.com"],
+      value: process.env.GITHUB_TOKEN!,
+    },
+  },
+});
+
+const token = await sandbox.sh`echo $GITHUB_TOKEN`.text();
+console.log("GITHUB_TOKEN:", token);
+
+const me = await sandbox.sh`gh api user`.text();
+console.log("gh api user:", me);
+```
+
+これを実行すると、以下のようになります。
+
+<figure>
+  <img src="/img/deno-sandbox-secrets.png" alt="筆者のマシン上で echo $GITHUB_TOKEN して正しい値がセットされていることを確認したあと、上記のプログラムを実行し、Sandbox内では $GITHUB_TOKEN の値がダミーの値に置き換わっていて、しかし gh api user が成功している" />
+</figure>
+
+①の `echo $GITHUB_TOKEN` は、このスクリプトを実行しているマシン上（僕のデスクトップマシン）において、`$GITHUB_TOKEN` が正しい値に設定されていることを表しています。流出するとまずいのでぼかしています。
+
+そしてスクリプト実行すると、②で「Sandbox内から見た `$GITHUB_TOKEN` の値」が表示されています。ダミーの値に書き換わっています。しかし、その後、Sandbox内からの `gh api user` コマンドが成功し、僕のユーザー情報 [@magurotuna](https://github.com/magurotuna) を取得することに成功しています。
+
+## おわりに
+
+AIエージェント時代、様々な企業がサンドボックスサービスを提供し始めています。すぐ思いつくところだけでも
+
+- [exe.dev](https://exe.dev/)
+- [Sprites](https://sprites.dev/)
+- [Vercel Sandbox](https://vercel.com/sandbox)
+- [Cloudflare Sandbox](https://sandbox.cloudflare.com/)
+
+などあります。これらの中で競争力を保ちつつサービスを展開していくのは簡単なことではないです。この記事で紹介した `allowNet` と `secrets` のほか、ボリューム、スナップショット、Deno Deployとの統合、パフォーマンス、そしてさらなる新機能の追加を通して、Deno Sandboxをより良いものにしていきます。
+
+現在はベータ版として提供されており、無料でも試すことができます。ぜひ使ってみてフィードバックをもらえると嬉しいです。
