@@ -24,7 +24,7 @@
   --line-height: 1.8;
 
   /* Layout */
-  --max-width: 760px;
+  --max-width: 830px;
   --spacing-unit: 1rem;
 }
 
@@ -178,6 +178,12 @@ pre {
 
 .expressive-code {
   margin: calc(var(--spacing-unit) * 1.5) 0;
+}
+
+@media (max-width: 640px) {
+  .expressive-code .ec-line .gutter {
+    display: none;
+  }
 }
 
 pre code {
