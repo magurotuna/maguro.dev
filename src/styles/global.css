@@ -180,6 +180,12 @@ pre {
   margin: calc(var(--spacing-unit) * 1.5) 0;
 }
 
+@media (max-width: 640px) {
+  .expressive-code .ec-line .gutter {
+    display: none;
+  }
+}
+
 pre code {
   background: none;
   padding: 0;
