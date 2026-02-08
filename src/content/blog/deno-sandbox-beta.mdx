@@ -46,10 +46,12 @@ console.log(`ssh ${username}@${host}`);
 [^need-to-sign-up]: 手元で試すためには、[Deno Deploy](https://console.deno.com) にログインして、APIトークンを作成する必要があります。
 
 <figure>
-  <img src="/img/deno-sandbox-demo.png" alt="@deno/sandbox SDKを使ってSandboxを立ち上げ、lsコマンドとsshコマンドを実行している" />
+  <img
+    src="/img/deno-sandbox-demo.png"
+    alt="@deno/sandbox SDKを使ってSandboxを立ち上げ、lsコマンドとsshコマンドを実行している"
+  />
   <figcaption>@deno/sandbox SDKを使う様子</figcaption>
 </figure>
-
 
 ## なぜDeno Sandboxが必要なのか
 
@@ -65,9 +67,10 @@ console.log(`ssh ${username}@${host}`);
 
 しかし、「大いなる力には、大いなる責任が伴う」[^sudo]という言葉が示すように、AIエージェントに強い権限を与えることはリスクを伴います。最近だと「AI秘書」として話題になった[OpenClaw](https://openclaw.ai)[^openclaw-history]も、あまりにも多くの権限をAIに与えるということで、多くのセキュリティ専門家がプロンプトインジェクションの危険性を指摘しています[^prompt-injection-risk]。
 
-
 [^sudo]: コンピュータの文脈だと、[sudo (すーどぅー)とは【ピクシブ百科事典】](https://dic.pixiv.net/a/sudo) にある通り、`sudo` の警告文として有名
+
 [^openclaw-history]: 最初の名前はClawdbot、次にMoltbot、そして現在OpenClawという名前になりました。めまぐるしすぎる
+
 [^prompt-injection-risk]: [Personal AI Agents like OpenClaw Are a Security Nightmare - Cisco Blogs](https://blogs.cisco.com/ai/personal-ai-agents-like-openclaw-are-a-security-nightmare) や [What Security Teams Need to Know About OpenClaw, the AI Super Agent](https://www.crowdstrike.com/en-us/blog/what-security-teams-need-to-know-about-openclaw-ai-super-agent/) など。YouTube動画 [【危険なAI秘書!?】OpenClaw(旧Clawdbot/Moltbot) / Moltbook とは？何が起きている？](https://www.youtube.com/watch?v=IUxpoZYnEL0) も参考になります
 
 AIに多くの権限（理想的には、人間と変わらない権限）を与えて、自律的に動いてもらいたい。しかし、それはリスクが多すぎる。
@@ -123,10 +126,15 @@ await using sandbox = await Sandbox.create({
 ```
 
 <figure>
-  <img src="/img/deno-sandbox-allow-net.png" alt="期待通り、example.com と developer.mozilla.org へのアクセスは成功し、maguro.devへのアクセスは失敗している" />
-  <figcaption>期待通り、example.com と developer.mozilla.org へのアクセスは成功し、maguro.devへのアクセスは失敗している</figcaption>
+  <img
+    src="/img/deno-sandbox-allow-net.png"
+    alt="期待通り、example.com と developer.mozilla.org へのアクセスは成功し、maguro.devへのアクセスは失敗している"
+  />
+  <figcaption>
+    期待通り、example.com と developer.mozilla.org
+    へのアクセスは成功し、maguro.devへのアクセスは失敗している
+  </figcaption>
 </figure>
-
 
 指定されていないホストへのリクエストはブロックされ、403エラーが返されます。これにより、たとえプロンプトインジェクションによって悪意のあるコードが実行され、攻撃者のサーバーに何かが送信されそうになったとしても、それを防ぐことができます。
 
@@ -170,7 +178,10 @@ console.log("gh api user:", me);
 これを実行すると、以下のようになります。
 
 <figure>
-  <img src="/img/deno-sandbox-secrets.png" alt="筆者のマシン上で echo $GITHUB_TOKEN して正しい値がセットされていることを確認したあと、上記のプログラムを実行し、Sandbox内では $GITHUB_TOKEN の値がダミーの値に置き換わっていて、しかし gh api user が成功している" />
+  <img
+    src="/img/deno-sandbox-secrets.png"
+    alt="筆者のマシン上で echo $GITHUB_TOKEN して正しい値がセットされていることを確認したあと、上記のプログラムを実行し、Sandbox内では $GITHUB_TOKEN の値がダミーの値に置き換わっていて、しかし gh api user が成功している"
+  />
 </figure>
 
 ①の `echo $GITHUB_TOKEN` は、このスクリプトを実行しているマシン上（僕のデスクトップマシン）において、`$GITHUB_TOKEN` が正しい値に設定されていることを表しています。流出するとまずいのでぼかしています。
