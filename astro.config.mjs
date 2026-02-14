@@ -11,6 +11,20 @@ import rehypeSlug from "rehype-slug";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import rehypeExternalLinks from "rehype-external-links";
 import rehypeExternalLinkFavicon from "./src/plugins/rehype-external-link-favicon.ts";
+import { readdirSync, readFileSync } from "node:fs";
+import { join } from "node:path";
+
+// Build a map of blog slug -> date for sitemap lastmod
+const blogDir = join(process.cwd(), "src/content/blog");
+const blogDates = new Map();
+for (const file of readdirSync(blogDir).filter((f) => f.endsWith(".mdx"))) {
+  const content = readFileSync(join(blogDir, file), "utf-8");
+  const dateMatch = content.match(/^date:\s*(.+)$/m);
+  if (dateMatch) {
+    const slug = file.replace(/\.mdx$/, "");
+    blogDates.set(slug, new Date(dateMatch[1].trim()));
+  }
+}
 
 export default defineConfig({
   site: "https://maguro.dev",
@@ -35,7 +49,18 @@ export default defineConfig({
       },
     }),
     mdx(),
-    sitemap(),
+    sitemap({
+      serialize(item) {
+        const match = item.url.match(/\/blog\/([^/]+)\/?$/);
+        if (match) {
+          const date = blogDates.get(match[1]);
+          if (date) {
+            item.lastmod = date.toISOString();
+          }
+        }
+        return item;
+      },
+    }),
   ],
   markdown: {
     remarkPlugins: [remarkGfm, remarkMath],

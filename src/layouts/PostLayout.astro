@@ -23,13 +23,31 @@ const tweetTitle = title.replace(/maguro\.dev/g, "maguro\u200B.dev");
 
 // Filter headings for ToC (h1, h2, and h3)
 const tocHeadings = headings.filter((h) => h.depth >= 1 && h.depth <= 3);
+
+const jsonLd = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  headline: title,
+  description: description || "",
+  datePublished: date.toISOString(),
+  url: `https://maguro.dev/blog/${slug}/`,
+  image: `https://maguro.dev/og/${slug}.png`,
+  author: {
+    "@type": "Person",
+    name: "maguro",
+    url: "https://maguro.dev/about/",
+  },
+});
 ---
 
 <BaseLayout
-  title={`${title} | maguro\u200B.dev`}
+  title={`${title} | maguro.dev`}
   description={description}
   ogImage={ogImage}
+  ogType="article"
+  publishedTime={date}
 >
+  <script type="application/ld+json" set:html={jsonLd} />
   <article class="post">
     <header class="post-header">
       <h1 class="post-title">{title}</h1>
