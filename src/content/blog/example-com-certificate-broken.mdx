@@ -100,7 +100,7 @@ HTTPS で通信するとき、クライアント（ブラウザや `curl` など
 
 Mozillaが定める[Root Store Policy](https://www.mozilla.org/en-US/about/governance/policies/security-group/certs/policy/)に基づき、鍵が生成されてから15年以上経過したものについては削除するという方針に従った決定です。
 
-Linuxにおいては、OSが管理するルート証明書ストアはMozillaが管理するルートCAリストに基づいていることが多いです。alpine上での `curl` がバージョンによって成功したり失敗したりしたのは、古いバージョンのalpineでは AAA Certificate Servicesのルート証明書がOS管理のルート証明書ストアに含まれており、新しいバージョンのalpineでは含まれていないから、ということになります。
+多くのLinuxディストリビューションにおいては、Mozillaが管理するものをベースにOSのルート証明書ストアを構築しています。alpine上での `curl` がバージョンによって成功したり失敗したりしたのは、古いバージョンのalpineでは AAA Certificate Servicesのルート証明書がOS管理のルート証明書ストアに含まれており、新しいバージョンのalpineでは含まれていない（削除済み）から、ということになります。
 
 ## なぜブラウザでは問題が起きないのか
 
