@@ -1,0 +1,204 @@
+---
+title: "何もしてないのに example.com が壊れた"
+date: 2026-02-15
+tags: ["TLS", "security", "Rust", "PKI"]
+description: "2026年2月14日、example.com へのHTTPS接続がcurlやrustlsで突然失敗するようになった。ルートCAの信頼解除と証明書パス構築の仕組みから原因を探る"
+---
+
+2026年2月14日、CIで走らせているテストケースが突然失敗するようになりました。エラーメッセージを見ると、`example.com` への HTTPS リクエストで証明書エラーが起きています。テストコードは何も変更していないのに。
+
+`example.com` に依存するテストがあること自体の是非はさておき[^example-com-test]、壊れたものは直さないといけません。原因を調べていくと、TLS証明書の検証の仕組みや、クライアントごとに異なる挙動の違いなど、思った以上に深い話に辿り着きました。
+
+[^example-com-test]: テストで外部のサービスに依存すること自体があまり良くはないですが、特に [example.com](https://example.com) に関しては、「ドキュメントでの例示用に自由に使うことができるドメインです。運用での使用は避けてください。」と書いてあります
+
+## 何が起きたのか
+
+まずは状況を整理します。
+
+手元のNixOSマシンで `curl` を使って `example.com` にアクセスしてみると、確かにエラーになります。
+
+```sh
+$ curl https://example.com
+curl: (60) SSL certificate OpenSSL verify result: certificate rejected (28)
+More details here: https://curl.se/docs/sslcerts.html
+
+curl failed to verify the legitimacy of the server and therefore could not
+establish a secure connection to it. To learn more about this situation and
+how to fix it, please visit the webpage mentioned above.
+```
+
+ちなみに同じ `curl` コマンドを macOS で実行すると、エラーにならず正常に終了しました。
+
+NixOSでのcurlのバージョンは以下の通りです。
+
+```sh
+$ curl --version
+curl 8.17.0 (x86_64-pc-linux-gnu) libcurl/8.17.0 OpenSSL/3.6.0 zlib/1.3.1 brotli/1.2.0 zstd/1.5.7 libidn2/2.3.8 libpsl/0.21.5 libssh2/1.11.1 nghttp2/1.67.1 ngtcp2/1.18.0 nghttp3/1.13.1 mit-krb5/1.22.1
+Release-Date: 2025-11-05
+Protocols: dict file ftp ftps gopher gophers http https imap imaps ipfs ipns mqtt pop3 pop3s rtsp scp sftp smb smbs smtp smtps telnet tftp
+Features: alt-svc AsynchDNS brotli GSS-API HSTS HTTP2 HTTP3 HTTPS-proxy IDN IPv6 Kerberos Largefile libz NTLM PSL SPNEGO SSL threadsafe TLS-SRP UnixSockets zstd
+```
+
+ところが、ブラウザ（ChromeやFirefox）からは何の問題もなく表示されます。
+
+さらに調べていくと、環境によって結果が分かれることがわかりました。
+
+- Docker で [netshoot](https://github.com/nicolaka/netshoot)（ネットワークトラブルシューティング用のイメージ）を使って `curl` すると、やはりエラーになる。ただし、netshoot のバージョン 0.14 だとエラーにならず、0.15 だとエラーになる
+  - 失敗❌️ `docker run --rm nicolaka/netshoot:v0.15 curl https://example.com`
+  - 成功✅️ `docker run --rm nicolaka/netshoot:v0.14 curl https://example.com`
+- netshoot は Alpine Linux ベース。Alpineのバージョンも調べてみると、`alpine:3.18.12` イメージでは成功、`alpine:3.21.6` では失敗することがわかった
+- CIで使っている Rust の [rustls](https://github.com/rustls/rustls) + [webpki-roots](https://github.com/rustls/webpki-roots) の場合、webpki-roots の 0.26.10 以降でエラーが発生する
+
+証明書に関するエラーなのは間違いないですが、詳しく原因を探るために、まずはTLS証明書の仕組みについて軽くおさらいしてみようと思います。
+
+## TLS証明書のおさらい
+
+### サーバー証明書とは何か
+
+HTTPS で通信するとき、クライアント（ブラウザや `curl` など）はサーバーからサーバー証明書を受け取ります。この証明書は、「今接続しようとしているこのサーバーは確かに `example.com` である」ということを証明するためのものです。
+
+もしサーバー証明書がなかったら、通信相手が本物の `example.com` なのか、それとも攻撃者が用意した偽のサーバーなのかを区別する手段がありません。サーバー証明書を検証することで、通信相手の正当性を確認でき、安全に通信を始められます。
+
+### 証明書チェーンと検証の仕組み
+
+では、サーバーから渡された証明書が信頼できるものであることはどのように証明するのでしょうか？攻撃者が「自分は正当な `example.com` ですよ〜 ^\_^」と騙った証明書を渡してきたら、どうしたら良いのでしょうか？
+
+サーバーから渡された証明書の正当性は、その証明書が「信頼できる機関から署名されているか」で判断します。サーバー証明書は普通、鎖状になっていて、複数の証明書が連なっています。
+
+典型的なチェーンは以下のようになっています。
+
+```
+サーバー証明書（example.com）
+  ↑ 署名
+中間証明書（Intermediate CA）
+  ↑ 署名
+ルート証明書（Root CA）
+```
+
+ルート証明書が信頼できるものであることが分かっていれば、Root CAによって署名された中間証明書の正当性も確認でき、さらにそれを使って、末端の `example.com` の正当性も確認できる、という寸法です。
+
+でも、ルート証明書が信頼できるものである、というのはどのように確認できるのでしょうか？ルート証明書自体を取得するときに、攻撃者に悪意のある証明書を入れ込まれてしまったら、それを元に署名された証明書すべてが「正当なものである」と判定されることになってしまい、証明書システムが崩壊します。
+
+### ルート証明書ストア
+
+ルート証明書は「自己署名証明書」であり、それ自体を別の誰かが署名しているわけではありません。つまり、ルート証明書は検証の連鎖の「起点」であり、その信頼性は技術的な仕組みだけでは証明できません。では、どうやって信頼を確立しているのでしょうか？
+
+それを管理しているのが**ルート証明書ストア**（Root Certificate Store、Trust Store）です。ルート証明書ストアには、信頼されたルートCA（認証局）の証明書があらかじめ格納されています。OSベンダーやブラウザベンダーが、厳格な監査基準を満たした認証局だけをストアに収録することで、「このルート証明書は信頼してよい」という判断をユーザーに代わって行っています。言い換えると、ルート証明書の信頼は暗号技術ではなく、こうした組織的・制度的なプロセスによって成り立っています。
+
+ルート証明書ストアには、大きく分けて2つのパターンがあります。
+
+1. OSが管理するもの: macOS の Keychain、Windows の Certificate Store、Linux の `/etc/ssl/certs` など。OSのアップデートとともに更新される
+2. アプリケーションに埋め込まれたもの: 特定のライブラリやアプリケーションが独自に持っているルート証明書の一覧。ライブラリのバージョンアップとともに更新される
+
+`curl` など、OpenSSLを使うアプリケーション全般は、OSのルート証明書ストアを使います。一方で、ChromeやFirefoxは、既定では独自のルート証明書ストアを使います。Rust の rustls が利用する [webpki-roots](https://crates.io/crates/webpki-roots) や、Python の [certifi](https://pypi.org/project/certifi/) パッケージ、Node.js に同梱されているルート証明書もアプリケーション埋め込み型です。
+
+どちらのパターンであっても、ルート証明書ストアは不変ではありません。新しいルートCAが追加されたり、古いルートCAがWebサイト向けには信頼されなくなったりします。今回の問題の発端も、この変更でした。
+
+## AAA Certificate Services がWebサイト向けに信頼されなくなった
+
+`example.com` から返ってくる証明書群をもとに検証パスを組み立てると、**AAA Certificate Services** に至る経路が使われる状態でした。
+
+そして、この AAA Certificate Services は、2025年4月に Mozilla のルート証明書ストアでWebサイト向けには信頼されない設定になりました。 [1957685 - Turn off Websites Trust Bit from CAs](https://bugzilla.mozilla.org/show_bug.cgi?id=1957685)
+
+Mozillaが定める[Root Store Policy](https://www.mozilla.org/en-US/about/governance/policies/security-group/certs/policy/)に基づき、鍵が生成されてから15年以上経過したものについては、Webサイト向けの信頼を外すという方針に従った決定です。
+
+多くのLinuxディストリビューションにおいては、Mozillaが管理するものをベースにOSのルート証明書ストアを構築しています。alpine上での `curl` がバージョンによって成功したり失敗したりしたのは、古いバージョンでは AAA Certificate Services をWebサイト向けに信頼していたのに対し、新しいバージョンでは信頼しない状態に更新されたため、ということになります。
+
+## なぜブラウザでは問題が起きないのか
+
+1つ疑問が残ります。なぜブラウザでは問題なくアクセスできるのでしょうか？Firefoxも独自のルート証明書ストアを持っていて、上述した通り2025年4月に AAA Certificate Services はWebサイト向けに信頼されない設定になっています。Firefoxで `example.com` を開いたときに証明書エラーが表示されるべき、と予想するのが自然です。
+
+その答えは、**AIA (Authority Information Access)** という仕組みにあります[^aia_exception]。
+
+[^aia_exception]: 正確に言うと、FirefoxはAIAを使うのではなく、Intermediate CA Preloading という仕組みを導入しているようです。参考: [Preloading Intermediate CA Certificates into Firefox - Mozilla Security Blog](https://blog.mozilla.org/security/2020/11/13/preloading-intermediate-ca-certificates-into-firefox/) 一方、[net/cert_net/README.md](https://chromium.googlesource.com/chromium/src/+/HEAD/net/cert_net/README.md) を参照すると、ChromeはAIAを活用しているようです。ブラウザによって細かい挙動は違うものの、ここでは一例としてAIAを取り上げる、ということにさせてください
+
+### AIA とは
+
+AIA (Authority Information Access) は証明書の拡張フィールドの一つで、[RFC 5280](https://datatracker.ietf.org/doc/html/rfc5280#section-4.2.2.1) で定義されています。証明書の中に「この証明書の発行者の証明書はここからダウンロードできますよ」というURLが埋め込まれています。
+
+### AIA による証明書パスの構築
+
+ブラウザは、サーバーから受け取った証明書チェーンだけに頼るのではなく、AIA を活用して「別の証明書パス」を探索します。
+
+今回のケースでは、サーバー送信の証明書群だけで組み立てると AAA Certificate Services に至ります。しかし、中間証明書の AIA をたどると別ルートも見つかります。この別ルートは有効なので、ブラウザでは検証が通った、ということになります。
+
+```
+❌ サーバーから送信された証明書パス       ✅ AIA で補完したパス
+
+┌────────────────────────────────┐ ┌──────────────────────────────────┐
+│ AAA Certificate Services       │ │ SSL.com TLS ECC Root CA 2022     │
+│ ❌ Webサイト向けには信頼されない   │ │ ✅ ルートストアに存在する            │
+└───────────────┬────────────────┘ └────────────────┬─────────────────┘
+                ▼ 署名                               ▼ 署名
+┌───────────────┴────────────────┐ ┌────────────────┴─────────────────┐
+│ SSL.com TLS Transit ECC CA R2  │ │ SSL.com TLS Transit ECC CA R2    │
+│ 有効期間: 2024-06-21            │ │ 有効期間: 2022-10-21               │
+│         〜 2028-12-31          │ │         〜 2037-10-17             │
+└───────────────┬────────────────┘ └────────────────┬─────────────────┘
+                └────────────────┬──────────────────┘
+                                 ▼ 署名
+┌────────────────────────────────┴────────────────────────────────────┐
+│ Cloudflare TLS Issuing ECC CA 3 (SSL Corporation, US)               │
+│ 有効期間: 2025-05-29 〜 2035-05-27                                    │
+│ AIA CA Issuers: http://cert.ssl.com/SSL.com-TLS-T-ECC-R2.cer        │
+└────────────────────────────────┬────────────────────────────────────┘
+                                 ▼ 署名
+┌────────────────────────────────┴────────────────────────────────────┐
+│ example.com                                                         │
+│ 有効期間: 2026-02-13 〜 2026-05-14                                    │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+## AIA を参照しない実装が多い
+
+ブラウザが AIA などを使って「頑張って」有効な証明書パスを見つけてくれることはわかりました。しかし、すべてのTLSクライアントがそうするわけではありません。むしろ、AIA を参照する実装は少数派です。
+
+以下は、AIA によるパス構築をサポートしていない代表的な実装と、その判断に至った議論です。
+
+### curl (OpenSSLバックエンド)
+
+curl は AIA をサポートしていません。公式ページでもTODOとして記載されています。
+
+AIAを活用するということは、TLSハンドシェイクを完了するために追加の証明書をダウンロードするということになり、セキュリティ上問題がないように正しく実装することが難しいという理由が述べられています。
+
+- [Support Authority Information Access certificate extension (AIA)](https://curl.se/docs/todo.html#support-authority-information-access-certificate-extension-aia)
+- [curl Discussion #13776: Add support for AIA](https://github.com/curl/curl/discussions/13776)
+
+### Go (crypto/tls)
+
+Go の標準ライブラリも AIA をサポートしていません。Go のセキュリティチームの Filippo Valsorda 氏は、以下のような理由を挙げています。
+
+> AIA causes unexpected network requests during chain validation, which should be a self-contained process, introduces latency, system calls, and potentially intermittent failures in a process that should be deterministic
+
+（AIA は、本来自己完結的であるべき証明書チェーンの検証処理中に予期しないネットワークリクエストを発生させ、レイテンシやシステムコールを導入し、本来決定論的であるべき処理に間欠的な失敗の可能性をもたらす）
+
+- [golang/go Issue #31773: crypto/tls: Authority Information Access support](https://github.com/golang/go/issues/31773)
+
+### rustls (Rust)
+
+今回の問題を見つけるきっかけになった rustls も、AIA をサポートしていません。
+
+なお、rustls には [rustls-platform-verifier](https://github.com/rustls/rustls-platform-verifier) というクレートもあります。これを使うと OS のネイティブな証明書検証器に委譲できて、例えばWindows ServerではAIAに基づく証明書ダウンロードを有効にする設定が用意されています。[AIA URL retrieval in Windows](https://learn.microsoft.com/en-us/windows-server/security/authority-information-access-retrieval)
+
+### Node.js
+
+Node.js も AIA をサポートしていません。メンテナーは「ブラウザやリクエストライブラリのようなエンドユーザー製品であれば妥当だが、Node.js コアとしてはやりすぎである」という立場です。
+
+- [nodejs/node Issue #16336: NodeJs doesn't download intermediate certificate](https://github.com/nodejs/node/issues/16336#issuecomment-355913463)
+
+---
+
+AIA によるパス構築は便利ですが、検証処理中に外部サーバーへの HTTP リクエストが発生するため、レイテンシの増加、可用性への依存、アタックサーフェスの拡大などのトレードオフがあります。
+
+## まとめ
+
+今回の「`example.com` が壊れた」問題をまとめます。
+
+1. Mozilla のルート証明書ストアのポリシーにより、鍵が古くなった AAA Certificate Services は2025年4月からWebサイト向けには信頼されなくなった
+2. 2026年2月14日に、`example.com` の証明書群から組み立てられるパスとして AAA Certificate Services 側が選ばれる状態になった
+3. rustls / curl (OpenSSL) / Go / Node.js など多くの実装は、サーバーが返すチェーンをそのまま検証するため、エラーになった
+4. ブラウザはAIAなどを使って別の有効な証明書パス（AAA Certificate Services 以外の有効なルートCAに至るパス）を見つけることができるため、問題が発生しなかった
+
+いろいろな原因が複合的に絡まってはいるものの、直接的には `example.com` 側で古い証明書パスが優先される設定に変わった可能性が高いと考えられます。近いうちに修正されると思いますが、いつもお世話になっている `example.com` が突然壊れて、さらに環境によって壊れたり壊れなかったりすることで、証明書の検証の仕方がクライアントにより様々あるということを改めて学ぶきっかけになりました。
+
+この記事で説明した内容は、[プロフェッショナル TLS & PKI 改題第2版](https://amzn.to/4tBOnRL) の第4章にさらに詳しく、広範な解説がされています。とてもおすすめの本です。一家に一冊、ぜひ。
