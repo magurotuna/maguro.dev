@@ -67,7 +67,6 @@
   details: [
     - Built Go microservices handling WebRTC middleware communication and asynchronous video recording pipelines on AWS
     - Developed React-based interview UI and admin dashboard for the web interview platform
-    - Designed and maintained cloud infrastructure on AWS with Kubernetes and Terraform
   ],
 )
 
