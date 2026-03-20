@@ -53,10 +53,7 @@
   details: [
     - Core contributor to the Deno runtime (open-source, 100k+ GitHub stars), working across the Rust and TypeScript codebase
     - Developed Deno Sandbox, an isolated VM environment for secure AI-driven code execution
-    - Contributed to Deno Deploy, a globally distributed serverless platform, focusing on reliability and performance
-    - Worked on the Deno standard library (`deno_std`) and built-in linter/formatter tooling
-    - Reviewed book "Deno Web Development" (Packt Publishing, 2021) as technical reviewer
-    - Authored "速習Deno" for WEB+DB PRESS Vol.124 (2021)
+    - Contributed to Deno Deploy, a globally distributed serverless platform
   ],
 )
 
@@ -65,14 +62,14 @@
   "Online interview platform for enterprise recruiting",
   "2020 – 2022",
   details: [
-    - Built Go microservices handling WebRTC middleware communication and asynchronous video recording pipelines on AWS
+    - Built Go microservices handling WebRTC middleware communication, asynchronous video recording pipelines, and interview data management
     - Developed React-based interview UI and admin dashboard for the web interview platform
   ],
 )
 
 #entry(
   "Software Engineer — Yahoo Japan Corporation",
-  "Yahoo! Furima — C2C marketplace (part of Yahoo! JAPAN)",
+  "Yahoo! Furima — C2C marketplace",
   "2019 – 2020",
   details: [
     - Built a Node.js BFF (Backend for Frontend) layer bridging the new Furima frontend with legacy Yahoo! Auctions backend services
@@ -84,10 +81,11 @@
 
 #entry(
   "Master of Science in Computer Science",
-  "Georgia Institute of Technology (OMSCS)",
+  "Georgia Institute of Technology",
   "2022 – 2025",
   details: [
-    - Relevant coursework: Computer Networks, System Design, Distributed Systems
+    - GPA: 3.81
+    - Relevant coursework: Distributed Computing, Computer Networks, Compilers, Operating Systems
   ],
 )
 
@@ -104,19 +102,25 @@
   column-gutter: 12pt,
   row-gutter: 6pt,
   text(weight: "bold", "Languages:"), [Rust, TypeScript/JavaScript, Go, Python, Java, PHP, C/C++, SQL],
-  text(weight: "bold", "Runtime & Platforms:"), [Deno, Node.js, V8, PostgreSQL, MySQL, Redis],
+  text(weight: "bold", "Runtime & Platforms:"), [Deno, Node.js, PostgreSQL, MySQL],
   text(weight: "bold", "Systems:"), [Distributed systems, serverless infrastructure, container orchestration, Linux],
-  text(weight: "bold", "Tools:"), [Git, Docker, Kubernetes, Terraform, CI/CD, cloud platforms (AWS, GCP)],
+  text(weight: "bold", "Tools:"), [Git, Docker, Kubernetes, Terraform, CI/CD, cloud platforms (AWS, Google Cloud)],
 )
 
-#section("Selected Publications & Talks")
+#section("Open Source Contributions")
 
-- Technical reviewer for _"Deno Web Development"_ (Packt Publishing, 2021)
-- Author of _"速習Deno"_ — WEB+DB PRESS Vol.124 (2021)
-- Contributor to Findy's _"あの人も読んでる"_ technical article series (2025)
+- *deno\_lint* (#link("https://github.com/denoland/deno_lint")[github.com/denoland/deno\_lint]) — \#2 all-time contributor (230+ PRs) to the Rust-based linter for Deno; implemented core lint rules
+- *hyper ecosystem* (#link("https://github.com/hyperium/hyper")[hyper], #link("https://github.com/seanmonstar/reqwest")[reqwest], #link("https://github.com/hyperium/hyper-util")[hyper-util], #link("https://github.com/hyperium/h2")[h2]) — Feature additions and bug fixes to widely-used Rust HTTP libraries
+- *rust-clippy* (#link("https://github.com/rust-lang/rust-clippy")[github.com/rust-lang/rust-clippy]) — Implemented new lints for the official Rust linter
+- *Rust compiler* (#link("https://github.com/rust-lang/rust")[github.com/rust-lang/rust]) — Contributed patches to the Rust compiler
 
-#section("Open Source & Projects")
+#section("Languages")
 
-- *Deno* (#link("https://github.com/denoland/deno")[github.com/denoland/deno]) — Core contributor to the Rust-based JavaScript/TypeScript runtime
-- *maguro.dev* (#link("https://maguro.dev")[maguro.dev]) — Personal technical blog covering Rust, systems programming, and distributed systems
-- Active competitive programmer on AtCoder; built Rust libraries for competitive programming
+#grid(
+  columns: (auto, 1fr),
+  column-gutter: 12pt,
+  row-gutter: 6pt,
+  text(weight: "bold", "Japanese:"), [Native],
+  text(weight: "bold", "English:"), [Business],
+)
+
