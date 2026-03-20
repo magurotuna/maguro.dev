@@ -62,20 +62,22 @@
 
 #entry(
   "Software Engineer — Stadium Inc.",
-  none,
+  "Online interview platform for enterprise recruiting",
   "2020 – 2022",
   details: [
-    - Built backend services and infrastructure for web applications
-    - Developed and maintained production systems using TypeScript and cloud services
+    - Built Go microservices handling WebRTC middleware communication and asynchronous video recording pipelines on AWS
+    - Developed React-based interview UI and admin dashboard for the web interview platform
+    - Designed and maintained cloud infrastructure on AWS with Kubernetes and Terraform
   ],
 )
 
 #entry(
   "Software Engineer — Yahoo Japan Corporation",
-  none,
+  "Yahoo! Furima — C2C marketplace (part of Yahoo! JAPAN)",
   "2019 – 2020",
   details: [
-    - Worked on large-scale web services at one of Japan's largest internet companies
+    - Built a Node.js BFF (Backend for Frontend) layer bridging the new Furima frontend with legacy Yahoo! Auctions backend services
+    - Developed features for the C2C marketplace serving millions of users across Japan
   ],
 )
 
@@ -102,10 +104,10 @@
   columns: (auto, 1fr),
   column-gutter: 12pt,
   row-gutter: 6pt,
-  text(weight: "bold", "Languages:"), [Rust, TypeScript/JavaScript, Python, Go],
-  text(weight: "bold", "Runtime & Platforms:"), [Deno, Node.js, V8],
+  text(weight: "bold", "Languages:"), [Rust, TypeScript/JavaScript, Go, Python, Java, PHP, C/C++, SQL],
+  text(weight: "bold", "Runtime & Platforms:"), [Deno, Node.js, V8, PostgreSQL, MySQL, Redis],
   text(weight: "bold", "Systems:"), [Distributed systems, serverless infrastructure, container orchestration, Linux],
-  text(weight: "bold", "Tools:"), [Git, Docker, CI/CD, cloud platforms (AWS, GCP)],
+  text(weight: "bold", "Tools:"), [Git, Docker, Kubernetes, Terraform, CI/CD, cloud platforms (AWS, GCP)],
 )
 
 #section("Selected Publications & Talks")
