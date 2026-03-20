@@ -34,7 +34,7 @@
   #text(size: 22pt, weight: "bold")[Yusuke Tanaka]
   #v(-2pt)
   #text(size: 10pt)[
-    yusuktan\@maguro.dev
+    #link("mailto:yusuktan@maguro.dev")[yusuktan\@maguro.dev]
     #h(8pt) | #h(8pt)
     #link("https://github.com/magurotuna")[github.com/magurotuna]
     #h(8pt) | #h(8pt)
@@ -53,7 +53,7 @@
   details: [
     - Core contributor to the Deno runtime (open-source, 100k+ GitHub stars), working across the Rust and TypeScript codebase
     - Developed Deno Sandbox, an isolated VM environment for secure AI-driven code execution
-    - Contributed to Deno Deploy, a globally distributed serverless platform
+    - Built application log persistence on ClickHouse and developed the Subhosting API for Deno Deploy, a globally distributed serverless platform for embedding Deno as a backend
   ],
 )
 
@@ -82,7 +82,7 @@
 #entry(
   "Master of Science in Computer Science",
   "Georgia Institute of Technology",
-  "2022 – 2025",
+  "Graduated 2025",
   details: [
     - GPA: 3.81
     - Relevant coursework: Distributed Computing, Computer Networks, Compilers, Operating Systems
@@ -90,7 +90,7 @@
 )
 
 #entry(
-  "Bachelor of Engineering",
+  "Bachelor of Engineering in Information and Communication Engineering",
   "The University of Tokyo",
   "2014 – 2019",
 )
@@ -102,7 +102,7 @@
   column-gutter: 12pt,
   row-gutter: 6pt,
   text(weight: "bold", "Languages:"), [Rust, TypeScript/JavaScript, Go, Python, Java, PHP, C/C++, SQL],
-  text(weight: "bold", "Runtime & Platforms:"), [Deno, Node.js, PostgreSQL, MySQL],
+  text(weight: "bold", "Runtime & Platforms:"), [Deno, Node.js, PostgreSQL, MySQL, ClickHouse],
   text(weight: "bold", "Systems:"), [Distributed systems, serverless infrastructure, container orchestration, Linux],
   text(weight: "bold", "Tools:"), [Git, Docker, Kubernetes, Terraform, CI/CD, cloud platforms (AWS, Google Cloud)],
 )
@@ -114,13 +114,4 @@
 - *rust-clippy* (#link("https://github.com/rust-lang/rust-clippy")[github.com/rust-lang/rust-clippy]) — Implemented new lints for the official Rust linter
 - *Rust compiler* (#link("https://github.com/rust-lang/rust")[github.com/rust-lang/rust]) — Contributed patches to the Rust compiler
 
-#section("Languages")
-
-#grid(
-  columns: (auto, 1fr),
-  column-gutter: 12pt,
-  row-gutter: 6pt,
-  text(weight: "bold", "Japanese:"), [Native],
-  text(weight: "bold", "English:"), [Business],
-)
 
