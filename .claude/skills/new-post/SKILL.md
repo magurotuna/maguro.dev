@@ -42,6 +42,7 @@ draft: true
 Follow these conventions carefully — they are derived from the author's existing articles.
 
 **Language & tone:**
+
 - Write in Japanese
 - Use 僕 (boku) as the first-person pronoun
 - Semi-formal register: です/ます form for explanations and technical content; casual だ/だった form for personal reflections and asides
@@ -50,29 +51,35 @@ Follow these conventions carefully — they are derived from the author's existi
 - Natural, conversational flow — write as if explaining to a knowledgeable friend
 
 **Structure:**
+
 - Open with context or a personal anecdote that triggered the article (e.g. an event, a question someone asked, something encountered at work)
 - Use `##` headings to organize major sections
 - End with a まとめ or おわりに section
 - Keep paragraphs relatively short (2-4 sentences)
 
 **Footnotes:**
+
 - Use footnotes (`[^name]`) liberally for:
   - Personal asides and humor
   - Tangential but interesting details
   - Supplementary context that would break the main flow
 
 **Links & references:**
+
 - Link to official documentation, GitHub repos, RFCs, etc. using inline Markdown links with descriptive Japanese text
 - When referencing your own past articles, link to them with their Japanese titles
 
 **Code:**
-- Include code examples with language annotations (```js, ```ts, ```rust, etc.)
+
+- Include code examples with language annotations (`js, `ts, ```rust, etc.)
 - Add inline comments in Japanese within code blocks where helpful
 
 **Images:**
+
 - Use `<figure>` + `<img>` + `<figcaption>` for images (not Markdown image syntax)
 
 **Components:**
+
 - If embedding tweets, add `import Tweet from "../../components/Tweet.astro";` after frontmatter
 - If embedding YouTube videos, add `import YouTube from "../../components/YouTube.astro";` after frontmatter
 
