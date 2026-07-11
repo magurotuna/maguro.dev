@@ -3,6 +3,7 @@ import type { CollectionEntry } from "astro:content";
 import { Icon } from "astro-icon/components";
 import BaseLayout from "./BaseLayout.astro";
 import TableOfContents from "../components/TableOfContents.astro";
+import FootnotePreview from "../components/FootnotePreview.astro";
 import { slugifyTag } from "../utils/slugify";
 
 interface Props {
@@ -97,6 +98,7 @@ const tocHeadings = headings.filter((h) => h.depth >= 1 && h.depth <= 3);
       </div>
     </footer>
   </article>
+  <FootnotePreview />
 </BaseLayout>
 
 <style>

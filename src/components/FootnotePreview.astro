@@ -1,0 +1,201 @@
+<aside
+  class="footnote-preview"
+  aria-label="Footnote preview"
+  aria-hidden="true"
+  hidden
+>
+  <div class="footnote-preview-content" id="footnote-preview-content"></div>
+</aside>
+
+<style>
+  .footnote-preview {
+    display: none;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .footnote-preview {
+      position: fixed;
+      z-index: 100;
+      display: block;
+      width: max-content;
+      max-width: min(28rem, calc(100vw - 1.5rem));
+      max-height: calc(100vh - 1.5rem);
+      overflow: auto;
+      padding: 0.75rem 1rem;
+      color: var(--color-text);
+      background: var(--color-bg);
+      border: 1px solid var(--color-border);
+      border-radius: 6px;
+      box-shadow: 0 4px 16px rgb(0 0 0 / 18%);
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+
+    .footnote-preview[hidden] {
+      display: none;
+    }
+
+    .footnote-preview-content :global(> :last-child) {
+      margin-bottom: 0;
+    }
+
+    .footnote-preview-content :global(.data-footnote-backref) {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  const pointerMedia = window.matchMedia("(hover: hover) and (pointer: fine)");
+
+  function initializeFootnotePreview(): void {
+    const preview = document.querySelector<HTMLElement>(".footnote-preview");
+    const previewContent = preview?.querySelector<HTMLElement>(
+      ".footnote-preview-content",
+    );
+    const references = document.querySelectorAll<HTMLAnchorElement>(
+      ".post-content [data-footnote-ref]",
+    );
+
+    if (
+      !pointerMedia.matches ||
+      !preview ||
+      !previewContent ||
+      references.length === 0
+    )
+      return;
+
+    let activeReference: HTMLAnchorElement | null = null;
+    let showTimer: ReturnType<typeof setTimeout> | undefined;
+    let hideTimer: ReturnType<typeof setTimeout> | undefined;
+
+    function clearTimers(): void {
+      clearTimeout(showTimer);
+      clearTimeout(hideTimer);
+    }
+
+    function getDefinition(reference: HTMLAnchorElement): HTMLElement | null {
+      try {
+        const id = decodeURIComponent(new URL(reference.href).hash.slice(1));
+        return id ? document.getElementById(id) : null;
+      } catch {
+        return null;
+      }
+    }
+
+    function positionPreview(): void {
+      if (!activeReference || preview.hidden) return;
+
+      const gap = 8;
+      const viewportMargin = 12;
+      const referenceRect = activeReference.getBoundingClientRect();
+      const previewRect = preview.getBoundingClientRect();
+
+      let top = referenceRect.top - previewRect.height - gap;
+      if (top < viewportMargin) {
+        top = referenceRect.bottom + gap;
+      }
+      top = Math.min(
+        Math.max(top, viewportMargin),
+        window.innerHeight - previewRect.height - viewportMargin,
+      );
+
+      const centeredLeft =
+        referenceRect.left + referenceRect.width / 2 - previewRect.width / 2;
+      const left = Math.min(
+        Math.max(centeredLeft, viewportMargin),
+        window.innerWidth - previewRect.width - viewportMargin,
+      );
+
+      preview.style.top = `${top}px`;
+      preview.style.left = `${left}px`;
+    }
+
+    function dismissPreview(): void {
+      clearTimers();
+      if (activeReference) {
+        activeReference.setAttribute("aria-expanded", "false");
+      }
+      activeReference = null;
+      preview.hidden = true;
+      preview.setAttribute("aria-hidden", "true");
+      previewContent.replaceChildren();
+    }
+
+    function showPreview(reference: HTMLAnchorElement): void {
+      if (!pointerMedia.matches) return;
+
+      const definition = getDefinition(reference);
+      if (!definition) return;
+
+      clearTimers();
+      if (activeReference && activeReference !== reference) {
+        activeReference.setAttribute("aria-expanded", "false");
+      }
+
+      activeReference = reference;
+      reference.setAttribute("aria-expanded", "true");
+
+      const content = definition.cloneNode(true) as HTMLElement;
+      content
+        .querySelectorAll("[data-footnote-backref]")
+        .forEach((backref) => backref.remove());
+      content
+        .querySelectorAll("[id]")
+        .forEach((element) => element.removeAttribute("id"));
+      previewContent.replaceChildren(...content.childNodes);
+
+      preview.hidden = false;
+      preview.setAttribute("aria-hidden", "false");
+      positionPreview();
+    }
+
+    function scheduleShow(reference: HTMLAnchorElement, delay: number): void {
+      clearTimers();
+      showTimer = setTimeout(() => showPreview(reference), delay);
+    }
+
+    function scheduleDismiss(): void {
+      clearTimeout(hideTimer);
+      hideTimer = setTimeout(() => {
+        const referenceIsActive =
+          activeReference?.matches(":hover, :focus") ?? false;
+        const previewIsActive =
+          preview.matches(":hover") || preview.contains(document.activeElement);
+
+        if (!referenceIsActive && !previewIsActive) {
+          dismissPreview();
+        }
+      }, 120);
+    }
+
+    references.forEach((reference) => {
+      reference.setAttribute("aria-expanded", "false");
+      reference.setAttribute("aria-controls", "footnote-preview-content");
+      reference.addEventListener("mouseenter", () =>
+        scheduleShow(reference, 150),
+      );
+      reference.addEventListener("mouseleave", scheduleDismiss);
+      reference.addEventListener("focus", () => scheduleShow(reference, 0));
+      reference.addEventListener("blur", scheduleDismiss);
+    });
+
+    preview.addEventListener("mouseenter", () => clearTimeout(hideTimer));
+    preview.addEventListener("mouseleave", scheduleDismiss);
+    preview.addEventListener("focusin", () => clearTimeout(hideTimer));
+    preview.addEventListener("focusout", scheduleDismiss);
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && !preview.hidden) {
+        dismissPreview();
+      }
+    });
+    window.addEventListener("scroll", positionPreview, { passive: true });
+    window.addEventListener("resize", positionPreview);
+    pointerMedia.addEventListener("change", () => {
+      if (!pointerMedia.matches) dismissPreview();
+    });
+  }
+
+  initializeFootnotePreview();
+</script>
