@@ -16,6 +16,9 @@
           buildInputs = with pkgs; [
             deno
 
+            # npm is retained for package-lock.json maintenance and Netlify parity.
+            nodejs_24
+
             # For Playwright tests (browser automation)
             # Uncomment if you need to run playwright tests locally
             # playwright-driver.browsers
