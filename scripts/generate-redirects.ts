@@ -7,8 +7,8 @@ import * as fs from "node:fs";
 import * as path from "node:path";
 import matter from "gray-matter";
 
-// Import slugify function - use relative path for tsx execution
-const slugifyTagModule = await import("../src/utils/slugify.js");
+// Import slugify function with its explicit TypeScript extension for Deno.
+const slugifyTagModule = await import("../src/utils/slugify.ts");
 const { slugifyTag } = slugifyTagModule;
 
 const ROOT = path.resolve(import.meta.dirname, "..");
