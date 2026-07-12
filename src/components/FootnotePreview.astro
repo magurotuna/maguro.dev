@@ -23,12 +23,27 @@
       overflow: auto;
       padding: 0.75rem 1rem;
       color: var(--color-text);
-      background: var(--color-bg);
+      background: var(--color-bg-elevated);
       border: 1px solid var(--color-border);
       border-radius: 6px;
-      box-shadow: 0 4px 16px rgb(0 0 0 / 18%);
+      box-shadow: var(--shadow-popover);
       font-size: 0.9rem;
       line-height: 1.6;
+      opacity: 1;
+      transition: opacity 120ms ease;
+    }
+
+    /* Fade in when the popover switches from display: none */
+    @starting-style {
+      .footnote-preview {
+        opacity: 0;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .footnote-preview {
+        transition: none;
+      }
     }
 
     .footnote-preview[hidden] {
@@ -156,7 +171,9 @@
     }
 
     function scheduleDismiss(): void {
-      clearTimeout(hideTimer);
+      // Also cancel a pending show so a quick pass over a reference
+      // does not flash the preview after the pointer has left
+      clearTimers();
       hideTimer = setTimeout(() => {
         const referenceIsActive =
           activeReference?.matches(":hover, :focus") ?? false;

@@ -41,6 +41,23 @@ test.describe("Footnote preview", () => {
     await expect(preview).toBeVisible();
   });
 
+  test("opens on keyboard focus and dismisses with Escape", async ({
+    page,
+  }) => {
+    await page.goto(postWithFootnotes);
+
+    const reference = page.locator("[data-footnote-ref]").first();
+    const preview = page.locator(".footnote-preview");
+
+    await reference.focus();
+    await expect(preview).toBeVisible();
+    await expect(reference).toHaveAttribute("aria-expanded", "true");
+
+    await page.keyboard.press("Escape");
+    await expect(preview).toBeHidden();
+    await expect(reference).toHaveAttribute("aria-expanded", "false");
+  });
+
   test("does not enable previews on a touch-only device", async ({
     browser,
   }) => {
