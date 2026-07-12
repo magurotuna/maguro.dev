@@ -14,7 +14,9 @@
       {
         devShells.default = pkgs.mkShell {
           buildInputs = with pkgs; [
-            # Node.js 24 (latest LTS)
+            deno
+
+            # npm is retained for package-lock.json maintenance and Netlify parity.
             nodejs_24
 
             # For Playwright tests (browser automation)
@@ -24,10 +26,9 @@
 
           shellHook = ''
             echo "maguro.dev development environment"
-            echo "Node.js: $(node --version)"
-            echo "npm: $(npm --version)"
+            echo "Deno: $(deno --version | head -n 1)"
             echo ""
-            echo "Run 'npm install' to install dependencies"
+            echo "Run 'deno install' to install dependencies"
           '';
         };
       }
