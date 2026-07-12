@@ -17,16 +17,17 @@
     "format:check": "prettier --check ."
   },
   "dependencies": {
-    "@astrojs/mdx": "^4.0.0",
-    "@astrojs/rss": "^4.0.0",
-    "@astrojs/sitemap": "^3.2.0",
-    "@expressive-code/plugin-line-numbers": "^0.41.5",
+    "@astrojs/markdown-remark": "^7.2.1",
+    "@astrojs/mdx": "^7.0.2",
+    "@astrojs/rss": "^4.0.19",
+    "@astrojs/sitemap": "^3.7.3",
+    "@expressive-code/plugin-line-numbers": "^0.44.0",
     "@iconify-json/lucide": "^1.2.82",
     "@iconify-json/simple-icons": "^1.2.64",
     "@resvg/resvg-js": "^2.6.2",
     "@types/hast": "^3.0.4",
-    "astro": "^5.0.0",
-    "astro-expressive-code": "^0.38.0",
+    "astro": "^7.0.7",
+    "astro-expressive-code": "^0.44.0",
     "astro-icon": "^1.1.5",
     "budoux": "^0.7.0",
     "gray-matter": "^4.0.3",
@@ -43,7 +44,7 @@
     "unist-util-visit": "^5.0.0"
   },
   "devDependencies": {
-    "@playwright/test": "^1.57.0",
+    "@playwright/test": "^1.61.1",
     "@types/node": "^22.0.0",
     "prettier": "^3.8.0",
     "prettier-plugin-astro": "^0.14.1",
