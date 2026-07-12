@@ -10,6 +10,10 @@
   --color-border: #e0e0e0;
   --color-code-bg: #e8e8e8;
 
+  /* Elevation (floating surfaces like popovers) */
+  --color-bg-elevated: #ffffff;
+  --shadow-popover: 0 4px 16px rgb(0 0 0 / 18%);
+
   /* Typography */
   --font-sans:
     system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
@@ -37,6 +41,11 @@
   --color-accent-hover: #f08a7c;
   --color-border: #555555;
   --color-code-bg: #444444;
+
+  /* Shadows barely read on dark backgrounds, so elevation is conveyed
+     mainly by a lighter surface, with a stronger shadow as support */
+  --color-bg-elevated: #3f3f3f;
+  --shadow-popover: 0 6px 24px rgb(0 0 0 / 55%), 0 2px 8px rgb(0 0 0 / 35%);
 }
 
 /* Reset */
