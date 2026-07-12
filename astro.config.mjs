@@ -1,5 +1,6 @@
 import { defineConfig } from "astro/config";
 import mdx from "@astrojs/mdx";
+import { unified } from "@astrojs/markdown-remark";
 import sitemap from "@astrojs/sitemap";
 import expressiveCode from "astro-expressive-code";
 import { pluginLineNumbers } from "@expressive-code/plugin-line-numbers";
@@ -14,7 +15,8 @@ import rehypeExternalLinkFavicon from "./src/plugins/rehype-external-link-favico
 
 export default defineConfig({
   site: "https://maguro.dev",
-  trailingSlash: "always",
+  // Astro 7 cannot prerender dynamic file endpoints with "always" (e.g. /og/[slug].png).
+  trailingSlash: "ignore",
   build: {
     format: "directory",
   },
@@ -38,33 +40,36 @@ export default defineConfig({
     sitemap(),
   ],
   markdown: {
-    remarkPlugins: [remarkGfm, remarkMath],
-    remarkRehype: {
-      footnoteLabelTagName: "span",
-      footnoteLabelProperties: { className: ["footnotes-title"] },
-      footnoteBackContent: " ",
-    },
-    rehypePlugins: [
-      rehypeKatex,
-      rehypeSlug,
-      [
-        rehypeAutolinkHeadings,
-        {
-          behavior: "wrap",
-          properties: (heading) => {
-            const level = Number(heading.tagName.charAt(1));
-            return { className: ["heading-anchor"], "data-level": level };
+    // Keep the unified pipeline while the custom remark/rehype plugins are in use.
+    processor: unified({
+      remarkPlugins: [remarkGfm, remarkMath],
+      remarkRehype: {
+        footnoteLabelTagName: "span",
+        footnoteLabelProperties: { className: ["footnotes-title"] },
+        footnoteBackContent: " ",
+      },
+      rehypePlugins: [
+        rehypeKatex,
+        rehypeSlug,
+        [
+          rehypeAutolinkHeadings,
+          {
+            behavior: "wrap",
+            properties: (heading) => {
+              const level = Number(heading.tagName.charAt(1));
+              return { className: ["heading-anchor"], "data-level": level };
+            },
           },
-        },
+        ],
+        [
+          rehypeExternalLinks,
+          {
+            target: "_blank",
+            rel: ["noopener", "noreferrer"],
+          },
+        ],
+        rehypeExternalLinkFavicon,
       ],
-      [
-        rehypeExternalLinks,
-        {
-          target: "_blank",
-          rel: ["noopener", "noreferrer"],
-        },
-      ],
-      rehypeExternalLinkFavicon,
-    ],
+    }),
   },
 });
