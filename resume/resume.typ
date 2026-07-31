@@ -1,5 +1,5 @@
-#set page(margin: (x: 1.2cm, y: 1.2cm), paper: "a4")
-#set text(font: "Libertinus Serif", size: 10pt)
+#set page(margin: (x: 1.2cm, y: 1cm), paper: "a4")
+#set text(font: "Libertinus Serif", size: 9.5pt)
 #set par(justify: true)
 
 #let accent = rgb("#2563eb")
@@ -51,9 +51,10 @@
   "Deno: a modern JavaScript/TypeScript runtime built on Rust and V8",
   "2022 – Present",
   details: [
-    - Core contributor to the Deno runtime (open-source, 100k+ GitHub stars), working across the Rust and TypeScript codebase
-    - Developed Deno Sandbox, an isolated VM environment for secure AI-driven code execution
-    - Built application log persistence on ClickHouse and developed the Subhosting API for Deno Deploy, a globally distributed serverless platform for embedding Deno as a backend
+    - Designed and shipped the \@deno/sandbox SDK and client-server protocol, replacing tRPC with typed JSON-RPC over WebSocket and adding bidirectional process I/O streaming, cancellation, multi-client sessions, and automated NPM/JSR releases
+    - Built regional proxying and secure networking for Firecracker microVM sandboxes, including direct region routing, per-sandbox HTTP(S) allowlists, dynamic CA provisioning, IPv6 support, and host-bound credential injection that keeps raw secrets out of untrusted code
+    - Improved Deno Deploy's cluster resource management with cgroups v2 metrics, memory-aware scaling, adaptive CPU/memory-based request concurrency, graceful worker eviction, and x86-64 Firecracker support
+    - Designed and implemented durable asynchronous human approval for Claw Patrol, a Go security firewall for AI agents, using SQLite-backed state machines, HMAC-bound request fingerprints, exactly-once grants, owner-scoped polling, expiry, and crash recovery
   ],
 )
 
