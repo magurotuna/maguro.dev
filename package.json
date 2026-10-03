@@ -14,7 +14,13 @@
     "test:archive-noindex": "tsx scripts/smoke-test-archive-noindex.ts",
     "test:screenshots": "playwright test",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "build:cloudflare": "node --import tsx scripts/generate-redirects.ts && astro build --outDir dist-cloudflare && node scripts/prepare-cloudflare.mjs",
+    "preview:cloudflare": "npm run build:cloudflare && wrangler dev --local",
+    "deploy:cloudflare": "npm run build:cloudflare && wrangler deploy",
+    "check:cloudflare": "npm run build:cloudflare && npm run test:cloudflare:unit && npm run test:cloudflare:routing",
+    "test:cloudflare:unit": "node --test scripts/prepare-cloudflare.test.mjs",
+    "test:cloudflare:routing": "node --test scripts/cloudflare-routing.test.mjs"
   },
   "dependencies": {
     "@astrojs/markdown-remark": "^7.2.1",
@@ -48,6 +54,7 @@
     "@types/node": "^22.0.0",
     "prettier": "^3.8.0",
     "prettier-plugin-astro": "^0.14.1",
-    "typescript": "^5.0.0"
+    "typescript": "^5.0.0",
+    "wrangler": "^4.147.0"
   }
 }
