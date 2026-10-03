@@ -64,8 +64,9 @@
   const pointerMedia = window.matchMedia("(hover: hover) and (pointer: fine)");
 
   function initializeFootnotePreview(): void {
-    const preview = document.querySelector<HTMLElement>(".footnote-preview");
-    const previewContent = preview?.querySelector<HTMLElement>(
+    const previewCandidate =
+      document.querySelector<HTMLElement>(".footnote-preview");
+    const contentCandidate = previewCandidate?.querySelector<HTMLElement>(
       ".footnote-preview-content",
     );
     const references = document.querySelectorAll<HTMLAnchorElement>(
@@ -74,11 +75,14 @@
 
     if (
       !pointerMedia.matches ||
-      !preview ||
-      !previewContent ||
+      !previewCandidate ||
+      !contentCandidate ||
       references.length === 0
     )
       return;
+
+    const preview = previewCandidate;
+    const previewContent = contentCandidate;
 
     let activeReference: HTMLAnchorElement | null = null;
     let showTimer: ReturnType<typeof setTimeout> | undefined;
