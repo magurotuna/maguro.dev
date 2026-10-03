@@ -32,3 +32,9 @@ blob-report/
 playwright/.cache/
 screenshots/
 screenshots-*/
+
+# Cloudflare build output and local state
+dist-cloudflare/
+.wrangler/
+.dev.vars
+.dev.vars.*

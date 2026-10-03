@@ -51,3 +51,23 @@ dependency changes. Use `deno ci` for a clean, lockfile-strict local install.
 
 Netlify continues to use the Node.js build configured in `netlify.toml`; the
 same `package.json` scripts remain compatible with both runtimes.
+
+## Cloudflare migration (parallel with Netlify)
+
+The optional Cloudflare target uses Workers Static Assets. It has no SSR adapter
+or request-time Worker code. Netlify's existing build and deployment stay in place.
+Use Node.js 24 for the Cloudflare tooling:
+
+```console
+npm ci
+npm run check:cloudflare
+npm run preview:cloudflare
+```
+
+Cloudflare output goes to `dist-cloudflare/`; Netlify continues to use `dist/`.
+`preview:cloudflare` rebuilds and starts a local Workers emulator, not a remote
+preview. `deploy:cloudflare` rebuilds and **publishes to Cloudflare**; run it only
+when a deployment is intended and the target account has been verified.
+
+See [Cloudflare setup, cutover, and rollback](docs/cloudflare-migration.md) before
+connecting an account, deploying, or changing DNS.
