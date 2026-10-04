@@ -71,3 +71,9 @@ when a deployment is intended and the target account has been verified.
 
 See [Cloudflare setup, cutover, and rollback](docs/cloudflare-migration.md) before
 connecting an account, deploying, or changing DNS.
+
+## PR screenshots
+
+PR builds upload before/after screenshots as Actions artifacts. A separate trusted
+workflow publishes inline images to a public image repository. See
+[screenshot publishing setup and limits](docs/visual-screenshots.md).

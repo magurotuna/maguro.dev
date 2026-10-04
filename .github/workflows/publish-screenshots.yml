@@ -1,0 +1,45 @@
+name: Publish Visual Screenshots
+
+on:
+  workflow_run:
+    workflows: [Visual Screenshots]
+    types: [completed]
+
+permissions: {}
+
+# Serialize comments for each PR; the script also rejects stale runs/attempts.
+concurrency:
+  group: publish-screenshots-${{ github.event.workflow_run.pull_requests[0].number || github.event.workflow_run.id }}
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    if: >-
+      github.repository == 'magurotuna/maguro.dev' &&
+      github.ref == 'refs/heads/main' &&
+      github.event.workflow_run.event == 'pull_request' &&
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.head_repository.full_name == github.repository &&
+      vars.SCREENSHOTS_REPOSITORY != ''
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    # Configure selected deployment branches: main only; no tags/PR merge refs.
+    environment: screenshot-publishing
+    permissions:
+      actions: read
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Checkout trusted publisher from the default branch event commit
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+
+      # No PR checkout, dependency install, cache restore, or artifact execution.
+      - name: Validate and publish screenshots, then comment
+        run: python3 -I scripts/publish_screenshots.py
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          SCREENSHOTS_TOKEN: ${{ secrets.SCREENSHOTS_TOKEN }}
+          SCREENSHOTS_REPOSITORY: ${{ vars.SCREENSHOTS_REPOSITORY }}

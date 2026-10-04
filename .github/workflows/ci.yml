@@ -23,6 +23,18 @@ jobs:
       - name: Check formatting
         run: npm run format:check
 
+  screenshot-publisher:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+
+      - name: Test screenshot publication and untrusted artifact handling
+        run: python3 -m unittest discover -s scripts -p 'publish_screenshots_test.py' -v
+
   cloudflare:
     runs-on: ubuntu-latest
     steps:

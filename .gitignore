@@ -3,6 +3,7 @@ dist/
 
 # Dependencies
 node_modules/
+__pycache__/
 
 # Generated files
 public/_redirects

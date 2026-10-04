@@ -4,18 +4,26 @@ on:
   pull_request:
     branches: [main]
 
+# PR code, dependencies, and browser tests run without publishing credentials.
 permissions:
-  contents: write
-  pull-requests: write
+  contents: read
+
+concurrency:
+  group: visual-screenshots-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
 
 jobs:
   screenshots:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
-      - name: Checkout PR branch
-        uses: actions/checkout@v4
+      - name: Checkout PR head
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: 24
           cache: "npm"
@@ -31,115 +39,64 @@ jobs:
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
 
-      - name: Build PR branch
+      - name: Build PR head
         run: npm run build
 
-      - name: Take screenshots of PR branch
-        run: SCREENSHOT_OUTPUT_DIR=screenshots-pr npx playwright test
-        continue-on-error: true
+      - name: Take screenshots of PR head
+        run: npx playwright test e2e/visual.spec.ts
+        env:
+          SCREENSHOT_OUTPUT_DIR: ${{ runner.temp }}/visual-screenshots/pr
 
-      - name: Checkout main branch
-        uses: actions/checkout@v4
+      - name: Checkout base commit
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
-          ref: main
-          clean: false
+          ref: ${{ github.event.pull_request.base.sha }}
           path: main-branch
+          persist-credentials: false
 
       - name: Install dependencies (main)
-        run: cd main-branch && npm ci
+        working-directory: main-branch
+        run: npm ci
 
-      - name: Build main branch
-        run: cd main-branch && npm run build
+      - name: Build main
+        working-directory: main-branch
+        run: npm run build
 
-      - name: Take screenshots of main branch
+      - name: Take screenshots of main with the same tests
         run: |
-          # Copy the PR's test file and config to main-branch
           cp e2e/visual.spec.ts main-branch/e2e/visual.spec.ts
           cp playwright.config.ts main-branch/playwright.config.ts
-
           cd main-branch
-          SCREENSHOT_OUTPUT_DIR=../screenshots-main npx playwright test
-        continue-on-error: true
+          npx playwright test e2e/visual.spec.ts
+        env:
+          SCREENSHOT_OUTPUT_DIR: ${{ runner.temp }}/visual-screenshots/main
 
-      - name: Push screenshots to branch
+      - name: Record captured revisions
         run: |
-          SCREENSHOTS_BRANCH="screenshots/pr-${{ github.event.pull_request.number }}"
+          python3 - <<'PY'
+          import json, os
+          from pathlib import Path
+          metadata = {
+              "repository": os.environ["GITHUB_REPOSITORY"],
+              "pr": int(os.environ["PR_NUMBER"]),
+              "head_sha": os.environ["HEAD_SHA"],
+              "base_sha": os.environ["BASE_SHA"],
+              "run_id": int(os.environ["GITHUB_RUN_ID"]),
+              "run_attempt": int(os.environ["GITHUB_RUN_ATTEMPT"]),
+          }
+          path = Path(os.environ["RUNNER_TEMP"]) / "visual-screenshots/metadata.json"
+          path.write_text(json.dumps(metadata))
+          PY
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
 
-          # Configure git
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-
-          # Create orphan branch for screenshots
-          git checkout --orphan "$SCREENSHOTS_BRANCH"
-          git rm -rf .
-
-          # Create directory structure
-          mkdir -p pr main
-          cp screenshots-pr/*.png pr/ 2>/dev/null || true
-          cp screenshots-main/*.png main/ 2>/dev/null || true
-
-          # Commit and push
-          git add pr/ main/
-          git commit -m "Screenshots for PR #${{ github.event.pull_request.number }}"
-          git push origin "$SCREENSHOTS_BRANCH" --force
-
-      - name: Generate PR comment
-        id: comment
-        run: |
-          PR_NUM="${{ github.event.pull_request.number }}"
-          REPO="${{ github.repository }}"
-          BRANCH="screenshots/pr-${PR_NUM}"
-          BASE_URL="https://raw.githubusercontent.com/${REPO}/${BRANCH}"
-
-          # Generate markdown comment with unique marker for updates
-          cat << HEADER > comment.md
-          <!-- visual-screenshots-comment -->
-          ## Visual Screenshots
-
-          Comparing **main** (left) vs **this PR** (right)
-
-          *Updated: $(date -u '+%Y-%m-%d %H:%M:%S UTC')*
-
-          HEADER
-
-          # Pages and viewports to include
-          PAGES="home about blog-post"
-          VIEWPORTS="desktop tablet mobile mobile-small"
-
-          for page in $PAGES; do
-            echo "<details>" >> comment.md
-            echo "<summary><strong>${page}</strong></summary>" >> comment.md
-            echo "" >> comment.md
-
-            for viewport in $VIEWPORTS; do
-              FILENAME="${page}-${viewport}.png"
-              MAIN_URL="${BASE_URL}/main/${FILENAME}"
-              PR_URL="${BASE_URL}/pr/${FILENAME}"
-
-              echo "#### ${viewport}" >> comment.md
-              echo "| main | PR |" >> comment.md
-              echo "|:----:|:--:|" >> comment.md
-              echo "| ![main](${MAIN_URL}) | ![pr](${PR_URL}) |" >> comment.md
-              echo "" >> comment.md
-            done
-
-            echo "</details>" >> comment.md
-            echo "" >> comment.md
-          done
-
-          echo "comment_file=comment.md" >> $GITHUB_OUTPUT
-
-      - name: Find existing comment
-        uses: peter-evans/find-comment@v3
-        id: find-comment
+      - name: Upload screenshots for the trusted publisher
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
-          issue-number: ${{ github.event.pull_request.number }}
-          body-includes: <!-- visual-screenshots-comment -->
-
-      - name: Comment on PR
-        uses: peter-evans/create-or-update-comment@v4
-        with:
-          issue-number: ${{ github.event.pull_request.number }}
-          comment-id: ${{ steps.find-comment.outputs.comment-id }}
-          edit-mode: replace
-          body-path: comment.md
+          name: visual-screenshots-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/visual-screenshots/
+          if-no-files-found: error
+          retention-days: 7
