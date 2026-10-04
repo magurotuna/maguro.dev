@@ -101,13 +101,13 @@ test("missing paths use the Astro 404 page and redirect sources are not served",
   }
 });
 
-test("About links to the freshly built PDF on the same origin", async () => {
+test("Work section links to the freshly built PDF on the same origin", async () => {
   const about = await get("/about/");
   assert.equal(about.status, 200);
   const link = (await about.text()).match(
-    /<a\b[^>]*href="([^"]+)"[^>]*>Résumé \(PDF\)<\/a>/,
+    /<h2\b[^>]*>Work<\/h2>\s*<p\b[^>]*>\s*<a\b[^>]*href="([^"]+)"[^>]*>Resume \(PDF\)<\/a>\s*<\/p>/,
   );
-  assert.ok(link, "expected the résumé link on About");
+  assert.ok(link, "expected Resume (PDF) directly below the Work heading");
   assert.equal(link[1], "/resume.pdf");
   assert.equal(new URL(link[1], origin).origin, new URL(origin).origin);
 

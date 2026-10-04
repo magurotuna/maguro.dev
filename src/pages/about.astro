@@ -11,12 +11,12 @@ import BaseLayout from "../layouts/BaseLayout.astro";
           Yusuke Tanaka <span class="alias">(a.k.a. maguro🍣)</span>
         </p>
         <p class="email">yusuktan (at) maguro.dev</p>
-        <p class="resume"><a href="/resume.pdf">Résumé (PDF)</a></p>
       </div>
     </div>
 
     <section class="history">
       <h2>Work</h2>
+      <p class="resume"><a href="/resume.pdf">Resume (PDF)</a></p>
       <ul>
         <li>
           <span class="period">2022 - Present</span>
@@ -189,10 +189,6 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     margin: 0;
   }
 
-  .resume {
-    margin: calc(var(--spacing-unit) * 0.5) 0 0;
-  }
-
   .alias,
   .no-spam {
     color: var(--color-text-secondary);
@@ -207,6 +203,11 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     font-size: 1rem;
     margin-bottom: var(--spacing-unit);
     color: var(--color-text-secondary);
+  }
+
+  .resume {
+    margin: 0 0 var(--spacing-unit);
+    font-size: 0.9rem;
   }
 
   .history ul {
