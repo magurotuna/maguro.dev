@@ -51,6 +51,19 @@ which avoids the extra IPC server used by the `tsx` CLI in restricted containers
 The original Netlify command is unchanged. Keep both lockfiles synchronized when
 changing Wrangler or any other dependency, following the README's npm/Deno steps.
 
+## Automatic branch previews
+
+Workers Builds uses `npx wrangler preview` for branch previews. Wrangler requires
+a [`previews` block](https://developers.cloudflare.com/workers/previews/configuration/#wrangler-configuration-file)
+even for a static site, so `wrangler.jsonc` includes `"previews": {}`. Static assets
+and compatibility settings remain at the top level and apply to the preview.
+The build uploads the branch's generated `dist-cloudflare/`, including `/resume.pdf`.
+
+`npm run preview:cloudflare` remains a local emulator command. `npx wrangler preview`
+publishes a remote branch preview; `npx wrangler deploy` publishes production and
+must not replace the branch preview command. No dashboard changes are needed for
+this configuration fix.
+
 ## Routing contract
 
 The [Workers redirects format](https://developers.cloudflare.com/workers/static-assets/redirects/)
