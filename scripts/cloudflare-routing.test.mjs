@@ -100,3 +100,21 @@ test("missing paths use the Astro 404 page and redirect sources are not served",
     assert.match(await response.text(), /Page not found\./, path);
   }
 });
+
+test("About links to the freshly built PDF on the same origin", async () => {
+  const about = await get("/about/");
+  assert.equal(about.status, 200);
+  const link = (await about.text()).match(
+    /<a\b[^>]*href="([^"]+)"[^>]*>Résumé \(PDF\)<\/a>/,
+  );
+  assert.ok(link, "expected the résumé link on About");
+  assert.equal(link[1], "/resume.pdf");
+  assert.equal(new URL(link[1], origin).origin, new URL(origin).origin);
+
+  const pdf = await get(link[1]);
+  assert.equal(pdf.status, 200);
+  assert.match(pdf.headers.get("content-type"), /^application\/pdf(?:;|$)/);
+  const bytes = Buffer.from(await pdf.arrayBuffer());
+  assert.equal(bytes.subarray(0, 5).toString(), "%PDF-");
+  assert.deepEqual(bytes, readFileSync("dist-cloudflare/resume.pdf"));
+});

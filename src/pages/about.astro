@@ -11,6 +11,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
           Yusuke Tanaka <span class="alias">(a.k.a. maguro🍣)</span>
         </p>
         <p class="email">yusuktan (at) maguro.dev</p>
+        <p class="resume"><a href="/resume.pdf">Résumé (PDF)</a></p>
       </div>
     </div>
 
@@ -186,6 +187,10 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
   .email {
     margin: 0;
+  }
+
+  .resume {
+    margin: calc(var(--spacing-unit) * 0.5) 0 0;
   }
 
   .alias,

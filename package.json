@@ -18,7 +18,8 @@
     "build:cloudflare": "node --import tsx scripts/generate-redirects.ts && astro build --outDir dist-cloudflare && node scripts/prepare-cloudflare.mjs",
     "preview:cloudflare": "npm run build:cloudflare && wrangler dev --local",
     "deploy:cloudflare": "npm run build:cloudflare && wrangler deploy",
-    "check:cloudflare": "npm run build:cloudflare && npm run test:cloudflare:unit && npm run test:cloudflare:routing",
+    "check:cloudflare": "npm run build:cloudflare && npm run test:resume && npm run test:cloudflare:unit && npm run test:cloudflare:routing",
+    "test:resume": "node --test scripts/build-resume.test.mjs",
     "test:cloudflare:unit": "node --test scripts/prepare-cloudflare.test.mjs",
     "test:cloudflare:routing": "node --test scripts/cloudflare-routing.test.mjs"
   },

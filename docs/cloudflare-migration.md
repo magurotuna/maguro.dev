@@ -26,11 +26,14 @@ npm run preview:cloudflare
 ```
 
 - `build:cloudflare`: generate the existing Netlify redirects, build Astro into
-  `dist-cloudflare/`, then adapt only that artifact for Cloudflare.
+  `dist-cloudflare/` (including the résumé PDF), then adapt only that artifact for
+  Cloudflare. The shared Astro post-build hook compiles `resume/resume.typ` with
+  the pinned Typst CLI; see the [résumé build notes](../README.md#résumé-pdf).
 - `test:cloudflare:unit`: test normalization, validation, limits, and preparation.
 - `test:cloudflare:routing`: test the already-built artifact in Wrangler's local
   Workers runtime; requires local process/socket support. Does not deploy.
-- `check:cloudflare`: fresh build plus both test suites; CI runs this command.
+- `check:cloudflare`: fresh build plus résumé generation, preparation, and routing
+  tests; CI runs this command.
 - `preview:cloudflare`: fresh build plus `wrangler dev --local`. The printed URL
   is local to the machine running the command.
 - `deploy:cloudflare`: fresh build plus `wrangler deploy`. This publishes a new

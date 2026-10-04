@@ -12,6 +12,7 @@ import rehypeSlug from "rehype-slug";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import rehypeExternalLinks from "rehype-external-links";
 import rehypeExternalLinkFavicon from "./src/plugins/rehype-external-link-favicon.ts";
+import resumePdf from "./scripts/build-resume.mjs";
 
 export default defineConfig({
   site: "https://maguro.dev",
@@ -38,6 +39,7 @@ export default defineConfig({
     }),
     mdx(),
     sitemap(),
+    resumePdf(),
   ],
   markdown: {
     // Keep the unified pipeline while the custom remark/rehype plugins are in use.
