@@ -9,10 +9,22 @@ import {
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { test } from "node:test";
+import { unstable_readConfig as readWranglerConfig } from "wrangler";
 import {
   cloudflareRedirects,
   prepareCloudflare,
 } from "./prepare-cloudflare.mjs";
+
+test("Wrangler enables branch previews with the shared static asset configuration", () => {
+  const args = { config: "./wrangler.jsonc" };
+  const production = readWranglerConfig(args);
+  const preview = readWranglerConfig(args, { isPreview: true });
+  assert.ok(preview.previews, "wrangler preview requires a previews block");
+  assert.equal(Object.hasOwn(preview.previews, "assets"), false);
+  assert.ok(preview.assets?.directory.endsWith("/dist-cloudflare"));
+  assert.deepEqual(preview.assets, production.assets);
+  assert.equal(preview.compatibility_date, production.compatibility_date);
+});
 
 test("removes force markers only from status codes and puts exact rules first", () => {
   const result = cloudflareRedirects(

@@ -16,6 +16,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 
     <section class="history">
       <h2>Work</h2>
+      <p class="resume"><a href="/resume.pdf">Resume (PDF)</a></p>
       <ul>
         <li>
           <span class="period">2022 - Present</span>
@@ -202,6 +203,11 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     font-size: 1rem;
     margin-bottom: var(--spacing-unit);
     color: var(--color-text-secondary);
+  }
+
+  .resume {
+    margin: 0 0 var(--spacing-unit);
+    font-size: 0.9rem;
   }
 
   .history ul {
