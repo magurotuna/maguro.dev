@@ -9,4 +9,6 @@
     "html_handling": "auto-trailing-slash",
     "not_found_handling": "404-page",
   },
+  // Required by Workers Builds' `wrangler preview`; assets stay at the top level.
+  "previews": {},
 }
