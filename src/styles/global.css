@@ -249,6 +249,23 @@ a[target="_blank"]:not(.icon-link):not(.link-card):not(.share-button):not(
   }
 }
 
+/* Tweet embed (Tweet.astro and rehype-link-card) */
+.tweet-container {
+  margin: var(--spacing-unit) 0;
+}
+
+.tweet-embed:empty::after {
+  content: "Loading tweet...";
+  color: var(--color-text-secondary);
+  font-size: 0.9rem;
+}
+
+.tweet-container .tweet-error {
+  color: var(--color-text-secondary);
+  font-size: 0.9rem;
+  font-style: italic;
+}
+
 /* Code */
 code {
   font-family: var(--font-mono);

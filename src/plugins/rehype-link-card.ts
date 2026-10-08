@@ -9,7 +9,9 @@ import {
 
 /**
  * Rehype plugin to turn a paragraph that consists of a single bare URL into a
- * link card with the target page's OGP metadata.
+ * link card with the target page's OGP metadata. X (Twitter) post URLs become
+ * the same embed as `src/components/Tweet.astro` instead, since X does not
+ * serve useful OGP.
  *
  * Metadata is read from `.link-card-cache.json`. URLs missing from the cache
  * are fetched and written back, so adding a URL in `npm run dev` just works.
@@ -26,9 +28,12 @@ export default function rehypeLinkCard() {
     });
 
     for (const { paragraph, url } of targets) {
-      const card = buildLinkCard(url, await getMetadata(url));
+      const tweetId = findTweetId(url);
+      const replacement = tweetId
+        ? buildTweet(tweetId)
+        : buildLinkCard(url, await getMetadata(url));
       // Replace the <p> in place so the card is not nested in a paragraph.
-      Object.assign(paragraph, card);
+      Object.assign(paragraph, replacement);
     }
   };
 }
@@ -50,6 +55,18 @@ export function findStandaloneUrl(node: Element): string | null {
   const text = link.children.length === 1 ? link.children[0] : undefined;
   if (text?.type !== "text" || text.value !== href) return null;
   return href;
+}
+
+/** Returns the post ID if `url` points to a post on X (Twitter). */
+export function findTweetId(url: string): string | null {
+  try {
+    const { hostname, pathname } = new URL(url);
+    const host = hostname.replace(/^(www|mobile)\./, "");
+    if (host !== "x.com" && host !== "twitter.com") return null;
+    return pathname.match(/^\/[^/]+\/status\/(\d+)\/?$/)?.[1] ?? null;
+  } catch {
+    return null;
+  }
 }
 
 function isExternalLink(href: string): boolean {
@@ -84,6 +101,39 @@ function getMetadata(url: string): Promise<LinkCardMetadata> {
     inFlight.set(url, promise);
   }
   return promise;
+}
+
+/**
+ * Builds the same markup as `src/components/Tweet.astro`. The script in
+ * `BaseLayout.astro` renders the embed into it.
+ */
+function buildTweet(id: string): Element {
+  return {
+    type: "element",
+    tagName: "div",
+    properties: { className: ["tweet-container"], dataTweetId: id },
+    children: [
+      {
+        type: "element",
+        tagName: "div",
+        properties: { className: ["tweet-embed"] },
+        children: [],
+      },
+      {
+        type: "element",
+        tagName: "noscript",
+        properties: {},
+        children: [
+          {
+            type: "element",
+            tagName: "a",
+            properties: { href: `https://x.com/i/web/status/${id}` },
+            children: [{ type: "text", value: "View tweet on X" }],
+          },
+        ],
+      },
+    ],
+  };
 }
 
 /** Builds the same markup as `src/components/LinkCard.astro`. */

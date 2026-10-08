@@ -22,7 +22,10 @@ import {
   loadCache,
   saveCache,
 } from "../src/lib/link-card-metadata.ts";
-import { findStandaloneUrl } from "../src/plugins/rehype-link-card.ts";
+import {
+  findStandaloneUrl,
+  findTweetId,
+} from "../src/plugins/rehype-link-card.ts";
 
 const BLOG_DIR = path.resolve(process.cwd(), "src/content/blog");
 
@@ -43,7 +46,8 @@ async function collectUrls(): Promise<Map<string, string[]>> {
     const tree = await processor.run(processor.parse(source));
     visit(tree, "element", (node: Element) => {
       const url = findStandaloneUrl(node);
-      if (url) urls.set(url, [...(urls.get(url) ?? []), file]);
+      if (url && !findTweetId(url))
+        urls.set(url, [...(urls.get(url) ?? []), file]);
     });
   }
   return urls;
