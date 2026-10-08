@@ -1,18 +1,18 @@
 /* CSS Variables for theming */
 :root {
   /* Light mode (default) */
-  --color-bg: #fafafa;
-  --color-bg-secondary: #f5f5f5;
-  --color-text: #1a1a1a;
-  --color-text-secondary: #4a4a4a;
+  --color-bg: #ffffff;
+  --color-bg-secondary: #f7fafc;
+  --color-text: #242a31;
+  --color-text-secondary: #696f73;
   --color-accent: #c05b4d;
   --color-accent-hover: #a84d41;
-  --color-border: #e0e0e0;
-  --color-code-bg: #e8e8e8;
+  --color-border: #e6e8e9;
+  --color-code-bg: #f1f6f9;
 
   /* Elevation (floating surfaces like popovers) */
   --color-bg-elevated: #ffffff;
-  --shadow-popover: 0 4px 16px rgb(0 0 0 / 18%);
+  --shadow-popover: 0 4px 16px rgb(3 10 18 / 12%);
 
   /* Typography */
   --font-sans:
@@ -35,7 +35,7 @@
 [data-theme="dark"] {
   --color-bg: #333333;
   --color-bg-secondary: #444444;
-  --color-text: #f0f0f0;
+  --color-text: #d6d6d6;
   --color-text-secondary: #bbbbbb;
   --color-accent: #e07a6c;
   --color-accent-hover: #f08a7c;
