@@ -12,6 +12,9 @@ import rehypeSlug from "rehype-slug";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import rehypeExternalLinks from "rehype-external-links";
 import rehypeExternalLinkFavicon from "./src/plugins/rehype-external-link-favicon.ts";
+import rehypeLinkCard, {
+  linkCardIntegration,
+} from "./src/plugins/rehype-link-card.ts";
 import resumePdf from "./scripts/build-resume.mjs";
 
 export default defineConfig({
@@ -37,6 +40,7 @@ export default defineConfig({
         "simple-icons": ["x", "hatenabookmark"],
       },
     }),
+    linkCardIntegration(),
     mdx(),
     sitemap(),
     resumePdf(),
@@ -53,6 +57,7 @@ export default defineConfig({
       rehypePlugins: [
         rehypeKatex,
         rehypeSlug,
+        rehypeLinkCard,
         [
           rehypeAutolinkHeadings,
           {

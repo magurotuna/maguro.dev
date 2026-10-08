@@ -12,21 +12,3 @@ const { id } = Astro.props;
     <a href={`https://x.com/i/web/status/${id}`}>View tweet on X</a>
   </noscript>
 </div>
-
-<style>
-  .tweet-container {
-    margin: var(--spacing-unit) 0;
-  }
-
-  .tweet-embed:empty::after {
-    content: "Loading tweet...";
-    color: var(--color-text-secondary);
-    font-size: 0.9rem;
-  }
-
-  .tweet-container :global(.tweet-error) {
-    color: var(--color-text-secondary);
-    font-size: 0.9rem;
-    font-style: italic;
-  }
-</style>
