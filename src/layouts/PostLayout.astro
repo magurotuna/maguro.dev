@@ -184,6 +184,15 @@ const tocHeadings = headings.filter((h) => h.depth >= 1 && h.depth <= 3);
     text-underline-offset: 2px;
   }
 
+  .post-content :global(.link-card) {
+    text-decoration: none;
+  }
+
+  .post-content :global(.link-card-image img) {
+    margin: 0;
+    border-radius: 0;
+  }
+
   .post-content :global(.heading-anchor) {
     text-decoration-line: underline;
     text-decoration-style: dotted;
