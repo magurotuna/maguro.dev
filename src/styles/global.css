@@ -184,19 +184,21 @@ a[target="_blank"]:not(.icon-link):not(.link-card):not(.share-button):not(
   text-decoration: none;
 }
 
-/* OG images are usually 1.91:1, so keep that ratio instead of a square crop */
+/*
+ * OG images often carry their own text, so the image gets enough width for
+ * that text to stay readable (a small thumbnail squashes it).
+ */
 .link-card-image {
   flex-shrink: 0;
   align-self: center;
-  width: 220px;
-  aspect-ratio: 1.91 / 1;
-  /* Without this, a square image grows the box past the ratio */
-  overflow: hidden;
+  width: min(320px, 42%);
 }
 
 .link-card-image img {
+  display: block;
   width: 100%;
-  height: 100%;
+  /* OG images are usually 1200x630 */
+  aspect-ratio: 1200 / 630;
   object-fit: cover;
 }
 

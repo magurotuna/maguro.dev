@@ -27,6 +27,7 @@ import {
 import {
   findStandaloneUrl,
   findTweetId,
+  isOwnSite,
 } from "../src/plugins/rehype-link-card.ts";
 
 const BLOG_DIR = path.resolve(process.cwd(), "src/content/blog");
@@ -49,7 +50,7 @@ async function collectUrls(): Promise<Map<string, string[]>> {
     const tree = await processor.run(processor.parse(source));
     visit(tree, "element", (node: Element) => {
       const url = findStandaloneUrl(node);
-      if (url && !findTweetId(url))
+      if (url && !findTweetId(url) && !isOwnSite(url))
         urls.set(url, [...(urls.get(url) ?? []), file]);
     });
   }

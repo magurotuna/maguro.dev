@@ -1,4 +1,7 @@
+import { existsSync, readFileSync } from "node:fs";
+import path from "node:path";
 import type { AstroIntegration } from "astro";
+import matter from "gray-matter";
 import type { Element, ElementContent, Root } from "hast";
 import { visit } from "unist-util-visit";
 import {
@@ -12,7 +15,8 @@ import {
  * Rehype plugin to turn a paragraph that consists of a single bare URL into a
  * link card with the target page's OGP metadata. X (Twitter) post URLs become
  * the same embed as `src/components/Tweet.astro` instead, since X does not
- * serve useful OGP.
+ * serve useful OGP. Links to posts on this site become cards built from the
+ * post's frontmatter and OG image, without any fetch.
  *
  * Metadata is read from `.link-card-cache.json`. During `astro dev`, URLs
  * missing from the cache are fetched and written back, so adding a URL just
@@ -31,10 +35,25 @@ export default function rehypeLinkCard() {
     });
 
     for (const { paragraph, url } of targets) {
+      let replacement: Element;
       const tweetId = findTweetId(url);
-      const replacement = tweetId
-        ? buildTweet(tweetId)
-        : buildLinkCard(url, await getMetadata(url));
+      const slug = findOwnPostSlug(url);
+      if (tweetId) {
+        replacement = buildTweet(tweetId);
+      } else if (slug !== null) {
+        const metadata = getOwnPostMetadata(slug);
+        // Leave links to unknown pages on this site as plain links.
+        if (!metadata) continue;
+        replacement = buildLinkCard(`/blog/${slug}/`, "maguro.dev", metadata);
+      } else if (isOwnSite(url)) {
+        continue;
+      } else {
+        replacement = buildLinkCard(
+          url,
+          new URL(url).hostname.replace("www.", ""),
+          await getMetadata(url),
+        );
+      }
       // Replace the <p> in place so the card is not nested in a paragraph.
       Object.assign(paragraph, replacement);
     }
@@ -42,7 +61,7 @@ export default function rehypeLinkCard() {
 }
 
 /**
- * Returns the URL if `node` is a `<p>` whose only content is an external link
+ * Returns the URL if `node` is a `<p>` whose only content is an http(s) link
  * with the URL itself as its text (what remark-gfm makes from a bare URL).
  */
 export function findStandaloneUrl(node: Element): string | null {
@@ -54,7 +73,7 @@ export function findStandaloneUrl(node: Element): string | null {
   const link = children[0];
   if (link.type !== "element" || link.tagName !== "a") return null;
   const href = link.properties?.href;
-  if (typeof href !== "string" || !isExternalLink(href)) return null;
+  if (typeof href !== "string" || !isHttpUrl(href)) return null;
   const text = link.children.length === 1 ? link.children[0] : undefined;
   if (text?.type !== "text" || text.value !== href) return null;
   return href;
@@ -72,16 +91,41 @@ export function findTweetId(url: string): string | null {
   }
 }
 
-function isExternalLink(href: string): boolean {
+/** Returns the slug if `url` points to a post on this site. */
+export function findOwnPostSlug(url: string): string | null {
+  const { hostname, pathname } = new URL(url);
+  if (hostname !== "maguro.dev" && hostname !== "www.maguro.dev") return null;
+  return pathname.match(/^\/blog\/([^/]+)\/?$/)?.[1] ?? null;
+}
+
+export function isOwnSite(url: string): boolean {
+  const { hostname } = new URL(url);
+  return hostname === "maguro.dev" || hostname.endsWith(".maguro.dev");
+}
+
+function isHttpUrl(href: string): boolean {
   try {
-    const url = new URL(href);
-    if (url.protocol !== "http:" && url.protocol !== "https:") return false;
-    return !(
-      url.hostname === "maguro.dev" || url.hostname.endsWith(".maguro.dev")
-    );
+    const { protocol } = new URL(href);
+    return protocol === "http:" || protocol === "https:";
   } catch {
     return false;
   }
+}
+
+function getOwnPostMetadata(slug: string): LinkCardMetadata | null {
+  const file = path.resolve(process.cwd(), "src/content/blog", `${slug}.mdx`);
+  if (!existsSync(file)) {
+    console.warn(`[link-card] No post found for /blog/${slug}/`);
+    return null;
+  }
+  const { data } = matter(readFileSync(file, "utf-8"));
+  return {
+    title: typeof data.title === "string" ? data.title : null,
+    description: typeof data.description === "string" ? data.description : null,
+    // OG images are generated only for published posts.
+    image: data.draft ? null : `/og/${slug}.png`,
+    fetchedAt: "",
+  };
 }
 
 let fetchMissing = false;
@@ -167,16 +211,18 @@ function buildTweet(id: string): Element {
 }
 
 /** Builds the same markup as `src/components/LinkCard.astro`. */
-function buildLinkCard(url: string, metadata: LinkCardMetadata): Element {
+function buildLinkCard(
+  href: string,
+  domain: string,
+  metadata: LinkCardMetadata,
+): Element {
   const content: ElementContent[] = [
-    div("link-card-title", metadata.title ?? url),
+    div("link-card-title", metadata.title ?? href),
   ];
   if (metadata.description) {
     content.push(div("link-card-description", metadata.description));
   }
-  content.push(
-    div("link-card-domain", new URL(url).hostname.replace("www.", "")),
-  );
+  content.push(div("link-card-domain", domain));
 
   const children: ElementContent[] = [];
   if (metadata.image) {
@@ -205,10 +251,11 @@ function buildLinkCard(url: string, metadata: LinkCardMetadata): Element {
     type: "element",
     tagName: "a",
     properties: {
-      href: url,
+      href,
       className: ["link-card"],
-      target: "_blank",
-      rel: ["noopener", "noreferrer"],
+      ...(href.startsWith("/")
+        ? {}
+        : { target: "_blank", rel: ["noopener", "noreferrer"] }),
     },
     children,
   };
