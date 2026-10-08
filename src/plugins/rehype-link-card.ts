@@ -1,3 +1,4 @@
+import type { AstroIntegration } from "astro";
 import type { Element, ElementContent, Root } from "hast";
 import { visit } from "unist-util-visit";
 import {
@@ -13,9 +14,11 @@ import {
  * the same embed as `src/components/Tweet.astro` instead, since X does not
  * serve useful OGP.
  *
- * Metadata is read from `.link-card-cache.json`. URLs missing from the cache
- * are fetched and written back, so adding a URL in `npm run dev` just works.
- * Run `npm run refresh-link-cache` to refetch everything.
+ * Metadata is read from `.link-card-cache.json`. During `astro dev`, URLs
+ * missing from the cache are fetched and written back, so adding a URL just
+ * works. Builds never fetch, so CI and deploys do not depend on other sites;
+ * a missing URL falls back to a URL-only card (`npm run check:link-cards`
+ * catches that in CI). Run `npm run refresh-link-cache` to refetch everything.
  */
 export default function rehypeLinkCard() {
   return async (tree: Root) => {
@@ -81,6 +84,22 @@ function isExternalLink(href: string): boolean {
   }
 }
 
+let fetchMissing = false;
+
+/**
+ * Integration that enables fetching missing metadata only under `astro dev`.
+ */
+export function linkCardIntegration(): AstroIntegration {
+  return {
+    name: "link-card",
+    hooks: {
+      "astro:config:setup": ({ command }) => {
+        fetchMissing = command === "dev";
+      },
+    },
+  };
+}
+
 let cache: Record<string, LinkCardMetadata> | undefined;
 const inFlight = new Map<string, Promise<LinkCardMetadata>>();
 let pendingSave: Promise<void> = Promise.resolve();
@@ -89,6 +108,17 @@ function getMetadata(url: string): Promise<LinkCardMetadata> {
   cache ??= loadCache();
   const cached = cache[url];
   if (cached) return Promise.resolve(cached);
+  if (!fetchMissing) {
+    console.warn(
+      `[link-card] ${url} is not in .link-card-cache.json. Run \`npm run link-cards\` and commit the cache.`,
+    );
+    return Promise.resolve({
+      title: null,
+      description: null,
+      image: null,
+      fetchedAt: "",
+    });
+  }
 
   let promise = inFlight.get(url);
   if (!promise) {

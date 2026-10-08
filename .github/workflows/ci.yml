@@ -23,6 +23,9 @@ jobs:
       - name: Check formatting
         run: npm run format:check
 
+      - name: Check link card cache
+        run: npm run check:link-cards
+
   cloudflare:
     runs-on: ubuntu-latest
     steps:

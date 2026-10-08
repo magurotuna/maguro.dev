@@ -9,6 +9,7 @@
     "preview": "astro preview",
     "astro": "astro",
     "link-cards": "tsx scripts/link-cards.ts",
+    "check:link-cards": "tsx scripts/link-cards.ts --check",
     "refresh-link-cache": "tsx scripts/link-cards.ts --refresh",
     "link-cards:strict": "tsx scripts/link-cards.ts --strict",
     "test:redirects": "tsx scripts/smoke-test-redirects.ts",
