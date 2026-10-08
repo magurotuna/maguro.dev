@@ -1,5 +1,6 @@
+import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
-import { rename, writeFile } from "node:fs/promises";
+import { mkdir, rename, writeFile } from "node:fs/promises";
 import path from "node:path";
 import type { Root } from "hast";
 import { fromHtml } from "hast-util-from-html";
@@ -9,7 +10,10 @@ import { toString } from "hast-util-to-string";
 export interface LinkCardMetadata {
   title: string | null;
   description: string | null;
+  /** Path of the downloaded copy under `public/`, e.g. `/link-card-images/…`. */
   image: string | null;
+  /** The original og:image URL. */
+  imageSource?: string | null;
   /** True when fetching failed. The card falls back to showing the URL only. */
   failed?: boolean;
   fetchedAt: string;
@@ -18,6 +22,17 @@ export interface LinkCardMetadata {
 type Cache = Record<string, LinkCardMetadata>;
 
 export const CACHE_PATH = path.resolve(process.cwd(), ".link-card-cache.json");
+
+/**
+ * OG images are downloaded and served from this site, since some sites forbid
+ * embedding them elsewhere (e.g. `Cross-Origin-Resource-Policy: same-origin`)
+ * and remote images can disappear.
+ */
+export const IMAGE_DIR = path.resolve(process.cwd(), "public/link-card-images");
+const IMAGE_URL_PREFIX = "/link-card-images/";
+// Displayed at most 320px wide, so 2x covers high-DPI screens.
+const IMAGE_WIDTH = 640;
+const MAX_IMAGE_BYTES = 10 * 1024 * 1024;
 
 const USER_AGENT =
   "Mozilla/5.0 (compatible; maguro.dev-link-card/1.0; +https://maguro.dev)";
@@ -59,9 +74,14 @@ export async function fetchLinkCardMetadata(
     if (!res.ok) {
       throw new Error(`HTTP ${res.status}`);
     }
-    const bytes = await readBody(res);
+    const bytes = await readBody(res, MAX_BYTES);
     const html = decode(bytes, res.headers.get("content-type"));
-    return { ...extractMetadata(html, res.url || url), fetchedAt };
+    const { image: imageSource, ...metadata } = extractMetadata(
+      html,
+      res.url || url,
+    );
+    const image = imageSource ? await downloadImage(url, imageSource) : null;
+    return { ...metadata, image, imageSource, fetchedAt };
   } catch (error) {
     console.warn(`[link-card] Failed to fetch ${url}: ${error}`);
     return {
@@ -74,14 +94,57 @@ export async function fetchLinkCardMetadata(
   }
 }
 
-async function readBody(res: Response): Promise<Uint8Array> {
+/** Local file name for the image of the page at `pageUrl`. */
+export function imageFileName(pageUrl: string): string {
+  const hash = createHash("sha256").update(pageUrl).digest("hex");
+  return `${hash.slice(0, 16)}.webp`;
+}
+
+/** Path of a downloaded image in `public/`, or null for anything else. */
+export function localImagePath(image: string | null): string | null {
+  return image?.startsWith(IMAGE_URL_PREFIX)
+    ? path.join(IMAGE_DIR, image.slice(IMAGE_URL_PREFIX.length))
+    : null;
+}
+
+async function downloadImage(
+  pageUrl: string,
+  imageUrl: string,
+): Promise<string | null> {
+  try {
+    const res = await fetch(imageUrl, {
+      headers: { "User-Agent": USER_AGENT, Referer: pageUrl },
+      redirect: "follow",
+      signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
+    });
+    if (!res.ok) {
+      throw new Error(`HTTP ${res.status}`);
+    }
+    const bytes = await readBody(res, MAX_IMAGE_BYTES);
+    // Loaded lazily so that builds, which never fetch, do not need sharp.
+    const { default: sharp } = await import("sharp");
+    const webp = await sharp(bytes)
+      .resize({ width: IMAGE_WIDTH, withoutEnlargement: true })
+      .webp({ quality: 80 })
+      .toBuffer();
+    const fileName = imageFileName(pageUrl);
+    await mkdir(IMAGE_DIR, { recursive: true });
+    await writeFile(path.join(IMAGE_DIR, fileName), webp);
+    return `${IMAGE_URL_PREFIX}${fileName}`;
+  } catch (error) {
+    console.warn(`[link-card] Failed to download ${imageUrl}: ${error}`);
+    return null;
+  }
+}
+
+async function readBody(res: Response, maxBytes: number): Promise<Uint8Array> {
   if (!res.body) {
     return new Uint8Array(await res.arrayBuffer());
   }
   const chunks: Uint8Array[] = [];
   let total = 0;
   const reader = res.body.getReader();
-  while (total < MAX_BYTES) {
+  while (total < maxBytes) {
     const { done, value } = await reader.read();
     if (done) break;
     chunks.push(value);
