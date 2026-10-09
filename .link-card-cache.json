@@ -1,0 +1,16 @@
+{
+  "https://blog.cloudflare.com/deno-joins-cloudflare": {
+    "title": "Deno is joining Cloudflare",
+    "description": "The Deno team is joining Cloudflare to radically simplify self-hosting Workers and Durable Objects, so developers can use the same primitives in more places.",
+    "image": "/link-card-images/e056f3d9abea05ec.webp",
+    "imageSource": "https://blog.cloudflare.com/_emdash/api/media/file/01M4EQTD297Y9G522JDZREGQVB.01M4EQTDKXS2ZN30A8X66WT213.png",
+    "fetchedAt": "2026-10-09T14:11:39.337Z"
+  },
+  "https://deno.com/blog/cloudflare": {
+    "title": "Deno is joining Cloudflare | Deno",
+    "description": "Putting ourselves in the best place to build the future of the web",
+    "image": "/link-card-images/212e9120a76a6fc2.webp",
+    "imageSource": "https://deno.com/blog/cloudflare/deno-cf-balanced-og.webp",
+    "fetchedAt": "2026-10-09T14:11:37.578Z"
+  }
+}
