@@ -47,9 +47,15 @@
 #section("Experience")
 
 #entry(
+  [Senior Systems Engineer — Cloudflare, Inc. #text(weight: "regular", style: "italic")[(joined as part of Deno joining Cloudflare)]],
+  none,
+  "2026 – Present",
+)
+
+#entry(
   "Software Engineer — Deno Land Inc.",
   "Deno: a modern JavaScript/TypeScript runtime built on Rust and V8",
-  "2022 – Present",
+  "2022 – 2026",
   details: [
     - Designed and shipped the \@deno/sandbox SDK and client-server protocol, replacing tRPC with typed JSON-RPC over WebSocket and adding bidirectional process I/O streaming, cancellation, multi-client sessions, and automated NPM/JSR releases
     - Built regional proxying and secure networking for Firecracker microVM sandboxes, including direct region routing, per-sandbox HTTP(S) allowlists, dynamic CA provisioning, IPv6 support, and host-bound credential injection that keeps raw secrets out of untrusted code
