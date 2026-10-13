@@ -16,7 +16,7 @@
           buildInputs = with pkgs; [
             deno
 
-            # npm is retained for package-lock.json maintenance and Netlify parity.
+            # npm is retained for package-lock.json maintenance and Workers Builds parity.
             nodejs_24
 
             # For Playwright tests (browser automation)
