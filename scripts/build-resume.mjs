@@ -137,7 +137,7 @@ export default function resumePdf() {
     name: "resume-pdf",
     hooks: {
       // Astro cleans the output before building. Add the PDF only after that,
-      // using the actual output directory for both Netlify and Cloudflare.
+      // using the actual output directory for both `dist/` and `dist-cloudflare/`.
       "astro:build:done": async ({ dir }) => {
         await buildResume(fileURLToPath(dir));
       },

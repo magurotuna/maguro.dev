@@ -3,7 +3,7 @@
   "name": "maguro-dev",
   "compatibility_date": "2026-10-03",
   // Static assets only: Astro renders pages and OGP images at build time.
-  // No production routes/custom domains until the cutover is approved.
+  // Production custom domains are attached in the Cloudflare dashboard, not here.
   "assets": {
     "directory": "./dist-cloudflare",
     "html_handling": "auto-trailing-slash",

@@ -1,5 +1,3 @@
-[![Netlify Status](https://api.netlify.com/api/v1/badges/c01b769a-84f1-4b9b-b0aa-2fe791ab8d30/deploy-status)](https://app.netlify.com/sites/blissful-ardinghelli-dcdc9a/deploys)
-
 # maguro.dev
 
 ## Development
@@ -27,8 +25,8 @@ it directly, so this project does not need a `deno.json` file.
 
 Edit `resume/resume.typ` to update the résumé linked from About at `/resume.pdf`.
 Every Astro build compiles it into the selected output directory after Astro
-finishes: `dist/resume.pdf` for `npm run build` (including Netlify), or
-`dist-cloudflare/resume.pdf` for `npm run build:cloudflare`. These generated files
+finishes: `dist/resume.pdf` for `npm run build`, or
+`dist-cloudflare/resume.pdf` for `npm run build:cloudflare` (production). These generated files
 are ignored. The existing tracked `resume/resume.pdf` is a historical snapshot;
 site builds do not copy it or use it as a fallback, and it does not need updating.
 
@@ -48,11 +46,11 @@ in the local Workers runtime. No hosting build-command changes are required.
 
 ## Dependency updates
 
-This project keeps two lockfiles because local development and Netlify use
-different package managers:
+This project keeps two lockfiles because local development and Cloudflare
+Workers Builds use different package managers:
 
 - `deno.lock` is used by Deno locally.
-- `package-lock.json` is used by npm on Netlify.
+- `package-lock.json` is used by npm in CI and Workers Builds.
 
 Use npm to change `package.json` and `package-lock.json`, then update
 `deno.lock` from the resulting manifest:
@@ -72,14 +70,14 @@ deno install
 Commit `package.json`, `package-lock.json`, and `deno.lock` together whenever a
 dependency changes. Use `deno ci` for a clean, lockfile-strict local install.
 
-Netlify continues to use the Node.js build configured in `netlify.toml`; the
-same `package.json` scripts remain compatible with both runtimes.
+CI and Workers Builds use Node.js 24; the same `package.json` scripts remain
+compatible with both runtimes.
 
-## Cloudflare migration (parallel with Netlify)
+## Hosting (Cloudflare Workers)
 
-The optional Cloudflare target uses Workers Static Assets. It has no SSR adapter
-or request-time Worker code. Netlify's existing build and deployment stay in place.
-Use Node.js 24 for the Cloudflare tooling:
+The site is served by Cloudflare Workers Static Assets. It has no SSR adapter or
+request-time Worker code. Workers Builds builds and deploys `main`, and publishes
+a preview for every other branch. Use Node.js 24 for the Cloudflare tooling:
 
 ```console
 npm ci
@@ -87,10 +85,11 @@ npm run check:cloudflare
 npm run preview:cloudflare
 ```
 
-Cloudflare output goes to `dist-cloudflare/`; Netlify continues to use `dist/`.
+Cloudflare output goes to `dist-cloudflare/`. `npm run build` still writes
+`dist/` for `npm run preview` and the Playwright visual tests.
 `preview:cloudflare` rebuilds and starts a local Workers emulator, not a remote
 preview. `deploy:cloudflare` rebuilds and **publishes to Cloudflare**; run it only
 when a deployment is intended and the target account has been verified.
 
-See [Cloudflare setup, cutover, and rollback](docs/cloudflare-migration.md) before
-connecting an account, deploying, or changing DNS.
+See [Cloudflare deployment, routing, and rollback](docs/cloudflare.md) before
+changing the Worker, its build settings, or DNS.

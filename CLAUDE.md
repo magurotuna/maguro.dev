@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-This is a personal blog/website built with [Astro](https://astro.build/), a modern static site generator. The site is deployed on Netlify.
+This is a personal blog/website built with [Astro](https://astro.build/), a modern static site generator. The site is deployed on Cloudflare Workers (Static Assets).
 
 ## Development Commands
 
@@ -45,7 +45,7 @@ draft: false
 ### Key Configuration
 
 - **astro.config.mjs**: Main Astro configuration (integrations, markdown plugins)
-- **netlify.toml**: Deployment configuration (Node.js 22)
+- **wrangler.jsonc**: Cloudflare Workers configuration (static assets from `dist-cloudflare/`)
 - **tsconfig.json**: TypeScript configuration
 - **src/content/config.ts**: Content collection schema definition
 
@@ -69,7 +69,7 @@ draft: false
 
 ## Important Notes
 
-1. **Node.js Version**: The site uses Node.js 24 LTS (specified in netlify.toml).
+1. **Node.js Version**: The site uses Node.js 24 LTS (CI and Workers Builds).
 
 2. **Content Features**:
    - KaTeX for mathematical expressions
@@ -81,4 +81,4 @@ draft: false
 
 4. **Redirects**: Old Zola URLs redirect to new paths or archive.maguro.dev.
 
-5. **Deployment**: All pushes to main branch auto-deploy via Netlify.
+5. **Deployment**: Pushes to main auto-deploy via Cloudflare Workers Builds; other branches get preview deployments. See `docs/cloudflare.md`.

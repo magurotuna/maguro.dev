@@ -1,4 +1,4 @@
-/** Prepare only the Cloudflare artifact; keep public/ and dist/ Netlify-compatible. */
+/** Prepare only the Cloudflare artifact; public/ and dist/ keep the Netlify-syntax source. */
 import { readFileSync, rmSync, statSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";

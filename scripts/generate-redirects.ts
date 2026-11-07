@@ -1,6 +1,7 @@
 /**
- * Generates the _redirects file for Netlify by merging static redirects
+ * Generates the _redirects file (in Netlify syntax) by merging static redirects
  * with generated redirects for preserved posts, weekly reports, and tags.
+ * scripts/prepare-cloudflare.mjs converts it for Workers in the Cloudflare build.
  */
 
 import * as fs from "node:fs";
